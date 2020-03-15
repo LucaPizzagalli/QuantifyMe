@@ -1,0 +1,12 @@
+{
+    "cSpell.words": [
+        "inplace",
+        "iterrows",
+        "itertools",
+        "jsonify",
+        "plotlyjs",
+        "strftime",
+        "strptime"
+    ],
+    "python.pythonPath": "/usr/bin/python3"
+}

@@ -1,0 +1,48 @@
+:root {
+  --color1: rgba(123, 223, 242, 1);
+  --color2: rgba(178, 247, 239, 1);
+  --color3: rgba(239, 247, 246, 1);
+  --color4: rgba(247, 214, 224, 1);
+  --color5: rgba(242, 181, 212, 1);
+}
+
+body {
+  background-color: var(--color5);
+}
+
+.DayFormElement {
+  border: 1px solid lightgray;
+  border-radius: 0.3em;
+  padding: 1em;
+  margin: 0;
+  text-align: left;
+  background: var(--color4);
+}
+
+.DayFormElement.Focused {
+  box-shadow: 0 0 1em 0 grey;
+  border-radius: 1em;
+  padding: 2em;
+  text-align: center;
+}
+
+@keyframes get-focus {
+  from {
+    background-color: yellow;
+  }
+  to {
+    background-color: red;
+  }
+}
+
+@keyframes lose-focus {
+  100% {
+    background-color: yellow;
+  }
+}
+
+input {
+  border: 0;
+  background: var(--color3);
+  color: white;
+}
