@@ -1,144 +1,61 @@
-import React from "react";
-import { Rating } from "semantic-ui-react";
-
+import React from 'react';
+import Button from '@material-ui/core/Button';
+import { List } from 'semantic-ui-react';
+import { DayTextField, DayRatingField, DayDateField } from './AddDayField';
 
 class AddDayForm extends React.Component {
   constructor(props) {
     super(props);
-    let d = new Date();
-    let month = '' + (d.getMonth() + 1);
-    let day = '' + d.getDate();
-    let year = d.getFullYear();
-    if (month.length < 2)
-      month = '0' + month;
-    if (day.length < 2)
-      day = '0' + day;
-    let today = [year, month, day].join('-');
+    this.state = { 'day': { 'date': new Date(), 'happiness': '', 'lesson': '', 'recap': '', 'place': '', 'social': '', 'workout': '', 'study': '', 'culture': '', 'work': '', 'finances': '' } };
+  }
 
-    this.state = { "day": { "date_str": today, "happiness": "", "lesson": "", "recap": "", "place": "", "social": "", "workout": "", "study": "", "culture": "", "work": "", "finances": "" } };
+  componentDidUpdate(prevProps) {
+    if (prevProps.legend === 'loading')
+      this.render();
   }
 
   render() {
-    return (
-      <div>
-        {/* <Form.Input label="Date" type="date"
-          value={this.state.day.date_str}
-          onChange={e => { this.setState({ "day": { ...this.state.day, "date_str": e.target.value } }) }}
-        />
-        <Popup trigger={<p>info</p>} wide> {this.props.legend.date} </Popup>
-*/}
-
-        <DayRatingField label='Happiness' icon='star' maxRating={5} onInput={(input) => {
-          this.setState({ 'day': { ...this.state.day, 'happiness': input } });
-        }} />
-        <DayRatingField label='Workout' icon='star' maxRating={3} onInput={(input) => {
-          this.setState({ 'day': { ...this.state.day, 'workout': input } });
-        }} />
-        <DayTextField label='Lesson' valuex={this.state.day.lesson}
-          onChange={e => { this.setState({ "day": { ...this.state.day, "lesson": e.target.value } }); }}
-        />
-        <DayTextField label='Recap' valuex={this.state.day.lesson}
-          onChange={e => { this.setState({ "day": { ...this.state.day, "recap": e.target.value } }); }}
-        />
-        <DayTextField label='Social' valuex={this.state.day.lesson}
-          onChange={e => { this.setState({ "day": { ...this.state.day, "social": e.target.value } }); }}
-        />
-        <DayTextField label='Study' valuex={this.state.day.lesson}
-          onChange={e => { this.setState({ "day": { ...this.state.day, "study": e.target.value } }); }}
-        />
-        <DayTextField label='Culture' valuex={this.state.day.lesson}
-          onChange={e => { this.setState({ "day": { ...this.state.day, "culture": e.target.value } }); }}
-        />
-        <DayTextField label='Work' valuex={this.state.day.lesson}
-          onChange={e => { this.setState({ "day": { ...this.state.day, "work": e.target.value } }); }}
-        />
-        <DayTextField label='Place' valuex={this.state.day.lesson}
-          onChange={e => { this.setState({ "day": { ...this.state.day, "place": e.target.value } }); }}
-        />
-        <button onClick={async () => {
-          const response = await fetch("/add_day", {
-            method: "POST",
-            headers: { "Content-Type": "application/JSON" },
-            body: JSON.stringify(this.state.day)
-          });
-          if (response.ok) {
-            this.props.onNewDay(this.state.day);
-            this.setState({ "day": { "date_str": "", "happiness": "", "lesson": "", "recap": "", "place": "", "social": "", "workout": "", "study": "", "culture": "", "work": "", "finances": "" } });
-          }
-        }}>
-          submit
-          </button>
-      </div>
-    );
-  }
-}
-
-class DayTextField extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { isFocused: false };
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-    this.inputRef = React.createRef();
-  }
-
-  onFocus() {
-    this.setState({ isFocused: true });
-  }
-
-  onBlur() {
-    this.setState({ isFocused: false });
-  }
-
-  render() {
-    return (
-      <div className={'DayFormElement ' + (this.state.isFocused ? 'Focused' : 'Unfocused')}
-        onClick={_ => { this.inputRef.current.focus(); }}>
-        <label>{this.props.label}</label>
-        {/* value={this.state.day.social}  */}
-        <input
-          ref={this.inputRef}
-          onChange={this.props.onInput}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-        />
-      </div>
-    );
-  }
-}
-
-class DayRatingField extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { isFocused: false };
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-    this.inputRef = React.createRef();
-  }
-
-  onFocus() {
-    this.setState({ isFocused: true });
-  }
-
-  onBlur() {
-    this.setState({ isFocused: false });
-  }
-
-  render() {
-    return (
-      <div className={'DayFormElement ' + (this.state.isFocused ? 'Focused' : 'Unfocused')}
-        onClick={_ => { this.inputRef.current.focus(); }}>
-        <label>{this.props.label}</label>
-
-        <input ref={this.inputRef} type="radio" name="gender" value="male" onFocus={this.onFocus} onBlur={this.onBlur}></input>
-        <Rating icon={this.props.icon} defaultRating={this.props.defaultRating} maxRating={this.props.maxRating}
-          onRate={(_, rating) => {
-            this.props.onInput(rating.rating);
-            this.setState({ isFocused: false });
-          }}
-          onFocus={this.onFocus} onBlur={this.onBlur} />
-      </div>
-    );
+    let output = <div>Loading</div>;
+    if (this.props.legend !== 'loading') {
+      let fields = [];
+      for (const key of this.props.legend.order) {
+        let legend = this.props.legend.legend[key];
+        let field = null;
+        let label = key[0].toUpperCase() + key.slice(1);
+        if (key === 'date') {
+          field = <DayDateField label='Date' valuex={this.state.day.date}
+            onChange={e => { this.setState({ 'day': { ...this.state.day, 'date': e.target.value } }); }} />
+        }
+        else if (legend.rating.length > 0)
+          field = <DayRatingField label={label} descriptionRating={legend.rating} icon='star' maxRating={5} onInput={(input) => {
+            this.setState({ 'day': { ...this.state.day, label: input } });
+          }} />
+        else
+          field = <DayTextField label={label} description={legend.text} valuex={this.state.day.lesson}
+            onChange={e => { this.setState({ 'day': { ...this.state.day, label: e.target.value } }); }} />;
+        fields.push(<List.Item key={key}>{field}</List.Item>);
+      }
+      output = <List>
+        {fields}
+        <List.Item key='submit-button'>
+          <Button variant='contained' color='primary'
+            onClick={async () => {
+              const response = await fetch('/add_day', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/JSON' },
+                body: JSON.stringify(this.state.day)
+              });
+              if (response.ok) {
+                this.props.onNewDay(this.state.day);
+                this.setState({ 'day': { 'date_str': '', 'happiness': '', 'lesson': '', 'recap': '', 'place': '', 'social': '', 'workout': '', 'study': '', 'culture': '', 'work': '', 'finances': '' } });
+              }
+            }}>
+            submit
+          </Button>
+        </List.Item>
+      </List>;
+    }
+    return (output);
   }
 }
 

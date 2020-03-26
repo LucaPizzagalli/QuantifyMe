@@ -63,12 +63,19 @@ def read_report(filename: str) -> tuple:
         if not raw_legend[0].startswith('### '):
             raise ValueError('Not a legend')
         legend_key = raw_legend[0][4:].strip().lower()
-        legend_value = '<br />'.join(raw_legend[1:])
-        legend[legend_key] = legend_value
+        element = {'rating': [], 'text': ''}
+        for line in raw_legend[1:]:
+            pieces = line.split(':')
+            if pieces[0].strip().isdigit():
+                element['rating'].append(pieces[1].strip())
+            else:
+                element['text'] = element['text'] + '\n' + line.strip()
+        legend['legend'][legend_key] = element
+        legend['order'].append(legend_key)
 
     with open(filename, 'r') as handle:
         days = []
-        legend = {}
+        legend = {'legend':{}, 'order':[]}
         others = []
         block = []
         for line in chain(handle, ['']):

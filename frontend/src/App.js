@@ -1,4 +1,5 @@
 import React from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './App.css';
 import Home from './pages/Home';
@@ -9,17 +10,20 @@ import AppMenu from './components/AppMenu';
 
 function App() {
   return (
-    <Router>
-      <AppMenu />
-      <Switch>
-        <Route path="/stats">
-          <Stats />
-        </Route>
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
-    </Router>
+    <React.Fragment>
+      <CssBaseline />
+      <Router>
+        <AppMenu />
+        <Switch>
+          <Route path="/stats">
+            <Stats />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </Router>
+    </React.Fragment>
   );
 }
 
