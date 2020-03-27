@@ -6,7 +6,9 @@ import Radio from '@material-ui/core/Radio';
 import RadioButtonChecked from '@material-ui/icons/RadioButtonChecked'
 import RadioButtonUnchecked from '@material-ui/icons/RadioButtonUnchecked'
 import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
 
@@ -27,12 +29,13 @@ const styles = theme => ({
   },
   root: {
     display: 'flex',
+    justifyContent: 'center',
     alignItems: 'center'
   },
-  hFocused: {
+  textFocused: {
     'transition': theme.transitions.create(['all'], {})
   },
-  hBlurred: {
+  textBlurred: {
     'fontSize': '0',
     'color': 'white',
     'transition': theme.transitions.create(['all'], {})
@@ -52,8 +55,8 @@ const styles = theme => ({
     'transition': theme.transitions.create(['all'], {})
   },
   zeroRatingFocused: {
-    'width': 200,
-    'height': 200,
+    'width': 150,
+    'height': 150,
     'fontSize': 100,
     'transition': theme.transitions.create(['all'], {})
   },
@@ -68,41 +71,43 @@ const styles = theme => ({
 class DayTextFieldPure extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isFocused: false };
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
     this.inputRef = React.createRef();
   }
 
-  onFocus() {
-    this.setState({ isFocused: true });
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.isFocused === this.props.isFocused && nextProps.value === this.props.value)
+      return false;
+    return true;
   }
 
-  onBlur() {
-    this.setState({ isFocused: false });
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      if (this.props.isFocused)
+        this.inputRef.current.focus();
+    }
   }
 
   render() {
     let classes = this.props.classes;
+    let isFocused = this.props.isFocused;
+    let key = this.props.label_key;
     return (
-      <div className={classes['paper' + (this.state.isFocused ? 'Focused' : 'Blurred')]}
-      // onClick={_ => { this.inputRef.current.focus(); }}
-      >
-        <Typography variant='h1' className={classes['h' + (this.state.isFocused ? 'Focused' : 'Blurred')]}>
+      <div className={classes['paper' + (isFocused ? 'Focused' : 'Blurred')]}
+        onClick={_ => { this.props.onFocus(key, false); }} >
+        <Typography variant='h1' className={classes['text' + (isFocused ? 'Focused' : 'Blurred')]}>
           {this.props.label}
         </Typography>
-        {/* value={this.state.day.social}  */}
         <TextField
-          InputProps={{ className: (classes['input' + (this.state.isFocused ? 'Focused' : 'Blurred')]) }}
+          InputProps={{ className: (classes['input' + (isFocused ? 'Focused' : 'Blurred')]) }}
           label={this.props.label}
           inputRef={this.inputRef}
-          onChange={this.props.onInput}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
+          value={this.props.value}
+          onChange={(input) => { this.props.onInput(key, input.target.value); }}
+          onFocus={(_) => { this.props.onFocus(key, false); }}
           fullWidth={true}
           multiline
         />
-        <Collapse in={this.state.isFocused} timeout='auto'>
+        <Collapse in={isFocused} timeout='auto'>
           <div className={classes.descriptionFull}>
             <Typography variant='body1'>{this.props.description}</Typography>
           </div>
@@ -115,55 +120,63 @@ class DayTextFieldPure extends React.Component {
 class DayRatingFieldPure extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 'isFocused': false, 'rating': 0 };
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
     this.inputRef = React.createRef();
   }
 
-  onFocus() {
-    this.setState({ isFocused: true });
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.isFocused === this.props.isFocused && nextProps.valueRating === this.props.valueRating)
+      return false;
+    return true;
   }
 
-  onBlur() {
-    this.setState({ isFocused: false });
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      if (this.props.isFocused) {
+        console.log(this.inputRef.current)
+        console.log(this.inputRef.current.value)
+        this.inputRef.current.focus(); //// Not working, who knows why
+      }
+
+    }
   }
 
   render() {
     let classes = this.props.classes;
+    let isFocused = this.props.isFocused;
+    let key = this.props.label_key;
     return (
-      <div className={classes['paper' + (this.state.isFocused ? 'Focused' : 'Blurred')]}
-        onMouseDown={_ => { this.inputRef.current.focus(); }}
-      >
-        <Typography variant='h1' className={classes['h' + (this.state.isFocused ? 'Focused' : 'Blurred')]}>
+      <div className={classes['paper' + (isFocused ? 'Focused' : 'Blurred')]}
+        onClick={_ => { this.props.onFocus(key, false); }} >
+        <Typography variant='h1' className={classes['text' + (isFocused ? 'Focused' : 'Blurred')]}>
           {this.props.label}
         </Typography>
         <div className={classes.root}>
-          {/* <Typography variant="body1" > */}
-          {this.props.label}
-          {/* </Typography> */}
-          <Radio ref={this.inputRef} name={'rating' + this.props.label}
-            className={(classes['zeroRating' + (this.state.isFocused ? 'Focused' : 'Blurred')])}
-            value={this.state.rating}
-            onChange={(_, __) => {
-              this.props.onInput(0);
-              this.setState({ 'rating': 0, isFocused: false });
+          <Typography variant="body1" className={classes['text' + (isFocused ? 'Blurred' : 'Focused')]}>
+            {this.props.label}
+          </Typography>
+          <Radio inputRef={this.inputRef} name={'rating' + key}
+            className={(classes['zeroRating' + (isFocused ? 'Focused' : 'Blurred')])}
+            value={this.props.valueRating}
+            onChange={_ => {
+              this.props.onInput(key, 0);
+              this.props.onFocus(key, true);
             }}
-            onFocus={this.onFocus} onBlur={this.onBlur}
-            icon={<RadioButtonUnchecked className={(classes['rating' + (this.state.isFocused ? 'Focused' : 'Blurred')])} />}
-            checkedIcon={<RadioButtonChecked className={(classes['rating' + (this.state.isFocused ? 'Focused' : 'Blurred')])} />} />
+            onFocus={_ => { this.props.onFocus(key, false); }}
+            icon={<RadioButtonUnchecked className={(classes['rating' + (isFocused ? 'Focused' : 'Blurred')])} />}
+            checkedIcon={<RadioButtonChecked className={(classes['rating' + (isFocused ? 'Focused' : 'Blurred')])} />} />
           <Rating max={this.props.maxRating}
-            className={(classes['rating' + (this.state.isFocused ? 'Focused' : 'Blurred')])}
-            name={'rating' + this.props.label}
-            value={this.state.rating}
+            className={(classes['rating' + (isFocused ? 'Focused' : 'Blurred')])}
+            name={'rating' + key}
+            value={this.props.valueRating}
             onChange={(_, rating) => {
-              this.props.onInput(rating);
-              this.setState({ 'rating': rating, isFocused: false });
+              this.props.onInput(key, rating);
+              this.props.onFocus(key, true);
             }}
-            onFocus={this.onFocus} onBlur={this.onBlur} />
+            onFocus={(_) => { this.props.onFocus(key, false); }}
+          />
         </div>
 
-        <Collapse in={this.state.isFocused} timeout='auto'>
+        <Collapse in={isFocused} timeout='auto'>
           <div className={classes.descriptionFull}>
             <Typography variant='body1'>{this.props.descriptionRating}</Typography>
           </div>
@@ -175,64 +188,63 @@ class DayRatingFieldPure extends React.Component {
 
 
 class DayDateFieldPure extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { isFocused: false };
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-    this.inputRef = React.createRef();
-  }
 
-  onFocus() {
-    this.setState({ isFocused: true });
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.isFocused === this.props.isFocused && nextProps.value === this.props.value)
+      return false;
+    return true;
   }
-
-  onBlur() {
-    this.setState({ isFocused: false });
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      if (this.props.isFocused)
+        this.inputRef.current.focus();
+    }
   }
-
   render() {
+    let classes = this.props.classes;
+    let isFocused = this.props.isFocused;
+    let key = this.props.label_key;
     return (
-      <MuiPickersUtilsProvider utils={DateFnsUtils} >
-        <div className={this.props.classes['paper' + (this.state.isFocused ? 'Focused' : 'Blurred')]}
-        // onClick={_ => { console.log(this.inputRef);this.inputRef.current.focus(); }}
-        >
-          <Typography variant='h1' className={this.props.classes['h' + (this.state.isFocused ? 'Focused' : 'Blurred')]}>
-            {this.props.label}
-          </Typography>
-          {/* <KeyboardDatePicker
-        autoOk
-        variant="inline"
-        inputVariant="outlined"
-        label="With keyboard"
-        format="MM/dd/yyyy"
-        // value={selectedDate}
-        InputAdornmentProps={{ position: "start" }}
-        // onChange={date => handleDateChange(date)}
-        /> */}
+      <div className={classes['paper' + (isFocused ? 'Focused' : 'Blurred')]} >
+        <Typography variant='h1' className={classes['text' + (isFocused ? 'Focused' : 'Blurred')]}>
+          {this.props.label}
+        </Typography>
 
-          <KeyboardDatePicker
-            // ref={this.inputRef}
-            label={this.props.label}
-            onChange={this.props.onInput}
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-            disableToolbar
-            variant='inline'
-            format='yyyy/MM/dd'
-            margin='normal'
-            autoFocus={true}
-            // pickerRef={(node) => { this.inputRef = node; }}//{this.inputRef}
-            // value={this.state.day.date}
-            // onChange={(input) => {
-            //   this.setState({ 'day': { ...this.state.day, 'date': input } });
-            // }}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
+        {/* <button type="button" onClick={handleOpen}>
+            react-transition-group
+      </button>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
             }}
+          >
+            <Fade in={open}>
+              <div className={classes.paper}>
+                <h2 id="transition-modal-title">Transition modal</h2>
+                <p id="transition-modal-description">react-transition-group animates me.</p>
+              </div>
+            </Fade>
+          </Modal> */}
+        <MuiPickersUtilsProvider utils={DateFnsUtils} >
+          <DatePicker
+            autoOk
+            disableFuture
+            label={this.props.label}
+            onChange={(input) => { this.props.onInput(key, input); }}
+            onAccept={(_) => { this.props.onFocus(key, true); }}
+            format='yyyy/MM/dd'
+            autoFocus={true}
+            value={this.props.value}
           />
-        </div>
-      </MuiPickersUtilsProvider>
+        </MuiPickersUtilsProvider>
+      </div>
     );
   }
 }

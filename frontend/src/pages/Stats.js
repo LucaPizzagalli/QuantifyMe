@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from 'semantic-ui-react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class Stats extends React.Component {
   constructor(props) {
@@ -27,16 +27,14 @@ class Stats extends React.Component {
   render() {
     return (
       <div>
-        <Container>
-          {
-            this.state.plot_loaded === 2 ? 
+        {
+          this.state.plot_loaded === 2 ?
             <div>
-            <div dangerouslySetInnerHTML={{ __html: this.state.happiness_plot_div }} />
-            <script dangerouslySetInnerHTML={{ __html: 'alert(33)' }} />
-            </div> : <div>Loading...</div>
-          }
-          {/* <div dangerouslySetInnerHTML={{ __html: '<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>' + this.state.happiness_plot }} /> */}
-        </Container>
+              <div dangerouslySetInnerHTML={{ __html: this.state.happiness_plot_div }} />
+              <script dangerouslySetInnerHTML={{ __html: 'alert(33)' }} />
+            </div> : <CircularProgress/>
+        }
+        {/* <div dangerouslySetInnerHTML={{ __html: '<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>' + this.state.happiness_plot }} /> */}
       </div>
     );
   }
