@@ -95,6 +95,7 @@ class AddDayForm extends React.Component {
                 if (value === '' || value === -1)
                   day[key] = null;
               }
+              console.log(day)
               const response = await fetch('/add_day', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/JSON' },

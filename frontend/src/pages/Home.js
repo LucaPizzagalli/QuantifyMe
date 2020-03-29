@@ -2,7 +2,6 @@ import React from 'react';
 import Report from '../components/Report';
 import AddDayForm from '../components/AddDayForm';
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
 
 class Home extends React.Component {
   constructor(props) {
@@ -20,7 +19,6 @@ class Home extends React.Component {
     return (
       <Container maxWidth="lg">
         <Container maxWidth="md">
-          <Typography variant='body1'>perchè sono così piccolo?</Typography>
           <AddDayForm legend={this.state.legend} onNewDay={day => this.setState({ 'report': [day, ...this.state.report] })} />
         </Container>
         <Report report={this.state.report} legend={this.state.legend} />

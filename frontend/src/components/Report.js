@@ -20,7 +20,7 @@ class Report extends React.Component {
           if (day[field]) {
             if (this.props.legend.legend[field].rating.length > 0)
               fields.push(
-                <div key={field}>
+                <div key={field + day.date}>
                   <Typography variant="h6">{field[0].toUpperCase() + field.slice(1)}</Typography>
                   <Rating max={this.props.legend.legend[field].rating.length}
                     name={field + day.date} value={day[field].rating} readOnly />
@@ -28,8 +28,7 @@ class Report extends React.Component {
             else
               fields.push(
                 <div key={field}>
-                  <Typography variant="h6">{field[0].toUpperCase() + field.slice(1)}</Typography>
-                  <Typography variant="body1">{day[field]}</Typography>
+                  <Typography variant="body1"><strong>{field[0].toUpperCase() + field.slice(1)} </strong>{day[field]}</Typography>
                 </div>);
           }
         days.push(
