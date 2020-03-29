@@ -99,7 +99,7 @@ class Report:
             handle.write('')
             handle.write('\n\n' + day_data['date'])
             for field in self.legend['order'][1:]:
-                if day_data[field]:
+                if not day_data[field] is None:
                     handle.write('\n' + field + ': ' + str(day_data[field]))
         self.days = self.days.append(pd.Series(day_data, name=datetime.strptime(day_data['date'], '%Y-%m-%d')))
 
