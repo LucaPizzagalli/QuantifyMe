@@ -1,6 +1,4 @@
 from flask import Blueprint, jsonify, request
-from datetime import datetime
-import pandas as pd
 from .app import REPORT
 
 main = Blueprint('main', __name__)

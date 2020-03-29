@@ -1,4 +1,6 @@
 import React from 'react';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 import { DayTextField, DayRatingField, DayDateField, DaySubmit } from './AddDayField';
 
 class AddDayForm extends React.Component {
@@ -46,7 +48,10 @@ class AddDayForm extends React.Component {
   render() {
     let output = null
     if (this.state.submitted) {
-      output = <div>Tutto fatto bbene</div>;
+      output = <Alert severity="success">
+        <AlertTitle>Success</AlertTitle>
+        This is a success, new day saved
+      </Alert>;
     }
     else {
       if (this.props.legend === 'loading')
@@ -96,9 +101,8 @@ class AddDayForm extends React.Component {
                 body: JSON.stringify(day)
               });
               if (response.ok) {
-                this.props.onNewDay(day);
-                console.log('ha funzionato');
                 this.setState({ 'day': AddDayForm.resetState(this.props.legend.legend), 'submitted': true });
+                this.props.onNewDay(day);
               }
             }} />
         </div>;

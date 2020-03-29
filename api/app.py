@@ -15,7 +15,10 @@ class Report:
 
         def interpret_day(raw_day):
             day = {}
-            day['date'] = datetime.strptime(raw_day[0], '%Y.%m.%d')
+            try:
+                day['date'] = datetime.strptime(raw_day[0], '%Y-%m-%d')
+            except:
+                day['date'] = datetime.strptime(raw_day[0], '%Y.%m.%d')
             day['others'] = []
             for line in raw_day[1:]:
                 pieces = line.split(':')
@@ -94,10 +97,10 @@ class Report:
     def add_day(self, day_data):
         with open(self.filename, 'a') as handle:
             handle.write('')
-            handle.write('\n\n' + day_data['date'] + '\n')
+            handle.write('\n\n' + day_data['date'])
             for field in self.legend['order'][1:]:
-                if field:
-                    handle.write(field + ': ' + str(day_data[field]) + '\n')
+                if day_data[field]:
+                    handle.write('\n' + field + ': ' + str(day_data[field]))
         self.days = self.days.append(pd.Series(day_data, name=datetime.strptime(day_data['date'], '%Y-%m-%d')))
 
 REPORT = Report()
