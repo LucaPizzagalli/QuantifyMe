@@ -99,4 +99,3 @@ class Report:
                 if field not in [-1, '']:
                     handle.write(field + ': ' + str(day_data[field]) + '\n')
         self.days = self.days.append(pd.Series(day_data, name=datetime.strptime(day_data['date'], '%Y-%m-%d')))
-
