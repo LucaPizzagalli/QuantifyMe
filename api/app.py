@@ -26,7 +26,7 @@ class Report:
                     day['others'].append(line.strip())
                 else:
                     head = pieces[0].strip().lower()
-                    tail = pieces[1].strip()
+                    tail = ':'.join(pieces[1:]).strip()
                     if head in ['happiness']:
                         happiness = tail
                         try:
@@ -52,6 +52,8 @@ class Report:
                         day['lesson'] = tail
                     elif head in ['highlights', 'recap', 'summary']:
                         day['recap'] = tail
+                    elif head in ['routine']:
+                        day['routine'] = tail
                     else:
                         day['others'].append(line.strip())
             return day

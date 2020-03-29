@@ -1,4 +1,5 @@
 import React from 'react';
+import Box from '@material-ui/core/Box';
 import Rating from '@material-ui/lab/Rating';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -20,11 +21,11 @@ class Report extends React.Component {
           if (day[field]) {
             if (this.props.legend.legend[field].rating.length > 0)
               fields.push(
-                <div key={field + day.date}>
-                  <Typography variant="h6">{field[0].toUpperCase() + field.slice(1)}</Typography>
+                <Box key={field + day.date} display="flex">
+                  <Typography variant="body1"><strong>{field[0].toUpperCase() + field.slice(1)}</strong></Typography>
                   <Rating max={this.props.legend.legend[field].rating.length}
                     name={field + day.date} value={day[field].rating} readOnly />
-                </div>);
+                </Box>);
             else
               fields.push(
                 <div key={field}>
