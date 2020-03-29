@@ -46,7 +46,7 @@ const styles = theme => ({
     flexBasis: '100%',
   },
   textFocused: {
-    'fontSize': '7em',
+    'fontSize': '6em',
     'transition': theme.transitions.create(['all'], {})
   },
   textBlurred: {
@@ -209,33 +209,10 @@ class DayDateFieldPure extends React.Component {
     let isFocused = this.props.isFocused;
     let key = this.props.label_key;
     return (
-      <div className={classes['paper' + (isFocused ? 'Focused' : 'Blurred')]} >
-        <Collapse in={isFocused} timeout='auto'>
-          <Typography variant='h1'> {this.props.label} </Typography>
+      <div className={isFocused ? classes.paperFocused : classes.paperBlurred} >
+        <Collapse in={isFocused} timeout='auto' className={classes.fullColumn}>
+          <Typography className={classes.textFocused}> {this.props.label} </Typography>
         </Collapse>
-
-        {/* <button type="button" onClick={handleOpen}>
-            react-transition-group
-      </button>
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={open}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-            <Fade in={open}>
-              <div className={classes.paper}>
-                <h2 id="transition-modal-title">Transition modal</h2>
-                <p id="transition-modal-description">react-transition-group animates me.</p>
-              </div>
-            </Fade>
-          </Modal> */}
         <MuiPickersUtilsProvider utils={DateFnsUtils} >
           <DatePicker
             autoOk
