@@ -2,35 +2,34 @@ import React from 'react';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import Rating from '@material-ui/lab/Rating';
 import Radio from '@material-ui/core/Radio';
 import RadioButtonChecked from '@material-ui/icons/RadioButtonChecked'
 import RadioButtonUnchecked from '@material-ui/icons/RadioButtonUnchecked'
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
-// import Backdrop from '@material-ui/core/Backdrop';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 
 const styles = theme => ({
   paperFocused: {
-    'box-shadow': '0 0 1em 0 grey',
-    'border-radius': '1em',
-    'padding': '3em',
-    'margin': '3em -3em 3em -3em',
-    'text-align': 'center',
-    'alignItems': 'center',
-    'transition': theme.transitions.create(['all'], {})
+    boxShadow: '0 0 4rem 0 blue',
+    borderRadius: '1em',
+    padding: '3em',
+    margin: '3rem -3rem 3rem -3rem',
+    textAlign: 'center',
+    alignItems: 'center',
+    transition: theme.transitions.create(['all'], {})
   },
   paperBlurred: {
-    'text-align': 'left',
-    'margin': '0em 10em 0em 10em',
-    'transition': theme.transitions.create(['all'], {})
+    textAlign: 'left',
+    margin: '0em 10em 0em 10em',
+    transition: theme.transitions.create(['all'], {})
   },
   flexLeft: {
     display: 'flex',
@@ -51,37 +50,49 @@ const styles = theme => ({
     flexBasis: '100%',
   },
   textFocused: {
-    'fontSize': '6em',
-    'transition': theme.transitions.create(['all'], {})
+    fontSize: '6em',
+    transition: theme.transitions.create(['all'], {})
   },
   textBlurred: {
-    'transition': theme.transitions.create(['all'], {})
+    transition: theme.transitions.create(['all'], {})
   },
   inputFocused: {
-    'fontSize': '3em',
-    // 'transition': theme.transitions.create(['all'], {})
+    fontSize: '3em',
+    // transition: theme.transitions.create(['all'], {})
   },
   inputBlurred: {
-    // 'transition': theme.transitions.create(['all'], {})
+    // transition: theme.transitions.create(['all'], {})
   },
   ratingFocused: {
-    'fontSize': 100,
-    'transition': theme.transitions.create(['all'], {})
+    fontSize: 100,
+    transition: theme.transitions.create(['all'], {})
   },
   ratingBlurred: {
-    'transition': theme.transitions.create(['all'], {})
+    transition: theme.transitions.create(['all'], {})
   },
   zeroRatingFocused: {
-    'width': 150,
-    'height': 150,
-    'fontSize': 100,
-    'transition': theme.transitions.create(['all'], {})
+    width: 150,
+    height: 150,
+    fontSize: 100,
+    transition: theme.transitions.create(['all'], {})
   },
   zeroRatingBlurred: {
-    'transition': theme.transitions.create(['all'], {})
+    transition: theme.transitions.create(['all'], {})
+  },
+  buttonFocused: {
+    margin: '3rem -6rem 3rem -6rem',
+    boxShadow: '0 0 4rem 0 blue',
+    flexBasis: '80%',
+    fontSize: '6em',
+    padding: '0em 1em 0em 1em',
+    borderRadius: '0.2em',
+    transition: theme.transitions.create(['all'], {})
+  },
+  buttonBlurred: {
+    transition: theme.transitions.create(['all'], {})
   },
   descriptionFull: {
-    'padding': '0em 2em 2em 5em',
+    padding: '0em 2em 2em 5em',
   }
 });
 
@@ -115,7 +126,7 @@ class DayTextFieldPure extends React.Component {
           <Typography className={classes.textFocused}> {this.props.label} </Typography>
         </Collapse>
         <TextField
-          InputProps={{ className: (classes['input' + (isFocused ? 'Focused' : 'Blurred')]) }}
+          InputProps={{ className: (isFocused ? classes.inputFocused : classes.inputBlurred) }}
           label={this.props.label}
           inputRef={this.inputRef}
           value={this.props.value}
@@ -197,10 +208,12 @@ class DayRatingFieldPure extends React.Component {
           </div>
         </div>
 
-        <Collapse in={isFocused} timeout='auto' className={classes.descriptionFull}>
-          <Table aria-label="explanation-table">
-            <TableBody>{explanation}</TableBody>
-          </Table>
+        <Collapse in={isFocused} timeout='auto'>
+          <div className={classes.descriptionFull}>
+            <Table aria-label="explanation-table">
+              <TableBody>{explanation}</TableBody>
+            </Table>
+          </div>
         </Collapse>
       </div>
     );
@@ -246,8 +259,49 @@ class DayDateFieldPure extends React.Component {
   }
 }
 
+class DaySubmitPure extends React.Component {
+  constructor(props) {
+    super(props);
+    this.ref = React.createRef();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.isFocused === this.props.isFocused)
+      return false;
+    return true;
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      if (this.props.isFocused)
+        this.ref.current.focus();
+    }
+  }
+
+  render() {
+    let classes = this.props.classes;
+    let isFocused = this.props.isFocused;
+    return (
+      <div className={classes.flexCenter} >
+        <div className={clsx(classes.fullColumn, classes.flexCenter)}>
+          <Button variant='contained' color='primary' ref={this.ref}
+            className={isFocused ? classes.buttonFocused : classes.buttonBlurred}
+            onFocus={(_) => { this.props.onFocus('submitButton', false); }}
+            onClick={this.props.onClick} >
+            submit
+        </Button>
+        </div>
+        <Collapse in={isFocused} timeout='auto'>
+          <Typography variant='body1' className={classes.descriptionFull}>{'solo del testo per adesso'}</Typography>
+        </Collapse>
+      </div>
+    );
+  }
+}
+
 let DayTextField = withStyles(styles)(DayTextFieldPure);
 let DayRatingField = withStyles(styles)(DayRatingFieldPure);
 let DayDateField = withStyles(styles)(DayDateFieldPure);
+let DaySubmit = withStyles(styles)(DaySubmitPure);
 
-export { DayTextField, DayRatingField, DayDateField };
+export { DayTextField, DayRatingField, DayDateField, DaySubmit };

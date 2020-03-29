@@ -1,7 +1,6 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import { List } from 'semantic-ui-react';
-import { DayTextField, DayRatingField, DayDateField } from './AddDayField';
+import { DayTextField, DayRatingField, DayDateField, DaySubmit } from './AddDayField';
 
 class AddDayForm extends React.Component {
   constructor(props) {
@@ -20,7 +19,7 @@ class AddDayForm extends React.Component {
   static resetState(legend) {
     let day = {};
     for (let [key, value] of Object.entries(legend)) {
-    if (key === 'date')
+      if (key === 'date')
         day[key] = new Date();
       else if (value.rating.length > 0)
         day[key] = -1;
@@ -77,7 +76,9 @@ class AddDayForm extends React.Component {
       output = <List>
         {fields}
         <List.Item key='submit-button'>
-          <Button variant='contained' color='primary'
+          <DaySubmit
+            onFocus={this.changeFocus}
+            isFocused={this.state.focused === 'submitButton'}
             onClick={async () => {
               let day = this.state.day;
               day.date = day.date.toISOString().slice(0, 10);
@@ -89,11 +90,9 @@ class AddDayForm extends React.Component {
               if (response.ok) {
                 this.props.onNewDay(day);
                 console.log('ha funzionato');
-                this.setState({'day': AddDayForm.resetState(this.props.legend.legend)});
+                this.setState({ 'day': AddDayForm.resetState(this.props.legend.legend) });
               }
-            }}>
-            submit
-          </Button>
+            }} />
         </List.Item>
       </List>;
     }
