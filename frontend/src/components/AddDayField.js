@@ -187,6 +187,7 @@ class DayRatingFieldPure extends React.Component {
           <div className={classes.flexCenter}>
             <Radio inputRef={this.inputRef} name={'rating' + key}
               className={isFocused ? classes.zeroRatingFocused : classes.zeroRatingBlurred}
+              checked={this.props.valueRating === 0}
               value={this.props.valueRating}
               onChange={_ => {
                 this.props.onInput(key, 0);
