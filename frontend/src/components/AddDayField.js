@@ -16,7 +16,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-const styles = theme => ({
+let styles = theme => ({
   paperFocused: {
     boxShadow: '0 0 4rem 0 blue',
     borderRadius: '1em',

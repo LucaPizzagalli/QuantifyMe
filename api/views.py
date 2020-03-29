@@ -1,8 +1,6 @@
 from flask import Blueprint, jsonify, request
 from datetime import datetime
 import pandas as pd
-import plotly.graph_objects as go
-import plotly
 from .app import REPORT
 
 main = Blueprint('main', __name__)
@@ -12,8 +10,6 @@ main = Blueprint('main', __name__)
 def add_day():
     day_data = request.get_json()
     REPORT.add_day(day_data)
-    import sys
-    print(day_data, file=sys.stderr)
     return 'done', 201
 
 
@@ -32,19 +28,9 @@ def get_legend():
     return jsonify(REPORT.legend)
 
 
-@main.route('/get_happines_plot')
+@main.route('/get_happiness')
 def get_happines_plot():
-
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=REPORT.days.index,
-        y=REPORT.days['happiness'],
-        name='Gaps',
-        connectgaps=False
-    ))
-    plot_div = plotly.offline.plot(
-        fig, include_plotlyjs=False, output_type='div')
-    plot_div, plot_js = plot_div[6:-7].split('<script type="text/javascript">')
-    plot_js = plot_js.replace('</script>', '')
-
-    return jsonify({'plot_div': plot_div, 'plot_js': plot_js})
+    output = REPORT.days[['date', 'happiness']]
+    output = output.where(pd.notnull(output), None)
+    output = {'date': output['date'].tolist(), 'happiness': output['happiness'].tolist()}
+    return jsonify(output)
