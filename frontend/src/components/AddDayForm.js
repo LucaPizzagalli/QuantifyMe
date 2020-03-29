@@ -6,33 +6,43 @@ import { DayTextField, DayRatingField, DayDateField } from './AddDayField';
 class AddDayForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      'focused': 'date',
-      'day': { 'date': new Date(), 'happiness': -1, 'lesson': '', 'recap': '', 'place': '', 'social': -1, 'workout': -1, 'study': '', 'culture': '', 'work': '', 'finances': '' }
-    };
+    this.state = { 'day': 'loading', 'focused': 'date' };
     this.changeFocus = this.changeFocus.bind(this);
     this.onInput = this.onInput.bind(this);
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.legend === 'loading'){
-  //     // this.setState(this.state)
-  //   }
-  // }
+  static getDerivedStateFromProps(props, state) {
+    if (props.legend !== 'loading' && state.day === 'loading')
+      return { 'day': AddDayForm.resetState(props.legend.legend) };
+    return null;
+  }
+
+  static resetState(legend) {
+    let day = {};
+    for (let [key, value] of Object.entries(legend)) {
+    if (key === 'date')
+        day[key] = new Date();
+      else if (value.rating.length > 0)
+        day[key] = -1;
+      else
+        day[key] = '';
+    }
+    return day;
+  }
 
   changeFocus(key, isNext) {
-    if (isNext){
+    if (isNext) {
       let index = this.props.legend.order.indexOf(key) + 1;
-      this.setState({'focused': this.props.legend.order[index]});
+      this.setState({ 'focused': this.props.legend.order[index] });
     }
     else
-      this.setState({'focused': key});
+      this.setState({ 'focused': key });
   }
 
   onInput(key, input) {
     let dayState = this.state.day;
     dayState[key] = input;
-    this.setState({ 'day': dayState }); 
+    this.setState({ 'day': dayState });
   }
 
   render() {
@@ -40,7 +50,6 @@ class AddDayForm extends React.Component {
     if (this.props.legend !== 'loading') {
       let fields = [];
       for (let key of this.props.legend.order) {
-        // console.log(key)
         let legend = this.props.legend.legend[key];
         let field = null;
         let label = key[0].toUpperCase() + key.slice(1);
@@ -70,15 +79,17 @@ class AddDayForm extends React.Component {
         <List.Item key='submit-button'>
           <Button variant='contained' color='primary'
             onClick={async () => {
-              console.log(this.state.day);
+              let day = this.state.day;
+              day.date = day.date.toISOString().slice(0, 10);
               const response = await fetch('/add_day', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/JSON' },
-                body: JSON.stringify(this.state.day)
+                body: JSON.stringify(day)
               });
               if (response.ok) {
-                this.props.onNewDay(this.state.day);
-                this.setState({ 'day': { 'date_str': '', 'happiness': '', 'lesson': '', 'recap': '', 'place': '', 'social': '', 'workout': '', 'study': '', 'culture': '', 'work': '', 'finances': '' } });
+                this.props.onNewDay(day);
+                console.log('ha funzionato');
+                this.setState({'day': AddDayForm.resetState(this.props.legend.legend)});
               }
             }}>
             submit

@@ -13,13 +13,13 @@ export const Report = ({ report }) => {
         let happiness = null;
         if (day.happiness)
           happiness = <Rating max={5}
-            name={'happiness' + day.date_str}
+            name={'happiness' + day.date}
             value={day.happiness} readOnly />;
         return (
-          <List.Item key={day.date_str}>
+          <List.Item key={day.date}>
             <Card>
               <CardContent>
-                <Typography variant="h3">{day.date_str}</Typography>
+                <Typography variant="h3">{day.date}</Typography>
                 {happiness}
                 <List>
                   <Typography variant="h6">Lesson</Typography>
