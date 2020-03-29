@@ -11,6 +11,11 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 // import Backdrop from '@material-ui/core/Backdrop';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const styles = theme => ({
   paperFocused: {
@@ -27,13 +32,13 @@ const styles = theme => ({
     'margin': '0em 10em 0em 10em',
     'transition': theme.transitions.create(['all'], {})
   },
-  flexLeft:{
+  flexLeft: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-  flexCenter:{
+  flexCenter: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
@@ -76,7 +81,7 @@ const styles = theme => ({
     'transition': theme.transitions.create(['all'], {})
   },
   descriptionFull: {
-    'padding': '5em 2em 2em 5em',
+    'padding': '0em 2em 2em 5em',
   }
 });
 
@@ -151,13 +156,23 @@ class DayRatingFieldPure extends React.Component {
     let classes = this.props.classes;
     let isFocused = this.props.isFocused;
     let key = this.props.label_key;
+    let explanation = [];
+    let index = 0;
+    for (let element of this.props.descriptionRating) {
+      explanation.push(
+        <TableRow key={index}>
+          <TableCell component="th" scope="row">{index}</TableCell>
+          <TableCell >{element}</TableCell>
+        </TableRow>);
+      index++;
+    }
     return (
       <div className={isFocused ? classes.paperFocused : classes.paperBlurred}
         onClick={_ => { this.props.onFocus(key, false); }} >
         <div className={isFocused ? classes.flexCenter : classes.flexLeft}>
-            <Typography className={isFocused ? clsx(classes.fullColumn, classes.textFocused) : clsx(classes.smallColumn, classes.textBlurred)} >
-              {this.props.label}
-              </Typography>
+          <Typography className={isFocused ? clsx(classes.fullColumn, classes.textFocused) : clsx(classes.smallColumn, classes.textBlurred)} >
+            {this.props.label}
+          </Typography>
           <div className={classes.flexCenter}>
             <Radio inputRef={this.inputRef} name={'rating' + key}
               className={isFocused ? classes.zeroRatingFocused : classes.zeroRatingBlurred}
@@ -169,7 +184,7 @@ class DayRatingFieldPure extends React.Component {
               onFocus={_ => { this.props.onFocus(key, false); }}
               icon={<RadioButtonUnchecked className={isFocused ? classes.ratingFocused : classes.ratingBlurred} />}
               checkedIcon={<RadioButtonChecked className={isFocused ? classes.ratingFocused : classes.ratingBlurred} />} />
-            <Rating max={this.props.maxRating}
+            <Rating max={this.props.descriptionRating.length - 1}
               className={isFocused ? classes.ratingFocused : classes.ratingBlurred}
               name={'rating' + key}
               value={this.props.valueRating}
@@ -182,10 +197,10 @@ class DayRatingFieldPure extends React.Component {
           </div>
         </div>
 
-        <Collapse in={isFocused} timeout='auto'>
-          <div className={classes.descriptionFull}>
-            <Typography variant='body1'>{this.props.descriptionRating}</Typography>
-          </div>
+        <Collapse in={isFocused} timeout='auto' className={classes.descriptionFull}>
+          <Table aria-label="explanation-table">
+            <TableBody>{explanation}</TableBody>
+          </Table>
         </Collapse>
       </div>
     );

@@ -63,7 +63,7 @@ class AddDayForm extends React.Component {
         }
         else if (legend.rating.length > 0)
           field = <DayRatingField label_key={key} label={label} descriptionRating={legend.rating} valueRating={this.state.day[key]}
-            icon='star' maxRating={5}
+            icon='star'
             onFocus={this.changeFocus}
             isFocused={this.state.focused === key}
             onInput={this.onInput} />
