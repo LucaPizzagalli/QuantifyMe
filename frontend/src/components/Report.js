@@ -1,46 +1,52 @@
 import React from 'react';
-import { List } from 'semantic-ui-react';
 import Rating from '@material-ui/lab/Rating';
+import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import 'typeface-roboto';
 
-export const Report = ({ report }) => {
-  return (
-    <List>
-      {report.map(day => {
+class Report extends React.Component {
+
+  render() {
+    let output = <div>Loading</div>;
+    if (this.props.legend !== 'loading') {
+      let days = [];
+      for (let day of this.props.report) {
         let happiness = null;
         if (day.happiness)
-          happiness = <Rating max={5}
-            name={'happiness' + day.date}
-            value={day.happiness} readOnly />;
-        return (
-          <List.Item key={day.date}>
+          happiness = <Rating max={5} name={'happiness' + day.date} value={day.happiness} size="large" readOnly />;
+        let fields = []
+        for (let field of this.props.legend.order.slice(2))
+          if (day[field]) {
+            if (this.props.legend.legend[field].rating.length > 0)
+              fields.push(
+                <div key={field}>
+                  <Typography variant="h6">{field[0].toUpperCase() + field.slice(1)}</Typography>
+                  <Rating max={this.props.legend.legend[field].rating.length}
+                    name={field + day.date} value={day[field].rating} readOnly />
+                </div>);
+            else
+              fields.push(
+                <div key={field}>
+                  <Typography variant="h6">{field[0].toUpperCase() + field.slice(1)}</Typography>
+                  <Typography variant="body1">{day[field]}</Typography>
+                </div>);
+          }
+        days.push(
+          <Grid item key={day.date} xs={12} md={6}>
             <Card>
               <CardContent>
                 <Typography variant="h3">{day.date}</Typography>
                 {happiness}
-                <List>
-                  <Typography variant="h6">Lesson</Typography>
-                  <Typography variant="body1" gutterBottom>{day.lesson}</Typography>
-                </List>
-                <List>
-                  <Typography variant="h6">Recap</Typography>
-                  <Typography variant="body1" gutterBottom>{day.recap}</Typography>
-                </List>
-                Place:{day.place}
-                Social:{day.social}
-                Workout:{day.workout}
-                Study:{day.study}
-                Culture:{day.culture}
-                Work:{day.work}
+                {fields}
               </CardContent>
             </Card>
-          </List.Item>
-        )
-      })
+          </Grid>);
       }
-    </List>
-  )
+      output = <Grid container spacing={3} justify='center'>{days}</Grid>;
+    }
+    return (output);
+  }
 }
+
+export default Report

@@ -82,6 +82,10 @@ class AddDayForm extends React.Component {
             onClick={async () => {
               let day = this.state.day;
               day.date = day.date.toISOString().slice(0, 10);
+              for (let [key, value] of Object.entries(day)) {
+                if(value === '' || value === -1)
+                  day[key] = null;
+              }
               const response = await fetch('/add_day', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/JSON' },
