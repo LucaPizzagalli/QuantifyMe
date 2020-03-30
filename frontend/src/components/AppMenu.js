@@ -1,13 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-class AppMenu extends React.Component {
+class AppMenuRouting extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 'activeItem': 0 }
+    let activeItem = {'/': 0, '/stats':1 }[this.props.location.pathname];
+    this.state = { 'activeItem': activeItem };
   }
 
   render() {
@@ -15,12 +16,14 @@ class AppMenu extends React.Component {
       <div>
         <AppBar position="static">
           <Tabs value={this.state.activeItem} onChange={(_, value) => { this.setState({ 'activeItem': value }); }} >
-            <Tab label="Home" id="tabHome" component={Link} to='/' />
-            <Tab label="Stats" id="tabStats" component={Link} to='/stats' />
+            <Tab label="Home" index={0} component={Link} to='/' />
+            <Tab label="Stats" index={1} component={Link} to='/stats' />
           </Tabs>
         </AppBar>
       </div>
     );
   }
 }
+
+let AppMenu = withRouter(AppMenuRouting);
 export default AppMenu
