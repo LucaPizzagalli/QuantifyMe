@@ -172,7 +172,7 @@ class DayRatingFieldPure extends React.Component {
     for (let element of this.props.descriptionRating) {
       explanation.push(
         <TableRow key={index}>
-          <TableCell component="th" scope="row">{index}</TableCell>
+          <TableCell component='th' scope='row'>{index}</TableCell>
           <TableCell >{element}</TableCell>
         </TableRow>);
       index++;
@@ -211,7 +211,7 @@ class DayRatingFieldPure extends React.Component {
 
         <Collapse in={isFocused} timeout='auto'>
           <div className={classes.descriptionFull}>
-            <Table aria-label="explanation-table">
+            <Table aria-label='explanation-table'>
               <TableBody>{explanation}</TableBody>
             </Table>
           </div>

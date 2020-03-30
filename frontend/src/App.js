@@ -15,10 +15,10 @@ function App() {
       <Router>
         <AppMenu />
         <Switch>
-          <Route path="/stats">
+          <Route path='/stats'>
             <Stats />
           </Route>
-          <Route path="/">
+          <Route path='/'>
             <Home />
           </Route>
         </Switch>

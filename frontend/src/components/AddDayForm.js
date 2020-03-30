@@ -48,7 +48,7 @@ class AddDayForm extends React.Component {
   render() {
     let output = null
     if (this.state.submitted) {
-      output = <Alert severity="success">
+      output = <Alert severity='success'>
         <AlertTitle>Success</AlertTitle>
         This is a success, new day saved
       </Alert>;

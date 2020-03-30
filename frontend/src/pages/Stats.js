@@ -6,7 +6,7 @@ import HappinessPlot from '../components/HappinessPlot';
 class Stats extends React.Component {
   render() {
     return (
-      <Container maxWidth="lg">
+      <Container maxWidth='lg'>
         <Paper>
           <HappinessPlot />
         </Paper>

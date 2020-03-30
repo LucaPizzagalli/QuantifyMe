@@ -17,8 +17,8 @@ class Home extends React.Component {
 
   render() {
     return (
-      <Container maxWidth="lg">
-        <Container maxWidth="md">
+      <Container maxWidth='lg'>
+        <Container maxWidth='md'>
           <AddDayForm legend={this.state.legend} onNewDay={day => this.setState({ 'report': [day, ...this.state.report] })} />
         </Container>
         <Report report={this.state.report} legend={this.state.legend} />

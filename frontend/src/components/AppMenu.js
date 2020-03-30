@@ -14,10 +14,10 @@ class AppMenuRouting extends React.Component {
   render() {
     return (
       <div>
-        <AppBar position="static">
+        <AppBar position='static'>
           <Tabs value={this.state.activeItem} onChange={(_, value) => { this.setState({ 'activeItem': value }); }} >
-            <Tab label="Home" index={0} component={Link} to='/' />
-            <Tab label="Stats" index={1} component={Link} to='/stats' />
+            <Tab label='Home' index={0} component={Link} to='/' />
+            <Tab label='Stats' index={1} component={Link} to='/stats' />
           </Tabs>
         </AppBar>
       </div>

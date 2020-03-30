@@ -15,28 +15,28 @@ class Report extends React.Component {
       for (let day of this.props.report) {
         let happiness = null;
         if (day.happiness)
-          happiness = <Rating max={5} name={'happiness' + day.date} value={day.happiness} size="large" readOnly />;
+          happiness = <Rating max={5} name={'happiness' + day.date} value={day.happiness} size='large' readOnly />;
         let fields = []
         for (let field of this.props.legend.order.slice(2))
           if (day[field]) {
             if (this.props.legend.legend[field].rating.length > 0)
               fields.push(
-                <Box key={field + day.date} display="flex">
-                  <Typography variant="body1"><strong>{field[0].toUpperCase() + field.slice(1)}</strong></Typography>
+                <Box key={field + day.date} display='flex'>
+                  <Typography variant='body1'><strong>{field[0].toUpperCase() + field.slice(1)}</strong></Typography>
                   <Rating max={this.props.legend.legend[field].rating.length}
                     name={field + day.date} value={day[field].rating} readOnly />
                 </Box>);
             else
               fields.push(
                 <div key={field}>
-                  <Typography variant="body1"><strong>{field[0].toUpperCase() + field.slice(1)} </strong>{day[field]}</Typography>
+                  <Typography variant='body1'><strong>{field[0].toUpperCase() + field.slice(1)} </strong>{day[field]}</Typography>
                 </div>);
           }
         days.push(
           <Grid item key={day.date} xs={12} md={6}>
             <Card>
               <CardContent>
-                <Typography variant="h3">{day.date}</Typography>
+                <Typography variant='h3'>{day.date}</Typography>
                 {happiness}
                 {fields}
               </CardContent>
