@@ -2,10 +2,20 @@
 
 ## How to make it work
 
-- export FLASK_APP=api
-- export FLASK_ENV=development
-- flask run
-- open page
+### Requisites
 
-- go to frontend
-- npm start
+- flask
+- npm
+
+## Install
+
+- download the repo
+- `chmod +x ./run`
+- `cd frontend`
+- `npm install`
+- rename `_report.txt` to `report.txt` and edit as you like
+
+## Run
+
+- `./run`
+- open the localhost page
