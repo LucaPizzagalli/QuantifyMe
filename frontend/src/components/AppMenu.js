@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 class AppMenuRouting extends React.Component {
   constructor(props) {
     super(props);
-    let activeItem = {'/': 0, '/stats':1 }[this.props.location.pathname];
+    let activeItem = {'/': 0, '/stimulator':1, '/stats':2 }[this.props.location.pathname];
     this.state = { 'activeItem': activeItem };
   }
 
@@ -17,7 +17,8 @@ class AppMenuRouting extends React.Component {
         <AppBar position='static'>
           <Tabs value={this.state.activeItem} onChange={(_, value) => { this.setState({ 'activeItem': value }); }} >
             <Tab label='Home' index={0} component={Link} to='/' />
-            <Tab label='Stats' index={1} component={Link} to='/stats' />
+            <Tab label='Stimulator' index={1} component={Link} to='/stimulator' />
+            <Tab label='Stats' index={2} component={Link} to='/stats' />
           </Tabs>
         </AppBar>
       </div>

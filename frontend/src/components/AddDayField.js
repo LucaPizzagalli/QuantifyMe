@@ -290,7 +290,7 @@ class DaySubmitPure extends React.Component {
             onFocus={(_) => { this.props.onFocus('submitButton', false); }}
             onClick={this.props.onClick} >
             submit
-        </Button>
+          </Button>
         </div>
         <Collapse in={isFocused} timeout='auto'>
           <Typography variant='body1' className={classes.descriptionFull}>{'solo del testo per adesso'}</Typography>
