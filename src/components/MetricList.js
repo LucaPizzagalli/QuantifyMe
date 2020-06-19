@@ -1,0 +1,174 @@
+import React, { useState, useContext, useRef } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import SaveIcon from '@material-ui/icons/Save';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Zoom from '@material-ui/core/Zoom';
+import UserContext from '../components/Firebase';
+import AlertContext from '../components/Header';
+import MetricCard from '../components/MetricCard';
+import EditableMetricCard from './EditableMetricCard';
+import DeletedMetricCard from './DeletedMetricCard';
+
+function MetricList() {
+  let user = useContext(UserContext);
+  let showAlert = useContext(AlertContext);
+  let [metrics, setMetrics] = useState(user.info.metrics);
+  let [editable, setEditable] = useState({ id: null, delete: false });
+  let [isLoading, setIsLoading] = useState(false);
+  let nameRef = useRef(React.createRef());
+  let typeRef = useRef(React.createRef());
+  let descriptionRef = useRef(React.createRef());
+  let detailRefs = useRef((new Array(25).fill(0)).map(() => React.createRef()));
+
+  function HandleAddMetric() {
+    let maxId = -1;
+    for (let metric of metrics)
+      maxId = Math.max(maxId, parseInt(metric.id.slice(2)));
+    let newMetric = {
+      id: 'id' + (maxId + 1),
+      name: '',
+      type: 'text',
+      description: '',
+      details: []
+    };
+    setMetrics([...metrics, newMetric]);
+    setEditable({ id: newMetric.id, delete: false });
+  }
+
+  function HandleEditMetric(id) {
+    setEditable({ id: id, delete: false });
+  }
+
+  function HandleDeleteMetric(id) {
+    setEditable({ id: id, delete: true });
+  }
+
+  function HandleSaveMetrics() {
+    setIsLoading(true);
+    setEditable({ id: null, delete: false });
+    let newMetrics = null;
+    if (editable.delete) {
+      for (let [index, metric] of metrics.entries())
+        if (metric.id === editable.id) {
+          newMetrics = [...metrics.slice(0, index), ...metrics.slice(index + 1)];
+          break;
+        }
+    }
+    else {
+      let newMetric = {
+        id: editable.id,
+        name: nameRef.current.value,
+        type: typeRef.current.value,
+        description: descriptionRef.current.value,
+      };
+      if (newMetric.type === 'rating') {
+        let details = [];
+        for (let ref of detailRefs.current) {
+          if (ref.current)
+            details.push(ref.current.value);
+        }
+        newMetric.details = details;
+      }
+      for (let [index, metric] of metrics.entries())
+        if (metric.id === editable.id) {
+          newMetrics = [...metrics.slice(0, index), newMetric, ...metrics.slice(index + 1)];
+          break;
+        }
+    }
+    setMetrics(newMetrics);
+
+    user.getDb().update(
+      { metrics: newMetrics }
+    )
+      .then(() => {
+        user.info.metrics = newMetrics;
+        setIsLoading(false);
+        showAlert('Metrics saved', 'success');
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        showAlert(e, 'error');
+      });
+  }
+
+  let classes = useStyles();
+  let metricCards = []
+  for (let metric of metrics) {
+    if (metric.id === editable.id) {
+      if (editable.delete)
+        metricCards.push(
+          <DeletedMetricCard key={metric.id} />
+        );
+      else {
+        metricCards.push(
+          <EditableMetricCard
+            key={metric.id}
+            metric={metric}
+            HandleDeleteMetric={HandleDeleteMetric}
+            nameRef={nameRef}
+            typeRef={typeRef}
+            descriptionRef={descriptionRef}
+            detailRefs={detailRefs} />
+        );
+      }
+    }
+    else
+      metricCards.push(
+        <MetricCard
+          key={metric.id}
+          metric={metric}
+          interactive={editable.id == null}
+          HandleEditMetric={HandleEditMetric} />
+      );
+  }
+
+  return (
+    <>
+      {metricCards}
+      <Zoom
+        key="add-metric-button"
+        in={editable.id == null}
+        timeout={200}
+        style={{
+          transitionDelay: `${editable.id == null ? 200 : 0}ms`,
+        }}
+        unmountOnExit
+      >
+        <Fab aria-label="Add metric" className={classes.fab} color="primary" onClick={HandleAddMetric}>
+          {isLoading ?
+            <CircularProgress color="inherit"/> :
+            <AddIcon />}
+        </Fab>
+      </Zoom>
+      <Zoom
+        key="save-metrics-button"
+        in={editable.id != null}
+        timeout={200}
+        style={{
+          transitionDelay: `${editable.id != null ? 200 : 0}ms`,
+        }}
+        unmountOnExit
+      >
+        <Fab aria-label="Add metric" className={classes.fab} color="primary" onClick={HandleSaveMetrics}>
+          <SaveIcon />
+        </Fab>
+      </Zoom>
+    </>
+  );
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position: 'relative',
+    minHeight: 400,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+}));
+
+export default MetricList;

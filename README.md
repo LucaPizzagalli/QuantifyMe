@@ -1,21 +1,29 @@
-# Quantify Me
+# QuantifyMe
 
-## How to make it work
+## How to use
 
-### Requisites
+### Prerequisite
 
 - flask
 - npm
 
-## Install
+### How to install
 
-- download the repo
-- `chmod +x ./run`
-- `cd frontend`
-- `npm install`
-- rename `_report.txt` to `report.txt` and edit as you like
+```sh
+cd backend
+npm install
+```
 
-## Run
+### How to run
 
-- `./run`
-- open the localhost page
+```sh
+cd backend
+export FLASK_APP=app
+export FLASK_ENV=development
+flask run
+```
+
+```sh
+cd frontend
+npm start
+```
