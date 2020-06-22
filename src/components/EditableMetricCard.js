@@ -16,8 +16,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-function EditableMetricCard({ metric, HandleDeleteMetric, nameRef, typeRef, descriptionRef, detailRefs }) {
-  let [type, setType] = useState('rating');
+function EditableMetricCard({ metric, isNew, HandleDeleteMetric, nameRef, typeRef, descriptionRef, detailRefs }) {
+  let [type, setType] = useState(metric.type);
   let [levels, setLevels] = useState(metric.type === 'rating' ? metric.details.length : 3);
 
   let detailTable = null;
@@ -58,20 +58,24 @@ function EditableMetricCard({ metric, HandleDeleteMetric, nameRef, typeRef, desc
           />}
       />
       <CardContent>
-        <FormControl>
-          <InputLabel id="type-label">Type</InputLabel>
-          <Select
-            inputRef={typeRef}
-            labelId="type-label"
-            id="type-select"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <MenuItem value={'rating'}>Rating</MenuItem>
-            <MenuItem value={'text'}>Text</MenuItem>
-            <MenuItem value={'number'}>Number</MenuItem>
-          </Select>
-        </FormControl>
+        {isNew ?
+          <FormControl>
+            <InputLabel id="type-label">Type</InputLabel>
+            <Select
+              inputRef={typeRef}
+              labelId="type-label"
+              id="type-select"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            >
+              <MenuItem value={'rating'}>Rating</MenuItem>
+              <MenuItem value={'text'}>Text</MenuItem>
+              <MenuItem value={'number'}>Number</MenuItem>
+            </Select>
+          </FormControl>
+          :
+          <p>{type}</p>
+        }
         {type === 'rating' && levels < 25 &&
           <IconButton aria-label="add-level" onClick={() => setLevels(levels + 1)}>
             <AddIcon />

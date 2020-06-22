@@ -1,13 +1,11 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import Container from '@material-ui/core/Container';
-import UserContext from '../components/Firebase';
+import Typography from '@material-ui/core/Typography';
 
 function Home() {
-  let user = useContext(UserContext);
-
   return (
     <Container maxWidth="md" display="flex">
-      {user.getWelcomeMessage()}
+      <Typography> This is QuantifyMe, bla bla bla</Typography>
     </Container>
   );
 }

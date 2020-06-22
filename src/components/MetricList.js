@@ -15,7 +15,7 @@ function MetricList() {
   let user = useContext(UserContext);
   let showAlert = useContext(AlertContext);
   let [metrics, setMetrics] = useState(user.info.metrics);
-  let [editable, setEditable] = useState({ id: null, delete: false });
+  let [editable, setEditable] = useState({ id: null, delete: false, new: false });
   let [isLoading, setIsLoading] = useState(false);
   let nameRef = useRef(React.createRef());
   let typeRef = useRef(React.createRef());
@@ -34,20 +34,20 @@ function MetricList() {
       details: []
     };
     setMetrics([...metrics, newMetric]);
-    setEditable({ id: newMetric.id, delete: false });
+    setEditable({ id: newMetric.id, delete: false, new: true });
   }
 
   function HandleEditMetric(id) {
-    setEditable({ id: id, delete: false });
+    setEditable({ id: id, delete: false, new: false });
   }
 
   function HandleDeleteMetric(id) {
-    setEditable({ id: id, delete: true });
+    setEditable({ id: id, delete: true, new: false });
   }
 
   function HandleSaveMetrics() {
     setIsLoading(true);
-    setEditable({ id: null, delete: false });
+    setEditable({ id: null, delete: false, new: false });
     let newMetrics = null;
     if (editable.delete) {
       for (let [index, metric] of metrics.entries())
@@ -106,6 +106,7 @@ function MetricList() {
           <EditableMetricCard
             key={metric.id}
             metric={metric}
+            isNew={editable.new}
             HandleDeleteMetric={HandleDeleteMetric}
             nameRef={nameRef}
             typeRef={typeRef}

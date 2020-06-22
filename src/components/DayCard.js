@@ -26,6 +26,7 @@ function DayCard({ metrics, day }) {
                   <Rating max={metric.details.length} name={metric.id} value={day[metric.id]} readOnly />
                 </div>
               );
+            return null;
           })}
         </Typography>
       </CardContent>

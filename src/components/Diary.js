@@ -4,11 +4,9 @@ import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import DayCard from './DayCard';
 import UserContext from './Firebase';
-import AlertContext from './Header';
 
 function Diary() {
   let user = useContext(UserContext);
-  let showAlert = useContext(AlertContext);
   let [days, setDays] = useState(null);
   let [error, setError] = useState(null);
   let [isLoading, setIsLoading] = useState(true);

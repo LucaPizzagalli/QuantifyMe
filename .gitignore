@@ -1,6 +1,6 @@
 # React
 
-.env
+*.env
 
 # dependencies
 node_modules
