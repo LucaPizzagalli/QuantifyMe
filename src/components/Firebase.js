@@ -27,9 +27,10 @@ class User {
     //   firebase.analytics();
     this.configAuth = app.auth();
     this.auth = 0;
-    this.info = null;
     this.db = app.firestore();
     this.authListener = null;
+    this.info = { theme: 'light' };
+    this.handleThemeChange = null;
   }
 
   isLogged() {
@@ -46,7 +47,7 @@ class User {
               this.info = doc.data();
             }
             else {
-              this.info = { email: authUser.email, metrics: [], level: 1 }
+              this.info = { email: authUser.email, metrics: [], level: 1, theme: 'light' }
               this.db.doc('users/' + authUser.uid).set(
                 { ...this.info, level: 2 },
                 { merge: true })
@@ -70,6 +71,10 @@ class User {
 
   getDb() {
     return this.db.doc('users/' + this.auth.uid);
+  }
+
+  changeTheme(type) {
+    this.handleThemeChange(type)
   }
 
   getWelcomeMessage() {

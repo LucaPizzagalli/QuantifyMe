@@ -94,7 +94,7 @@ function MetricList() {
   }
 
   let classes = useStyles();
-  let metricCards = []
+  let metricCards = [];
   for (let metric of metrics) {
     if (metric.id === editable.id) {
       if (editable.delete)
@@ -152,7 +152,7 @@ function MetricList() {
         }}
         unmountOnExit
       >
-        <Fab aria-label="Add metric" className={classes.fab} color="primary" onClick={HandleSaveMetrics}>
+        <Fab aria-label="Save metrics" className={classes.fab} color="primary" onClick={HandleSaveMetrics}>
           <SaveIcon />
         </Fab>
       </Zoom>
@@ -160,11 +160,7 @@ function MetricList() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    position: 'relative',
-    minHeight: 400,
-  },
+let useStyles = makeStyles((theme) => ({
   fab: {
     position: 'absolute',
     bottom: theme.spacing(2),

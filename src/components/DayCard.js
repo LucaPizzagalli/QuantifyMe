@@ -11,24 +11,22 @@ function DayCard({ metrics, day }) {
     <Card>
       <CardHeader title={day.date} />
       <CardContent>
-        <Typography paragraph>
-          {metrics.map((metric) => {
-            if (metric.type === 'text')
-              return (
-                <div key={metric.id}>
-                  <Typography variant='body1'><strong>{metric.name} </strong>{day[metric.id]}</Typography>
-                </div>
-              );
-            if (metric.type === 'rating')
-              return (
-                <div key={metric.id}>
-                  <Typography variant='body1'><strong>{metric.name} </strong></Typography>
-                  <Rating max={metric.details.length} name={metric.id} value={day[metric.id]} readOnly />
-                </div>
-              );
-            return null;
-          })}
-        </Typography>
+        {metrics.map((metric) => {
+          if (metric.type === 'text')
+            return (
+              <div key={metric.id}>
+                <Typography variant='body1'><strong>{metric.name} </strong>{day[metric.id]}</Typography>
+              </div>
+            );
+          if (metric.type === 'rating')
+            return (
+              <div key={metric.id}>
+                <Typography variant='body1'><strong>{metric.name} </strong></Typography>
+                <Rating max={metric.details.length} name={metric.id} value={day[metric.id]} readOnly />
+              </div>
+            );
+          return null;
+        })}
       </CardContent>
     </Card>
   );
