@@ -4,7 +4,7 @@ import Diary from '../components/Diary';
 
 function DiaryPage() {
   return (
-    <Container maxWidth="md" display="flex">
+    <Container maxWidth="xl" display="flex">
       <Diary />
     </Container>
   );

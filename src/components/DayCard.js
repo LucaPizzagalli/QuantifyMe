@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -6,9 +7,11 @@ import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
 
 function DayCard({ metrics, day }) {
+  let [isSelected, setIsSelected] = useState(false)
 
+  let classes = useStyles();
   return (
-    <Card>
+    <Card className={isSelected ? classes.rootExpanded : classes.root} onClick={() => setIsSelected(!isSelected)} >
       <CardHeader title={day.date} />
       <CardContent>
         {metrics.map((metric) => {
@@ -32,26 +35,30 @@ function DayCard({ metrics, day }) {
   );
 }
 
-// let days = [];
-// for (let day of report) {
-//   let happiness = null;
-//   if (day.happiness)
-//     happiness = <Rating max={5} name={'happiness' + day.date} value={day.happiness} size='large' readOnly />;
-//   let fields = []
-//   for (let field of legend.order.slice(2))
-//     if (day[field]) {
-//       if (legend.legend[field].rating.length > 0)
-//         fields.push(
-//           <Box key={field + day.date} display='flex'>
-//             <Typography variant='body1'><strong>{field[0].toUpperCase() + field.slice(1)}</strong></Typography>
-//             <Rating max={legend.legend[field].rating.length}
-//               name={field + day.date} value={day[field].rating} readOnly />
-//           </Box>);
-//       else
-//         fields.push(
-//           <div key={field}>
-//             <Typography variant='body1'><strong>{field[0].toUpperCase() + field.slice(1)} </strong>{day[field]}</Typography>
-//           </div>);
-//     }
+let useStyles = makeStyles((theme) => ({
+  root: {
+    position: 'relative',
+    height: '20rem',
+      // '&:hover': {
+      //   box-shadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+      // },
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      zIndex: 1,
+      bottom: 0,
+      left: 0,
+      backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)',
+      width: '100%',
+      height: '4em',
+      pointerEvents: 'none',
+    }
+  },
+  rootExpanded: {
+    position: 'relative',
+    minHeight: '20rem',
+    height: 'auto'
+  }
+}));
 
 export default DayCard;

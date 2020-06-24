@@ -1,7 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
+import Grid from '@material-ui/core/Grid';
 import DayCard from './DayCard';
 import UserContext from './Firebase';
 
@@ -27,6 +29,7 @@ function Diary() {
       });
   }, [user]);
 
+  let classes = useStyles();
   if (isLoading)
     return (<CircularProgress />);
   if (error) {
@@ -38,12 +41,23 @@ function Diary() {
     );
   }
   return (
-    <>
-      {days.map((day) => {
-        return <DayCard key={day.date} metrics={user.info.metrics} day={day} />
-      })}
-    </>
+    <div className={classes.root}>
+      <Grid container spacing={3}>
+        {days.map((day) => {
+          return (
+            <Grid key={day.date} item xs={12} md={6} xl={4}>
+              <DayCard metrics={user.info.metrics} day={day} />
+            </Grid>
+          )
+        })}
+      </Grid></div>
   );
 }
+
+let useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+}));
 
 export default Diary
