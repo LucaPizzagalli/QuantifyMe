@@ -78,20 +78,19 @@ function MetricList() {
         }
     }
     setMetrics(newMetrics);
-
-    user.getDb().update(
-      { metrics: newMetrics }
-    )
-      .then(() => {
-        user.info.metrics = newMetrics;
-        setIsLoading(false);
-        showAlert('Metrics saved', 'success');
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        showAlert(e, 'error');
-      });
+    user.updateMetrics(newMetrics, editable.new ? editable.id : null, editable.delete ? editable.id : null, handleUpdateMetricsSuccess, handleUpdateMetricsError);
   }
+
+  function handleUpdateMetricsSuccess() {
+    setIsLoading(false);
+    showAlert('Metrics saved', 'success');
+  }
+
+  function handleUpdateMetricsError(error) {
+    setIsLoading(false);
+    showAlert(error.message, 'error');
+  }
+
 
   let classes = useStyles();
   let metricCards = [];
@@ -139,7 +138,7 @@ function MetricList() {
       >
         <Fab aria-label="Add metric" className={classes.fab} color="primary" onClick={HandleAddMetric}>
           {isLoading ?
-            <CircularProgress color="inherit"/> :
+            <CircularProgress color="inherit" /> :
             <AddIcon />}
         </Fab>
       </Zoom>

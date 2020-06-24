@@ -33,6 +33,7 @@ class User {
     this.handleThemeChange = null;
   }
 
+  // Authentication
   isLogged() {
     return !!this.auth;
   }
@@ -69,10 +70,45 @@ class User {
     this.authListener();
   }
 
+  // Database Operations
   getDb() {
     return this.db.doc('users/' + this.auth.uid);
   }
 
+  updateMetrics(newMetrics, addedMetric, deletedMetric, handleUpdateMetricsSuccess, handleUpdateMetricsError) {
+    let promises = [this.getDb().update({ metrics: newMetrics })];
+    if (addedMetric)
+      promises.push(
+        this.getDb().collection('stats').doc(addedMetric).set({ data: {} })
+      );
+    if (deletedMetric)
+      promises.push(
+        this.getDb().collection('stats').doc(deletedMetric).delete()
+      );
+
+    Promise.all(promises)
+      .then(() => {
+        this.info.metrics = newMetrics;
+        handleUpdateMetricsSuccess();
+      })
+      .catch((e) => handleUpdateMetricsError(e));
+  }
+
+  saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError) {
+    let promises = [this.getDb().collection('days').doc(date).set(newDay)];
+    for (let [metricId, value] of Object.entries(newDay))
+      promises.push(
+        this.getDb().collection('stats').doc(metricId).update(
+          { ['data.' + date]: value }
+        )
+      );
+
+    Promise.all(promises)
+      .then(() => handleSaveDaySuccess())
+      .catch((e) => handleSaveDayError(e));
+  }
+
+  // Smaller Stuff
   changeTheme(type) {
     this.handleThemeChange(type)
   }

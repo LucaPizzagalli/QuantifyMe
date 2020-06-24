@@ -17,7 +17,6 @@ function AddDayForm() {
 
   function handleSaveDay() {
     setIsLoading(true);
-    let date = refDate.current.value;
     let newDay = {}
     for (let [index, metric] of user.info.metrics.entries()) {
       newDay[metric.id] = refs.current[index].current.value;
@@ -26,19 +25,17 @@ function AddDayForm() {
       if (newDay[metric.id] === -1 || newDay[metric.id] === '')
         newDay[metric.id] = null;
     }
-    console.log(date);
-    console.log(newDay);
-    user.getDb().collection('days').doc(date).set(
-      newDay
-    )
-      .then(() => {
-        showAlert('Day saved', 'success');
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        showAlert(e, 'error');
-      });
+    user.saveDay(refDate.current.value, newDay, handleSaveDaySuccess, handleSaveDayError);
+  }
+
+  function handleSaveDaySuccess() {
+    showAlert('Day saved', 'success');
+    setIsLoading(false);
+  }
+
+  function handleSaveDayError(error) {
+    showAlert(error.message, 'error');
+    setIsLoading(false);
   }
 
   let fields = [];
@@ -74,7 +71,7 @@ function AddDayForm() {
     />
     {fields}
     <DaySubmit key='submitButton'
-    index={user.info.metrics.length}
+      index={user.info.metrics.length}
       onFocus={changeFocus}
       isFocused={focused === user.info.metrics.length}
       onSubmit={handleSaveDay}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -11,32 +11,31 @@ export default function App() {
   let [, setIsAuth] = useState(0);
   let [theme, setTheme] = useState({ palette: { ...basePalette, type: userRef.current.info.theme } });
 
+  let handleThemeChange = useCallback((newTheme) => {
+    setTheme({ palette: { ...basePalette, type: newTheme } });
+  }, [])
+
+  let handleFailedAuth = useCallback((e) => {
+    alert(e);
+  }, [])
+
+  let handleAuthChange = useCallback((isLogged) => {
+    setIsAuth(isLogged);
+    handleThemeChange(userRef.current.info.theme)
+  }, [handleThemeChange])
+
   useEffect(() => {
     let user = userRef.current;
     user.activateAuthUserListener(handleAuthChange, handleFailedAuth);
     user.handleThemeChange = handleThemeChange;
     return () => user.deactivateAuthUserListener()
-  }, []);
+  }, [handleAuthChange, handleThemeChange, handleFailedAuth]);
 
-  function handleAuthChange(isLogged) {
-    setIsAuth(isLogged);
-    handleThemeChange(userRef.current.info.theme)
-  }
-
-  function handleThemeChange(newTheme) {
-    setTheme({ palette: { ...basePalette, type: newTheme } });
-  }
-
-  function handleFailedAuth(e) {
-    alert(e);
-  }
 
   return (
     <ThemeProvider theme={createMuiTheme(theme)}>
       <CssBaseline />
-      {/* <UserContext.Provider value={userRef.current}> */}
       <UrlNavigation />
-      {/* </UserContext.Provider> */}
     </ThemeProvider>
   );
 }

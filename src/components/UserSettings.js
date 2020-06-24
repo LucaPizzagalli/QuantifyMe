@@ -18,13 +18,13 @@ function UserSettings() {
   let [isEdited, setIsEdited] = useState(false);
   let [isLoading, setIsLoading] = useState(false);
 
-  function HandleChangeTheme(newTheme) {
+  function handleChangeTheme(newTheme) {
     setTheme(newTheme);
     user.changeTheme(newTheme);
     setIsEdited(true);
   }
 
-  function HandleSaveMetrics() {
+  function handleSaveMetrics() {
     setIsLoading(true);
     user.getDb().update(
       { theme: theme }
@@ -49,7 +49,7 @@ function UserSettings() {
           labelId="theme-label"
           id="theme-select"
           value={theme}
-          onChange={(e) => HandleChangeTheme(e.target.value)}
+          onChange={(e) => handleChangeTheme(e.target.value)}
         >
           <MenuItem value="light">Light</MenuItem>
           <MenuItem value="dark">Dark</MenuItem>
@@ -61,7 +61,7 @@ function UserSettings() {
         timeout={200}
         unmountOnExit
       >
-        <Fab aria-label="Save settings" className={classes.fab} color="primary" onClick={HandleSaveMetrics}>
+        <Fab aria-label="Save settings" className={classes.fab} color="primary" onClick={handleSaveMetrics}>
           {isLoading ?
             <CircularProgress color="inherit" /> :
             <SaveIcon />}
