@@ -52,7 +52,8 @@ function HappinessPlot() {
         height: '650',
         title: 'Example',
         margin: {l:20, r:20, t:40, b:20},
-        yaxis: {'zeroline': false}
+        xaxis: {fixedrange: true},
+        yaxis: {fixedrange: true, 'zeroline': false},
       }}
       config={{
         showTips: false,

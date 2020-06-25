@@ -25,7 +25,8 @@ function AddDayForm() {
       if (newDay[metric.id] === -1 || newDay[metric.id] === '')
         newDay[metric.id] = null;
     }
-    user.saveDay(refDate.current.value, newDay, handleSaveDaySuccess, handleSaveDayError);
+    let date = (new Date(refDate.current.value)).toISOString().slice(0, 10);
+    user.saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError);
   }
 
   function handleSaveDaySuccess() {

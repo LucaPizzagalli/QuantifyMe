@@ -31,6 +31,7 @@ function EditableMetricCard({ metric, isNew, HandleDeleteMetric, nameRef, typeRe
             <TextField
               inputRef={detailRefs.current[index]}
               defaultValue={metric.type === 'rating' ? metric.details[index] : ''}
+              fullWidth={true}
             />
           </TableCell>
         </TableRow>
@@ -79,7 +80,7 @@ function EditableMetricCard({ metric, isNew, HandleDeleteMetric, nameRef, typeRe
             <p>{type}</p>
           </>
         }
-        {type === 'rating' && levels < 25 &&
+        {type === 'rating' && levels < 10 &&
           <IconButton aria-label="add-level" onClick={() => setLevels(levels + 1)}>
             <AddIcon />
           </IconButton>}

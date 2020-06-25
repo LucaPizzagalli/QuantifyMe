@@ -17,41 +17,43 @@ import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Zoom from '@material-ui/core/Zoom';
 
-
-
-
-
-
 function DayTextField({ metric, reference, index, isFocused, onFocus }) {
+  let [value, setValue] = useState('');
+  let refText = useRef(React.createRef());
+
   useEffect(() => {
     if (isFocused)
-      reference.current.focus();
-  }, [reference, isFocused]);
+    refText.current.focus();
+  }, [refText, isFocused]);
 
   let classes = useStyles();
-
   return (
     <div className={classes.root}>
-      <Zoom in={!isFocused}>
-        <Paper variant="outlined" className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
-          <Typography>{metric.name}</Typography>
-          <TextField
-            inputRef={reference}
-            label={metric.name}
-            onFocus={() => { onFocus(index); }}
-            fullWidth={true}
-            multiline
-          />
-        </Paper>
-      </Zoom>
-      <div className={classes.overlapped}>
-        <Zoom in={isFocused}>
-          <Paper className={classes.focusedPaper} elevation={8} >
+      <input value={value} ref={reference} type="hidden" />
+      <div>
+        <Zoom in={!isFocused}>
+          <Paper variant="outlined" className={classes.blurredPaper} onClick={() => onFocus(index)} >
             <Typography>{metric.name}</Typography>
             <TextField
-              inputRef={reference}
+              value={value}
               label={metric.name}
-              onFocus={() => { onFocus(index); }}
+              onChange={(e) => setValue(e.target.value)}
+              onFocus={() => onFocus(index)}
+              fullWidth={true}
+              multiline
+            />
+          </Paper>
+        </Zoom>
+      </div>
+      <div className={classes.overlapped}>
+        <Zoom unmountOnExit in={isFocused}>
+          <Paper className={classes.focusedPaper} elevation={8} >
+            <Typography variant="h3">{metric.name}</Typography>
+            <TextField
+              innerRef={refText}
+              value={value}
+              label={metric.name}
+              onChange={(e) => setValue(e.target.value)}
               fullWidth={true}
               multiline
             />
@@ -65,7 +67,7 @@ function DayTextField({ metric, reference, index, isFocused, onFocus }) {
 
 
 function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
-  let [value, setValue] = useState(-1)
+  let [value, setValue] = useState(-1);
   let refZero = useRef(React.createRef());
 
   useEffect(() => {
@@ -76,13 +78,12 @@ function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
   let classes = useStyles();
   return (
     <div className={classes.root}>
+      <input value={value} ref={reference} type="hidden" />
       <Zoom in={!isFocused}>
         <Paper variant="outlined" className={classes.blurredPaper} onClick={() => onFocus(index)} >
           <Typography>{metric.name}</Typography>
-          <input value={value} ref={reference} type="hidden" />
           <div>
             <Radio
-              inputRef={refZero}
               name={'rating' + metric.id}
               checked={value === 0}
               value={0}
@@ -103,8 +104,7 @@ function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
       <div className={classes.overlapped}>
         <Zoom unmountOnExit in={isFocused}>
           <Paper className={classes.focusedPaper} elevation={8} >
-            <Typography>{metric.name}</Typography>
-            <input value={value} ref={reference} type="hidden" />
+            <Typography variant="h3">{metric.name}</Typography>
             <div className={classes.flexCenter}>
               <Radio
                 inputRef={refZero}
@@ -112,21 +112,16 @@ function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
                 checked={value === 0}
                 value={0}
                 onChange={() => { setValue(0); onFocus(index + 1); }}
-                onFocus={() => { onFocus(index); }}
                 icon={<RadioButtonUnchecked />}
                 checkedIcon={<RadioButtonChecked />} />
-              <Rating //className={classes.rating}
-              classes={{
-                // icon: classes.rating, // class name, e.g. `classes-nesting-root-x`
-                sizeLarge: classes.rating, // class name, e.g. `classes-nesting-label-x`
-              }}
+              <Rating
+                classes={{ sizeLarge: classes.rating }}
                 name={'rating' + metric.id}
                 value={value}
                 onChange={(e, newValue) => { setValue(newValue); onFocus(index + 1); }}
                 max={metric.details.length - 1}
-                onFocus={() => onFocus(index)}
                 size="large"
-                />
+              />
             </div>
             <Typography variant='body1'>{metric.description}</Typography>
             <Table aria-label='details-table'>
@@ -151,13 +146,12 @@ function DayDateField({ reference, index, isFocused, onFocus }) {
   let [value, setValue] = useState(new Date());
 
   let classes = useStyles();
-
   return (
     <div className={classes.root}>
+    <input value={value} ref={reference} type="hidden" />
       <Zoom in={!isFocused}>
         <Paper className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
           <Typography>Date</Typography>
-          <input value={value.toISOString().slice(0, 10)} ref={reference} type="hidden" />
           <MuiPickersUtilsProvider utils={DateFnsUtils} >
             <DatePicker
               autoOk
@@ -179,7 +173,6 @@ function DayDateField({ reference, index, isFocused, onFocus }) {
         <Zoom unmountOnExit in={isFocused}>
           <Paper className={classes.focusedPaper} elevation={8} >
             <Typography>Date</Typography>
-            <input value={value} ref={reference} type="hidden" />
             <MuiPickersUtilsProvider utils={DateFnsUtils} >
               <DatePicker
                 autoOk
@@ -297,63 +290,63 @@ let useStyles = makeStyles((theme) => ({
   },
 }));
 
-  // flexLeft: {
-  //   display: 'flex',
-  //   flexWrap: 'wrap',
-  //   justifyContent: 'flex-start',
-  //   alignItems: 'center',
-  // },
-  // smallColumn: {
-  //   flexBasis: '25%',
-  // },
-  // fullColumn: {
-  //   flexBasis: '100%',
-  // },
-  // textFocused: {
-  //   fontSize: '6em',
-  //   transition: theme.transitions.create(['all'], {})
-  // },
-  // textBlurred: {
-  //   transition: theme.transitions.create(['all'], {})
-  // },
-  // inputFocused: {
-  //   fontSize: '3em',
-  //   // transition: theme.transitions.create(['all'], {})
-  // },
-  // inputBlurred: {
-  //   // transition: theme.transitions.create(['all'], {})
-  // },
-  // ratingFocused: {
-  //   fontSize: 100,
-  //   transition: theme.transitions.create(['all'], {})
-  // },
-  // ratingBlurred: {
-  //   transition: theme.transitions.create(['all'], {})
-  // },
-  // zeroRatingFocused: {
-  //   width: 150,
-  //   height: 150,
-  //   fontSize: 100,
-  //   transition: theme.transitions.create(['all'], {})
-  // },
-  // zeroRatingBlurred: {
-  //   transition: theme.transitions.create(['all'], {})
-  // },
-  // buttonFocused: {
-  //   margin: '3rem -6rem 3rem -6rem',
-  //   boxShadow: '0 0 4rem 0 blue',
-  //   flexBasis: '80%',
-  //   fontSize: '6em',
-  //   padding: '0em 1em 0em 1em',
-  //   borderRadius: '0.2em',
-  //   transition: theme.transitions.create(['all'], {})
-  // },
-  // buttonBlurred: {
-  //   transition: theme.transitions.create(['all'], {})
-  // },
-  // descriptionFull: {
-  //   padding: '0em 2em 2em 5em',
-  // }
+// flexLeft: {
+//   display: 'flex',
+//   flexWrap: 'wrap',
+//   justifyContent: 'flex-start',
+//   alignItems: 'center',
+// },
+// smallColumn: {
+//   flexBasis: '25%',
+// },
+// fullColumn: {
+//   flexBasis: '100%',
+// },
+// textFocused: {
+//   fontSize: '6em',
+//   transition: theme.transitions.create(['all'], {})
+// },
+// textBlurred: {
+//   transition: theme.transitions.create(['all'], {})
+// },
+// inputFocused: {
+//   fontSize: '3em',
+//   // transition: theme.transitions.create(['all'], {})
+// },
+// inputBlurred: {
+//   // transition: theme.transitions.create(['all'], {})
+// },
+// ratingFocused: {
+//   fontSize: 100,
+//   transition: theme.transitions.create(['all'], {})
+// },
+// ratingBlurred: {
+//   transition: theme.transitions.create(['all'], {})
+// },
+// zeroRatingFocused: {
+//   width: 150,
+//   height: 150,
+//   fontSize: 100,
+//   transition: theme.transitions.create(['all'], {})
+// },
+// zeroRatingBlurred: {
+//   transition: theme.transitions.create(['all'], {})
+// },
+// buttonFocused: {
+//   margin: '3rem -6rem 3rem -6rem',
+//   boxShadow: '0 0 4rem 0 blue',
+//   flexBasis: '80%',
+//   fontSize: '6em',
+//   padding: '0em 1em 0em 1em',
+//   borderRadius: '0.2em',
+//   transition: theme.transitions.create(['all'], {})
+// },
+// buttonBlurred: {
+//   transition: theme.transitions.create(['all'], {})
+// },
+// descriptionFull: {
+//   padding: '0em 2em 2em 5em',
+// }
 
 // class DayTextFieldPure extends React.Component {
 //   constructor(props) {
