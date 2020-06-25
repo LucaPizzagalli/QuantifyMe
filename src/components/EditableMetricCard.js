@@ -74,7 +74,10 @@ function EditableMetricCard({ metric, isNew, HandleDeleteMetric, nameRef, typeRe
             </Select>
           </FormControl>
           :
-          <p>{type}</p>
+          <>
+            <input value={type} ref={typeRef} type="hidden" />
+            <p>{type}</p>
+          </>
         }
         {type === 'rating' && levels < 25 &&
           <IconButton aria-label="add-level" onClick={() => setLevels(levels + 1)}>

@@ -15,6 +15,12 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Zoom from '@material-ui/core/Zoom';
+
+
+
+
+
 
 function DayTextField({ metric, reference, index, isFocused, onFocus }) {
   useEffect(() => {
@@ -24,34 +30,39 @@ function DayTextField({ metric, reference, index, isFocused, onFocus }) {
 
   let classes = useStyles();
 
-  if (isFocused)
-    return (
-      <Paper className={classes.focusedPaper} elevation={8} >
-        <Typography>{metric.name}</Typography>
-        <TextField
-          inputRef={reference}
-          label={metric.name}
-          onFocus={() => { onFocus(index); }}
-          fullWidth={true}
-          multiline
-        />
-        <Typography variant='body1'>{metric.description}</Typography>
-      </Paper>
-    );
-  else
-    return (
-      <Paper className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
-        <Typography>{metric.name}</Typography>
-        <TextField
-          inputRef={reference}
-          label={metric.name}
-          onFocus={() => { onFocus(index); }}
-          fullWidth={true}
-          multiline
-        />
-      </Paper>
-    );
+  return (
+    <div className={classes.root}>
+      <Zoom in={!isFocused}>
+        <Paper variant="outlined" className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
+          <Typography>{metric.name}</Typography>
+          <TextField
+            inputRef={reference}
+            label={metric.name}
+            onFocus={() => { onFocus(index); }}
+            fullWidth={true}
+            multiline
+          />
+        </Paper>
+      </Zoom>
+      <div className={classes.overlapped}>
+        <Zoom in={isFocused}>
+          <Paper className={classes.focusedPaper} elevation={8} >
+            <Typography>{metric.name}</Typography>
+            <TextField
+              inputRef={reference}
+              label={metric.name}
+              onFocus={() => { onFocus(index); }}
+              fullWidth={true}
+              multiline
+            />
+            <Typography variant='body1'>{metric.description}</Typography>
+          </Paper>
+        </Zoom>
+      </div>
+    </div>
+  );
 }
+
 
 function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
   let [value, setValue] = useState(-1)
@@ -63,116 +74,132 @@ function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
   }, [isFocused]);
 
   let classes = useStyles();
-  if (isFocused)
-    return (
-      <Paper className={classes.focusedPaper} elevation={8} >
-        <Typography>{metric.name}</Typography>
-        <input value={value} ref={reference} type="hidden" />
-        <div>
-          <Radio
-            inputRef={refZero}
-            name={'rating' + metric.id}
-            checked={value === 0}
-            value={0}
-            onChange={() => { setValue(0); onFocus(index + 1); }}
-            onFocus={() => { onFocus(index); }}
-            icon={<RadioButtonUnchecked />}
-            checkedIcon={<RadioButtonChecked />} />
-          <Rating
-            name={'rating' + metric.id}
-            value={value}
-            onChange={(e, newValue) => { setValue(newValue); onFocus(index + 1); }}
-            max={metric.details.length - 1}
-            onFocus={() => { onFocus(index); }}
-          />
-        </div>
-        <Typography variant='body1'>{metric.description}</Typography>
-        <Table aria-label='details-table'>
-          <TableBody>
-            {metric.details.map((detail, index) =>
-              <TableRow key={index}>
-                <TableCell component='th' scope='row'>{index}</TableCell>
-                <TableCell >{detail}</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </Paper>
-    );
-  else
-    return (
-      <Paper className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
-        <Typography>{metric.name}</Typography>
-        <input value={value} ref={reference} type="hidden" />
-        <div>
-          <Radio
-            inputRef={refZero}
-            name={'rating' + metric.id}
-            checked={value === 0}
-            value={0}
-            onChange={() => { setValue(0); onFocus(index + 1); }}
-            onFocus={() => { onFocus(index); }}
-            icon={<RadioButtonUnchecked />}
-            checkedIcon={<RadioButtonChecked />} />
-          <Rating
-            name={'rating' + metric.id}
-            value={value}
-            onChange={(e, newValue) => { setValue(newValue); onFocus(index + 1); }}
-            max={metric.details.length - 1}
-            onFocus={() => { onFocus(index); }}
-          />
-        </div>
-      </Paper>
-    );
+  return (
+    <div className={classes.root}>
+      <Zoom in={!isFocused}>
+        <Paper variant="outlined" className={classes.blurredPaper} onClick={() => onFocus(index)} >
+          <Typography>{metric.name}</Typography>
+          <input value={value} ref={reference} type="hidden" />
+          <div>
+            <Radio
+              inputRef={refZero}
+              name={'rating' + metric.id}
+              checked={value === 0}
+              value={0}
+              onChange={() => { setValue(0); onFocus(index + 1); }}
+              onFocus={() => { onFocus(index); }}
+              icon={<RadioButtonUnchecked />}
+              checkedIcon={<RadioButtonChecked />} />
+            <Rating
+              name={'rating' + metric.id}
+              value={value}
+              onChange={(e, newValue) => { setValue(newValue); onFocus(index + 1); }}
+              max={metric.details.length - 1}
+              onFocus={() => onFocus(index)} />
+          </div>
+        </Paper>
+      </Zoom>
+
+      <div className={classes.overlapped}>
+        <Zoom unmountOnExit in={isFocused}>
+          <Paper className={classes.focusedPaper} elevation={8} >
+            <Typography>{metric.name}</Typography>
+            <input value={value} ref={reference} type="hidden" />
+            <div className={classes.flexCenter}>
+              <Radio
+                inputRef={refZero}
+                name={'rating' + metric.id}
+                checked={value === 0}
+                value={0}
+                onChange={() => { setValue(0); onFocus(index + 1); }}
+                onFocus={() => { onFocus(index); }}
+                icon={<RadioButtonUnchecked />}
+                checkedIcon={<RadioButtonChecked />} />
+              <Rating //className={classes.rating}
+              classes={{
+                // icon: classes.rating, // class name, e.g. `classes-nesting-root-x`
+                sizeLarge: classes.rating, // class name, e.g. `classes-nesting-label-x`
+              }}
+                name={'rating' + metric.id}
+                value={value}
+                onChange={(e, newValue) => { setValue(newValue); onFocus(index + 1); }}
+                max={metric.details.length - 1}
+                onFocus={() => onFocus(index)}
+                size="large"
+                />
+            </div>
+            <Typography variant='body1'>{metric.description}</Typography>
+            <Table aria-label='details-table'>
+              <TableBody>
+                {metric.details.map((detail, index) =>
+                  <TableRow key={index}>
+                    <TableCell component='th' scope='row'>{index}</TableCell>
+                    <TableCell >{detail}</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Zoom>
+      </div>
+    </div >
+  );
 }
+
 
 function DayDateField({ reference, index, isFocused, onFocus }) {
   let [value, setValue] = useState(new Date());
 
   let classes = useStyles();
-  if (isFocused)
-    return (
-      <Paper className={classes.focusedPaper} elevation={8} >
-        <Typography>Date</Typography>
-        <input value={value} ref={reference} type="hidden" />
-        <MuiPickersUtilsProvider utils={DateFnsUtils} >
-          <DatePicker
-            autoOk
-            disableFuture
-            label="Date"
-            onChange={(input) => setValue(input)}
-            onAccept={() => onFocus(index + 1)}
-            onFocus={() => onFocus(index)}
-            format='yyyy/MM/dd'
-            autoFocus={true}
-            value={value}
-            fullWidth={true}
-          />
-        </MuiPickersUtilsProvider>
-        <Typography variant='body1'>Ciao ciao</Typography>
-      </Paper>
-    );
-  else
-    return (
-      <Paper className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
-        <Typography>Date</Typography>
-        <input value={value.toISOString().slice(0, 10)} ref={reference} type="hidden" />
-        <MuiPickersUtilsProvider utils={DateFnsUtils} >
-          <DatePicker
-            autoOk
-            disableFuture
-            label="Date"
-            onChange={(input) => setValue(input)}
-            onAccept={() => onFocus(index + 1)}
-            onFocus={() => onFocus(index)}
-            format='yyyy/MM/dd'
-            autoFocus={true}
-            value={value}
-            fullWidth={true}
-          />
-        </MuiPickersUtilsProvider>
-      </Paper>
-    );
+
+  return (
+    <div className={classes.root}>
+      <Zoom in={!isFocused}>
+        <Paper className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
+          <Typography>Date</Typography>
+          <input value={value.toISOString().slice(0, 10)} ref={reference} type="hidden" />
+          <MuiPickersUtilsProvider utils={DateFnsUtils} >
+            <DatePicker
+              autoOk
+              disableFuture
+              label="Date"
+              onChange={(input) => setValue(input)}
+              onAccept={() => onFocus(index + 1)}
+              onFocus={() => onFocus(index)}
+              format='yyyy/MM/dd'
+              autoFocus={true}
+              value={value}
+              fullWidth={true}
+            />
+          </MuiPickersUtilsProvider>
+        </Paper>
+      </Zoom>
+
+      <div className={classes.overlapped}>
+        <Zoom unmountOnExit in={isFocused}>
+          <Paper className={classes.focusedPaper} elevation={8} >
+            <Typography>Date</Typography>
+            <input value={value} ref={reference} type="hidden" />
+            <MuiPickersUtilsProvider utils={DateFnsUtils} >
+              <DatePicker
+                autoOk
+                disableFuture
+                label="Date"
+                onChange={(input) => setValue(input)}
+                onAccept={() => onFocus(index + 1)}
+                onFocus={() => onFocus(index)}
+                format='yyyy/MM/dd'
+                autoFocus={true}
+                value={value}
+                fullWidth={true}
+              />
+            </MuiPickersUtilsProvider>
+            <Typography variant='body1'>Ciao ciao</Typography>
+          </Paper>
+        </Zoom>
+      </div>
+    </div>
+  );
 }
 
 
@@ -212,7 +239,7 @@ function DaySubmit({ index, isFocused, onFocus, onSubmit, isLoading }) {
             ref={reference}
             variant="contained"
             color="primary"
-            onFocus={() => { onFocus(index); }}
+            onFocus={() => onFocus(index)}
             disabled={isLoading}
             onClick={onSubmit}
           >
@@ -225,18 +252,35 @@ function DaySubmit({ index, isFocused, onFocus, onSubmit, isLoading }) {
 }
 
 let useStyles = makeStyles((theme) => ({
+  root: {
+    position: 'relative',
+  },
+  flexCenter: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   focusedPaper: {
-    padding: '4em 4em',
-    margin: '-2em -2em',
+    position: 'relative',
+    width: '100%',
+    padding: '4rem 4rem',
     borderRadius: '1em',
     // boxShadow: '0 0 4rem 0 blue',
-    position: "relative",
-    zIndex: 2,
+    zIndex: 1000,
   },
   blurredPaper: {
-    padding: '2em 2em',
-    margin: '1em 1em',
-    position: "relative",
+    padding: '1rem 2rem',
+    margin: '1rem 1rem',
+  },
+  overlapped: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  rating: {
+    fontSize: '4rem',
   },
 
 
@@ -251,16 +295,12 @@ let useStyles = makeStyles((theme) => ({
     marginTop: -12,
     marginLeft: -12,
   },
+}));
+
   // flexLeft: {
   //   display: 'flex',
   //   flexWrap: 'wrap',
   //   justifyContent: 'flex-start',
-  //   alignItems: 'center',
-  // },
-  // flexCenter: {
-  //   display: 'flex',
-  //   flexWrap: 'wrap',
-  //   justifyContent: 'center',
   //   alignItems: 'center',
   // },
   // smallColumn: {
@@ -314,7 +354,6 @@ let useStyles = makeStyles((theme) => ({
   // descriptionFull: {
   //   padding: '0em 2em 2em 5em',
   // }
-}));
 
 // class DayTextFieldPure extends React.Component {
 //   constructor(props) {

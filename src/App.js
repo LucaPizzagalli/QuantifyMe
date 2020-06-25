@@ -16,7 +16,7 @@ export default function App() {
   }, [])
 
   let handleFailedAuth = useCallback((e) => {
-    alert(e);
+    console.log('Mio Alert:' + e);
   }, [])
 
   let handleAuthChange = useCallback((isLogged) => {
