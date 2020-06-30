@@ -12,7 +12,7 @@ import UserContext from '../components/Firebase';
 
 function SignInPage() {
   return (
-    <Container maxWidth="md" display="flex">
+    <Container fixed display="flex">
       <h1>SignIn</h1>
       <SignInForm />
       <p> Don't have an account? <Link component={RouterLink} to="/signup">Sign Up</Link> </p>

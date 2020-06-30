@@ -1,48 +1,49 @@
-import React, { useReducer, useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from '@material-ui/core/Button';
+import Gong1 from '../audio/gong1.mp3';
 
 function Countdown({ waitingTime }) {
   let [endTime, setEndTime] = useState(new Date(new Date().getTime() + waitingTime * 1000));
-  let [state, dispatch] = useReducer(reducer, { 'timeLeft': (endTime - new Date()) });
+  let [timeLeft, setTimeLeft] = useState(endTime - new Date());
+  let interval = useRef();
+  let [audio] = useState(new Audio(Gong1));
 
-  function reducer(state, action) {
-    switch (action.type) {
-      case 'updateTimeLeft':
-        return { 'timeLeft': (endTime - new Date()) };
-      default:
-        throw new Error();
+  useEffect(() => {
+    interval.current = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval.current);
+  }, [endTime]);
+
+  function updateTimer() {
+    let newTimeLeft = endTime - new Date();
+    setTimeLeft(newTimeLeft);
+    if (newTimeLeft <= 0) {
+      clearInterval(interval.current);
+      audio.play();
     }
   }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      dispatch({ 'type': 'updateTimeLeft' });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  function handleClick(event) {
-    setEndTime(new Date(new Date().getTime() + waitingTime * 1000));
+  function restartTimer(e) {
+    let newEndTime = new Date(new Date().getTime() + waitingTime * 1000);
+    setEndTime(newEndTime);
+    setTimeLeft(newEndTime - new Date());
   }
 
   let counter = null;
-  if (state.timeLeft > 0)
+  if (timeLeft > 0)
     counter = <div>
-      minutes: {Math.floor(state.timeLeft / 1000 / 60)}
-      seconds: {Math.floor(state.timeLeft / 1000 % 60)}
+      minutes: {Math.floor((timeLeft + 999) / 1000 / 60)}
+      seconds: {Math.floor((timeLeft + 999) / 1000 % 60)}
     </div>;
   else
-    counter = <div> stoop
-      </div>;
+    counter = <div> stoop </div>;
   return (
     <>
       {counter}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleClick}
-      >
+      <Button variant="contained" color="primary" onClick={restartTimer} >
         Reset
+      </Button>
+      <Button variant="contained" color="primary" onClick={pauseTimer} >
+        Pause
       </Button>
     </>
   )

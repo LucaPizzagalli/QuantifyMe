@@ -6,7 +6,7 @@ function Dashboard() {
   let user = useContext(UserContext);
 
   return (
-    <Container maxWidth="md" display="flex">
+    <Container fixed display="flex">
       {user.getWelcomeMessage()}
     </Container>
   );

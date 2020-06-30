@@ -11,7 +11,7 @@ function AccountPage() {
   let showAlert = useContext(AlertContext);
 
   return (
-    <Container maxWidth="md" display="flex">
+    <Container fixed display="flex">
       <h1>Account: {user.auth.email}</h1>
       {/* <PasswordForgetForm />
         <PasswordChangeForm /> */}

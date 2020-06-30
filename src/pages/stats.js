@@ -5,7 +5,7 @@ import HappinessPlot from '../components/HappinessPlot';
 
 function StatsPage () {
     return (
-      <Container maxWidth='md'>
+      <Container fixed>
         <Paper>
           <HappinessPlot />
         </Paper>

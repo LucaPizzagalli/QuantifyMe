@@ -6,9 +6,9 @@ import Countdown from '../components/Countdown';
 class StimulatorPage extends React.Component {
   render() {
     return (
-      <Container maxWidth='lg'>
+      <Container fixed>
         <Paper>
-        < Countdown waitingTime={20} />
+        < Countdown waitingTime={5} />
         </Paper>
       </Container>);
   }

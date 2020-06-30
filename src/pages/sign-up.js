@@ -10,7 +10,7 @@ import UserContext from '../components/Firebase';
 
 function SignUpPage() {
   return (
-    <Container maxWidth="md" display="flex">
+    <Container fixed display="flex">
       <h1>SignUp</h1>
       <SignUpForm />
     </Container>
