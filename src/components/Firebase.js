@@ -103,6 +103,17 @@ class User {
       .catch((e) => handleUpdateMetricsError(e));
   }
 
+  updateTimers(newTimers, handleUpdateTimersSuccess, handleUpdateTimersError) {
+    console.log('PRIMA')
+    this.getDb().update({ timers: newTimers })
+      .then(() => {
+        this.info.timers = newTimers;
+        handleUpdateTimersSuccess();
+      })
+      .catch((e) => handleUpdateTimersError(e));
+    console.log('DOPO')
+  }
+
   saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError) {
     let promises = [this.getDb().collection('days').doc(date).set(newDay)];
     for (let [metricId, value] of Object.entries(newDay))
@@ -134,6 +145,8 @@ class User {
   }
 
   getTimers() {
+    console.log('hhhhhhhhh')
+    console.log(this.info.timers)
     return this.info.timers;
   }
 }

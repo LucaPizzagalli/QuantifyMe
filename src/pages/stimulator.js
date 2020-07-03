@@ -1,16 +1,17 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import Countdown from '../components/Countdown';
+import TimerList from '../components/TimerList';
 
 class StimulatorPage extends React.Component {
   render() {
     return (
       <Container fixed>
         <Paper>
-        < Countdown waitingTime={5} />
+        < TimerList />
         </Paper>
-      </Container>);
+      </Container>
+      );
   }
 }
 

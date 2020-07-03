@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import Rating from '@material-ui/lab/Rating';
 import Radio from '@material-ui/core/Radio';
 import RadioButtonChecked from '@material-ui/icons/RadioButtonChecked'
@@ -15,29 +18,32 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Zoom from '@material-ui/core/Zoom';
 
-function DayTextField({ metric, reference, index, isFocused, onFocus }) {
+function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
   let [value, setValue] = useState('');
 
   useEffect(() => {
     if (isFocused) {
-      reference.current.focus();
+      reference.current.focus({ preventScroll: true });
       console.log('FOCUUUUUUS')
     }
-  }, [isFocused]);
+  }, [reference, isFocused]);
 
   let classes = useStyles();
   return (
     <Paper className={classes.root} elevation={8} >
-      <Typography variant="h3">{metric.name}</Typography>
+      <div className={classes.flexCenter}>
+        <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        <Typography variant="h3" className={classes.title}>{metric.name}</Typography>
+        <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+      </div>
       <TextField
-        innerRef={reference}
+        inputRef={reference}
         InputProps={{ inputProps: { tabIndex: -1 } }}
         value={value}
         label={metric.name}
-        onFocus={(e) => { onFocus(index); }}
-        onChange={(e) => { setValue(e.target.value); onFocus(index + 1); }}
+        onFocus={(e) => { changeFocus(index); }}
+        onChange={(e) => { setValue(e.target.value); changeFocus(index + 1); }}
         fullWidth={true}
         multiline
       />
@@ -46,34 +52,40 @@ function DayTextField({ metric, reference, index, isFocused, onFocus }) {
   );
 }
 
-function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
+function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
   let [value, setValue] = useState(-1);
+  let refZero = useRef(React.createRef());
 
   useEffect(() => {
     if (isFocused) {
-      reference.current.focus({preventScroll: true});
+      refZero.current.focus({ preventScroll: true });
       console.log('FOCUUUUUUS')
     }
-  }, [isFocused]);
+  }, [refZero, isFocused]);
 
   let classes = useStyles();
   return (
     <Paper className={classes.root} elevation={8} >
-      <Typography variant="h3">{metric.name}</Typography>
+      <div className={classes.flexCenter}>
+        <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        <Typography variant="h3" className={classes.title}>{metric.name}</Typography>
+        <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+      </div>
+      <input value={value} ref={reference} type="hidden" />
       <div className={classes.flexCenter}>
         <Radio
-          inputRef={reference}
+          inputRef={refZero}
           name={'rating' + metric.id}
           checked={value === 0}
           value={0}
-          onChange={() => { setValue(0); onFocus(index + 1); }}
+          onChange={() => { setValue(0); changeFocus(index + 1); }}
           icon={<RadioButtonUnchecked />}
           checkedIcon={<RadioButtonChecked />} />
         <Rating
           classes={{ sizeLarge: classes.rating }}
           name={'rating' + metric.id}
           value={value}
-          onChange={(e, newValue) => { setValue(newValue); onFocus(index + 1); }}
+          onChange={(e, newValue) => { setValue(newValue); changeFocus(index + 1); }}
           max={metric.details.length - 1}
           size="large"
         />
@@ -92,54 +104,6 @@ function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
     </Paper>
   );
 }
-// function DayTextField({ metric, reference, index, isFocused, onFocus }) {
-//   let [value, setValue] = useState('');
-//   let refText = useRef(React.createRef());
-
-//   useEffect(() => {
-//     if (isFocused)
-//     refText.current.focus();
-//   }, [refText, isFocused]);
-
-//   let classes = useStyles();
-//   return (
-//     <div className={classes.root}>
-//       <input value={value} ref={reference} type="hidden" />
-//       <div>
-//         <Zoom in={!isFocused}>
-//           <Paper variant="outlined" className={classes.blurredPaper} onClick={() => onFocus(index)} >
-//             <Typography>{metric.name}</Typography>
-//             <TextField
-//               value={value}
-//               label={metric.name}
-//               onChange={(e) => setValue(e.target.value)}
-//               onFocus={() => onFocus(index)}
-//               fullWidth={true}
-//               multiline
-//             />
-//           </Paper>
-//         </Zoom>
-//       </div>
-//       <div className={classes.overlapped}>
-//         <Zoom unmountOnExit in={isFocused}>
-//           <Paper className={classes.focusedPaper} elevation={8} >
-//             <Typography variant="h3">{metric.name}</Typography>
-//             <TextField
-//               innerRef={refText}
-//               value={value}
-//               label={metric.name}
-//               onChange={(e) => setValue(e.target.value)}
-//               fullWidth={true}
-//               multiline
-//             />
-//             <Typography variant='body1'>{metric.description}</Typography>
-//           </Paper>
-//         </Zoom>
-//       </div>
-//     </div>
-//   );
-// }
-
 
 // function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
 //   let [value, setValue] = useState(-1);
@@ -217,61 +181,39 @@ function DayRatingField({ metric, reference, index, isFocused, onFocus }) {
 // }
 
 
-function DayDateField({ reference, index, isFocused, onFocus }) {
+function DayDateField({ reference, index, isFocused, changeFocus }) {
   let [value, setValue] = useState(new Date());
 
   let classes = useStyles();
   return (
-    <div className={classes.root}>
-      <input value={value} ref={reference} type="hidden" />
-      <Zoom in={!isFocused}>
-        <Paper className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
-          <Typography>Date</Typography>
-          <MuiPickersUtilsProvider utils={DateFnsUtils} >
-            <DatePicker
-              autoOk
-              disableFuture
-              label="Date"
-              onChange={(input) => setValue(input)}
-              onAccept={() => onFocus(index + 1)}
-              onFocus={() => onFocus(index)}
-              format='yyyy/MM/dd'
-              autoFocus={true}
-              value={value}
-              fullWidth={true}
-            />
-          </MuiPickersUtilsProvider>
-        </Paper>
-      </Zoom>
-
-      <div className={classes.overlapped}>
-        <Zoom unmountOnExit in={isFocused}>
-          <Paper className={classes.focusedPaper} elevation={8} >
-            <Typography>Date</Typography>
-            <MuiPickersUtilsProvider utils={DateFnsUtils} >
-              <DatePicker
-                autoOk
-                disableFuture
-                label="Date"
-                onChange={(input) => setValue(input)}
-                onAccept={() => onFocus(index + 1)}
-                onFocus={() => onFocus(index)}
-                format='yyyy/MM/dd'
-                autoFocus={true}
-                value={value}
-                fullWidth={true}
-              />
-            </MuiPickersUtilsProvider>
-            <Typography variant='body1'>Ciao ciao</Typography>
-          </Paper>
-        </Zoom>
+    <Paper className={classes.root} elevation={8} >
+      <div className={classes.flexCenter}>
+        <IconButton aria-label="previous" disabled color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        <Typography variant="h3" className={classes.title}>Date</Typography>
+        <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
       </div>
-    </div>
+      <input value={value} ref={reference} type="hidden" />
+      <MuiPickersUtilsProvider utils={DateFnsUtils} >
+        <DatePicker
+          autoOk
+          disableFuture
+          label="Date"
+          onChange={(input) => setValue(input)}
+          onAccept={() => changeFocus(index + 1)}
+          onFocus={() => changeFocus(index)}
+          format='yyyy/MM/dd'
+          autoFocus={true}
+          value={value}
+          fullWidth={true}
+        />
+      </MuiPickersUtilsProvider>
+      <Typography variant='body1'>Date of the day</Typography>
+    </Paper>
   );
 }
 
 
-function DaySubmit({ index, isFocused, onFocus, onSubmit, isLoading }) {
+function DaySubmit({ index, isFocused, changeFocus, onSubmit, isLoading }) {
   let reference = useRef(React.createRef());
 
   useEffect(() => {
@@ -280,43 +222,28 @@ function DaySubmit({ index, isFocused, onFocus, onSubmit, isLoading }) {
   }, [isFocused]);
 
   let classes = useStyles();
-  if (isFocused)
-    return (
-      <Paper className={classes.focusedPaper} elevation={8} >
-        <div className={classes.buttonWrapper}>
-          <Button
-            ref={reference}
-            variant="contained"
-            color="primary"
-            onFocus={() => { onFocus(index); }}
-            disabled={isLoading}
-            onClick={onSubmit}
-          >
-            Save day
+  return (
+    <Paper className={classes.root} elevation={8} >
+      <div className={classes.flexCenter}>
+        <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        <Typography variant="h3" className={classes.title}>Submit</Typography>
+        <IconButton aria-label="next" disabled color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+      </div>
+      <div className={classes.buttonWrapper}>
+        <Button
+          ref={reference}
+          variant="contained"
+          color="primary"
+          onFocus={() => { changeFocus(index); }}
+          disabled={isLoading}
+          onClick={onSubmit}
+        >
+          Save day
         </Button>
-          {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-        </div>
-        <Typography variant='body1'>{'Only some text for now'}</Typography>
-      </Paper>
-    );
-  else
-    return (
-      <Paper className={classes.blurredPaper} onClick={() => { onFocus(index); }} >
-        <div className={classes.buttonWrapper}>
-          <Button
-            ref={reference}
-            variant="contained"
-            color="primary"
-            onFocus={() => onFocus(index)}
-            disabled={isLoading}
-            onClick={onSubmit}
-          >
-            Save day
-        </Button>
-          {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-        </div>
-      </Paper>
-    );
+        {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+      </div>
+    </Paper>
+  );
 }
 
 let useStyles = makeStyles((theme) => ({
@@ -327,13 +254,16 @@ let useStyles = makeStyles((theme) => ({
     margin: '0',
     borderRadius: '1em',
     // boxShadow: '0 0 4rem 0 blue',
-    position: 'relative',
   },
   flexCenter: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  title: {
+    flexGrow: 1,
+    textAlign: 'center',
   },
   focusedPaper: {
     position: 'relative',

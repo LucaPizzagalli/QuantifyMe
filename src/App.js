@@ -13,16 +13,16 @@ export default function App() {
 
   let handleThemeChange = useCallback((newTheme) => {
     setTheme({ palette: { ...basePalette, type: newTheme } });
-  }, [])
+  }, []);
 
   let handleFailedAuth = useCallback((e) => {
     console.log('Mio Alert:' + e);
-  }, [])
+  }, []);
 
   let handleAuthChange = useCallback((isLogged) => {
     setIsAuth(isLogged);
     handleThemeChange(userRef.current.info.theme)
-  }, [handleThemeChange])
+  }, [handleThemeChange]);
 
   useEffect(() => {
     let user = userRef.current;

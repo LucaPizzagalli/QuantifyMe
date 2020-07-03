@@ -1,6 +1,10 @@
 import React, { useState, useContext, useRef } from 'react';
-import UserContext from '../components/Firebase';
-import AlertContext from '../components/Header';
+import { makeStyles } from '@material-ui/core/styles'
+import { useSpring, animated } from 'react-spring'
+// import { useDrag } from 'react-use-gesture'
+import Container from '@material-ui/core/Container';
+import UserContext from './Firebase';
+import AlertContext from './Header';
 import { DayTextField, DayRatingField, DayDateField, DaySubmit } from './AddDayField';
 
 function AddDayForm() {
@@ -11,8 +15,11 @@ function AddDayForm() {
   let [focused, setFocused] = useState(-1);
   let [isLoading, setIsLoading] = useState(false);
 
+  let { x } = useSpring({ x: -(focused + 1) * window.innerWidth });
+
   let changeFocus = (index) => {
     setFocused(index);
+    console.log(index)
   }
 
   function handleSaveDay() {
@@ -26,6 +33,8 @@ function AddDayForm() {
         newDay[metric.id] = null;
     }
     let date = (new Date(refDate.current.value)).toISOString().slice(0, 10);
+    console.log(date)
+    console.log(newDay)
     user.saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError);
   }
 
@@ -39,45 +48,71 @@ function AddDayForm() {
     setIsLoading(false);
   }
 
-  let fields = [];
-  for (let [index, metric] of user.info.metrics.entries()) {
-    if (metric.type === 'rating') {
-      fields.push(<DayRatingField
-        key={metric.id}
-        metric={metric}
-        reference={refs.current[index]}
-        index={index}
-        isFocused={focused === index}
-        onFocus={changeFocus}
-      />);
-    }
-    else if (metric.type === 'text') {
-      fields.push(<DayTextField
-        key={metric.id}
-        metric={metric}
-        reference={refs.current[index]}
-        index={index}
-        isFocused={focused === index}
-        onFocus={changeFocus}
-      />);
-    }
-  }
-  return <>
-    <DayDateField
-      key={'date'}
-      reference={refDate}
-      index={-1}
-      isFocused={focused === -1}
-      onFocus={changeFocus}
-    />
-    {fields}
-    <DaySubmit key='submitButton'
-      index={user.info.metrics.length}
-      onFocus={changeFocus}
-      isFocused={focused === user.info.metrics.length}
-      onSubmit={handleSaveDay}
-      isLoading={isLoading} />
-  </>;
+  let classes = useStyles();
+  return (
+    <animated.div className={classes.cardList} style={{ left: x }}>
+      <div key={'date'} className={classes.cardDiv} >
+        <Container fixed display="flex">
+          <DayDateField
+            reference={refDate}
+            index={-1}
+            isFocused={focused === -1}
+            changeFocus={changeFocus}
+          />
+        </Container >
+      </div>
+      {user.info.metrics.map((metric, index) => {
+        if (metric.type === 'rating')
+          return (
+            <div key={index} className={classes.cardDiv} >
+              <Container fixed display="flex">
+                <DayRatingField
+                  metric={metric}
+                  reference={refs.current[index]}
+                  index={index}
+                  changeFocus={changeFocus}
+                  isFocused={focused === index}
+                />
+              </Container >
+            </div>);
+        else if (metric.type === 'text')
+          return (
+            <div key={index} className={classes.cardDiv} >
+              <Container fixed display="flex">
+                <DayTextField
+                  metric={metric}
+                  reference={refs.current[index]}
+                  index={index}
+                  changeFocus={changeFocus}
+                  isFocused={focused === index}
+                />
+              </Container >
+            </div>);
+        return null;
+      })}
+      <div key={'submit'} className={classes.cardDiv} >
+        <Container fixed display="flex">
+          <DaySubmit
+            index={user.info.metrics.length}
+            changeFocus={changeFocus}
+            isFocused={focused === user.info.metrics.length}
+            onSubmit={handleSaveDay}
+            isLoading={isLoading} />
+        </Container >
+      </div>
+    </animated.div>
+  );
 }
 
-export default AddDayForm
+let useStyles = makeStyles((theme) => ({
+  cardList: {
+    position: 'absolute',
+    display: 'flex',
+  },
+  cardDiv: {
+    display: 'flex',
+    width: '100vw',
+  },
+}));
+
+export default AddDayForm;

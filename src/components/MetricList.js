@@ -5,9 +5,9 @@ import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Zoom from '@material-ui/core/Zoom';
-import UserContext from '../components/Firebase';
-import AlertContext from '../components/Header';
-import MetricCard from '../components/MetricCard';
+import UserContext from './Firebase';
+import AlertContext from './Header';
+import MetricCard from './MetricCard';
 import EditableMetricCard from './EditableMetricCard';
 import DeletedMetricCard from './DeletedMetricCard';
 
