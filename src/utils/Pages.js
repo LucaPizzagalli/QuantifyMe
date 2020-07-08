@@ -8,5 +8,6 @@ const PAGES = {
     Diary: { to: '/diary', label: 'Diary', logged: true },
     Stats: { to: '/stats', label: 'Stats', logged: true },
     Stimulator: { to: '/stimulator', label: 'Stimulator', logged: true },
+    LifeCalendar: { to: '/life-calendar', label: 'LifeCalendar', logged: true },
 };
 export default PAGES;

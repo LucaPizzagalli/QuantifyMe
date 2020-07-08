@@ -9,7 +9,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Zoom from '@material-ui/core/Zoom';
 import UserContext from './Firebase';
-import AlertContext from '../components/Header';
+import AlertContext from './Header';
+import ChangePasswordForm from './ChangePasswordForm'
 
 function UserSettings() {
   let user = useContext(UserContext);
@@ -42,6 +43,7 @@ function UserSettings() {
 
   let classes = useStyles();
   return (
+    <>
     <form className={classes.root} noValidate autoComplete="off">
       <FormControl className={classes.field}>
         <InputLabel id="theme-label">Change App theme</InputLabel>
@@ -68,6 +70,8 @@ function UserSettings() {
         </Fab>
       </Zoom>
     </form>
+    <ChangePasswordForm />
+    </>
   );
 }
 

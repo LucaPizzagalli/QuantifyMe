@@ -6,8 +6,10 @@ function Loading() {
   return (
     <Container fixed display="flex"
       style={{
-        flexDirection: 'column',
-        alignItems: 'center'
+        display: "flex",
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%'
       }}>
       <CircularProgress />
     </Container>

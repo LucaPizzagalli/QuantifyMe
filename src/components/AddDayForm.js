@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import { useSpring, animated } from 'react-spring'
-// import { useDrag } from 'react-use-gesture'
+import { useDrag } from 'react-use-gesture'
 import Container from '@material-ui/core/Container';
 import UserContext from './Firebase';
 import AlertContext from './Header';
@@ -15,11 +15,24 @@ function AddDayForm() {
   let [focused, setFocused] = useState(-1);
   let [isLoading, setIsLoading] = useState(false);
 
-  let { x } = useSpring({ x: -(focused + 1) * window.innerWidth });
+  let [{ x }, setX] = useSpring(() => ({ x: 0 }));
+  let bind = useDrag(({ down, movement: [mx], vxvy }) => {
+    if (down)
+      setX({ x: -(focused + 1) * window.innerWidth + mx });
+    else if (mx > window.innerWidth / 3)
+      changeFocus(focused - 1);
+    else if (mx < -window.innerWidth / 3)
+      changeFocus(focused + 1);
+    else
+      setX({ x: -(focused + 1) * window.innerWidth }); // TODO velocity
+  })
 
+  console.log('focused:')
+  console.log(focused)
   let changeFocus = (index) => {
+    index = Math.min(Math.max(-1, index), user.info.metrics.length);
     setFocused(index);
-    console.log(index)
+    setX({ x: -(index + 1) * window.innerWidth })
   }
 
   function handleSaveDay() {
@@ -50,7 +63,7 @@ function AddDayForm() {
 
   let classes = useStyles();
   return (
-    <animated.div className={classes.cardList} style={{ left: x }}>
+    <animated.div {...bind()} className={classes.cardList} style={{ left: x }}>
       <div key={'date'} className={classes.cardDiv} >
         <Container fixed display="flex">
           <DayDateField
@@ -108,6 +121,7 @@ let useStyles = makeStyles((theme) => ({
   cardList: {
     position: 'absolute',
     display: 'flex',
+    userSelect: 'none',
   },
   cardDiv: {
     display: 'flex',

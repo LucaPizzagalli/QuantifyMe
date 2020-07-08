@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import Hidden from '@material-ui/core/Hidden';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import Rating from '@material-ui/lab/Rating';
@@ -33,9 +34,13 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
   return (
     <Paper className={classes.root} elevation={8} >
       <div className={classes.flexCenter}>
-        <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        <Hidden mdDown>
+          <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        </Hidden>
         <Typography variant="h3" className={classes.title}>{metric.name}</Typography>
-        <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+        <Hidden mdDown>
+          <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+        </Hidden>
       </div>
       <TextField
         inputRef={reference}
@@ -64,12 +69,17 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
   }, [refZero, isFocused]);
 
   let classes = useStyles();
+  let mapRatingClass = { 1: classes.rating1, 2: classes.rating2, 3: classes.rating3, 4: classes.rating4, 5: classes.rating5, 6: classes.rating6, 7: classes.rating7, 8: classes.rating8, 9: classes.rating9, 10: classes.rating10, 11: classes.rating11}
   return (
     <Paper className={classes.root} elevation={8} >
       <div className={classes.flexCenter}>
-        <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        <Hidden mdDown>
+          <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        </Hidden>
         <Typography variant="h3" className={classes.title}>{metric.name}</Typography>
-        <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+        <Hidden mdDown>
+          <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+        </Hidden>
       </div>
       <input value={value} ref={reference} type="hidden" />
       <div className={classes.flexCenter}>
@@ -82,7 +92,7 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
           icon={<RadioButtonUnchecked />}
           checkedIcon={<RadioButtonChecked />} />
         <Rating
-          classes={{ sizeLarge: classes.rating }}
+          classes={{ sizeLarge: mapRatingClass[metric.details.length] }}
           name={'rating' + metric.id}
           value={value}
           onChange={(e, newValue) => { setValue(newValue); changeFocus(index + 1); }}
@@ -188,9 +198,10 @@ function DayDateField({ reference, index, isFocused, changeFocus }) {
   return (
     <Paper className={classes.root} elevation={8} >
       <div className={classes.flexCenter}>
-        <IconButton aria-label="previous" disabled color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
         <Typography variant="h3" className={classes.title}>Date</Typography>
-        <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+        <Hidden mdDown>
+          <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
+        </Hidden>
       </div>
       <input value={value} ref={reference} type="hidden" />
       <MuiPickersUtilsProvider utils={DateFnsUtils} >
@@ -225,9 +236,10 @@ function DaySubmit({ index, isFocused, changeFocus, onSubmit, isLoading }) {
   return (
     <Paper className={classes.root} elevation={8} >
       <div className={classes.flexCenter}>
-        <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        <Hidden mdDown>
+          <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}><NavigateBeforeIcon /></IconButton>
+        </Hidden>
         <Typography variant="h3" className={classes.title}>Submit</Typography>
-        <IconButton aria-label="next" disabled color="primary" onClick={() => changeFocus(index + 1)}><NavigateNextIcon /></IconButton>
       </div>
       <div className={classes.buttonWrapper}>
         <Button
@@ -283,9 +295,17 @@ let useStyles = makeStyles((theme) => ({
     left: 0,
     right: 0,
   },
-  rating: {
-    fontSize: '4rem',
-  },
+  rating1: { fontSize: '4rem' },
+  rating2: { fontSize: '4rem' },
+  rating3: { fontSize: '4rem' },
+  rating4: { fontSize: '4rem' },
+  rating5: { fontSize: 'min(4rem, (70/5)vw)' },
+  rating6: { fontSize: 'min(4rem, 13vw)' },
+  rating7: { fontSize: 'min(4rem, 11vw)' },
+  rating8: { fontSize: 'min(4rem, 10vw)' },
+  rating9: { fontSize: 'min(4rem, 8vw)' },
+  rating10: { fontSize: 'min(4rem, 7vw)' },
+  rating11: { fontSize: 'min(4rem, 6vw)' },
 
 
   buttonWrapper: {

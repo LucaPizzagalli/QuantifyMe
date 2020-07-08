@@ -14,6 +14,7 @@ import QuantifyDayPage from '../pages/quantify-day';
 import DiaryPage from '../pages/diary';
 import Stats from '../pages/stats';
 import Stimulator from '../pages/stimulator';
+import LifeCalendar from '../pages/life-calendar';
 import UserContext from './Firebase';
 import { Header } from './Header';
 
@@ -30,6 +31,7 @@ function UrlNavigation() {
             <Route path='/diary'> <DiaryPage /> </Route>
             <Route path='/stats'> <Stats /> </Route>
             <Route path='/stimulator'> <Stimulator /> </Route>
+            <Route path='/life-calendar'> <LifeCalendar /> </Route>
             <Route path='/sign-up'> <Home /> </Route>
             <Route path='/sign-in'> <Home /> </Route>
             <Route path='/reset-password'> <Home /> </Route>
