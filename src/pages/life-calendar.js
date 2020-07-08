@@ -6,11 +6,19 @@ function MetricsPage() {
 
   let classes = useStyles();
   let years = [];
+  let weeks = [];
+  weeks.push(<div className={classes.outCell}></div>);
+  for (let j = 0; j < 52; j++) {
+    weeks.push(<div className={classes.outCell}>{j}</div>);
+  }
+  weeks.push(<div className={classes.outCell}></div>);
+  years.push(<div className={classes.row}>{weeks}</div>)
   for (let i = 0; i < lifeLength; i++) {
     let weeks = [];
     weeks.push(<div className={classes.outCell}>{i}</div>);
     for (let j = 0; j < 52; j++) {
-      weeks.push(<div className={classes.cell}><p>d</p></div>);
+      let color = 210 + Math.floor(Math.random() * 30);
+      weeks.push(<div className={classes.cell} style={{ backgroundColor: 'rgb(' + color + ', ' + color + ', ' + color + ')', }}></div>);
     }
     weeks.push(<div className={classes.outCell}></div>);
     years.push(<div className={classes.row}>{weeks}</div>)
@@ -40,13 +48,15 @@ let useStyles = makeStyles((theme) => ({
   cell: {
     display: 'flex',
     alignItems: 'center',
+    flexBasis: 0,
     flexGrow: 1,
-    border: '1px solid',
     height: '2vw'
   },
   outCell: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    flexBasis: 0,
     flexGrow: 1,
     height: '2vw'
   },

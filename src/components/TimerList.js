@@ -47,8 +47,6 @@ function TimerList() {
   }
 
   function HandleSaveTimers() {
-    console.log(timers)
-    console.log(editable)
     setIsLoading(true);
     setEditable({ id: null, delete: false, new: false });
     let newTimers = null;
@@ -71,8 +69,6 @@ function TimerList() {
           break;
         }
     }
-    console.log('newTimers');
-    console.log(newTimers);
     setTimers(newTimers);
     user.updateTimers(newTimers, handleUpdateTimersSuccess, handleUpdateTimersError);
   }

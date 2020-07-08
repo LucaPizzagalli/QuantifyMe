@@ -22,17 +22,6 @@ function Header({ children }) {
   let [isMenuOpen, setIsMenuOpen] = useState(false);
   let user = useContext(UserContext);
 
-  let menuItems = [];
-  for (let [key, value] of Object.entries(PAGES)) {
-    if (user.isLogged() === value.logged) {
-      let item = <ListItem button key={key} component={RouterLink} to={value.to} onClick={() => setIsMenuOpen(false)}>
-        <ListItemIcon><MailIcon /></ListItemIcon>
-        <ListItemText primary={value.label} />
-      </ListItem>;
-      menuItems.push(item);
-    }
-  }
-
   let [snackPack, setSnackPack] = useState([]);
   let [isAlertOpen, setIsAlertOpen] = useState(false);
   let [messageInfo, setMessageInfo] = useState(undefined);
@@ -54,7 +43,7 @@ function Header({ children }) {
   }
 
   function handleAlertClose(e, reason) {
-    if (reason !== 'clickaway')
+    // if (reason !== 'clickaway')
       setIsAlertOpen(false);
   }
 
@@ -63,6 +52,19 @@ function Header({ children }) {
   }
 
   const classes = useStyles();
+
+  let menuItems = [];
+  for (let [key, value] of Object.entries(PAGES)) {
+    if (user.isLogged() === value.logged) {
+      let item = <ListItem button key={key} component={RouterLink} to={value.to} onClick={() => setIsMenuOpen(false)}>
+        <ListItemIcon>
+          {value.icon ? value.icon : <MailIcon />}
+        </ListItemIcon>
+        <ListItemText primary={value.label} />
+      </ListItem>;
+      menuItems.push(item);
+    }
+  }
   return (
     <>
       <AppBar position="fixed" className={classes.appBar}>
