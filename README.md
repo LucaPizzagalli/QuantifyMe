@@ -1,29 +1,11 @@
 # QuantifyMe
 
+quantifyme.app
+
 ## How to use
 
-### Prerequisite
+Just go to quantifyme.app
 
-- flask
-- npm
+Instead, if you want to compile in local with node:
 
-### How to install
-
-```sh
-cd backend
-npm install
-```
-
-### How to run
-
-```sh
-cd backend
-export FLASK_APP=app
-export FLASK_ENV=development
-flask run
-```
-
-```sh
-cd frontend
-npm start
-```
+    yarn start

@@ -16,14 +16,14 @@ import Stats from '../pages/stats';
 import Stimulator from '../pages/stimulator';
 import LifeCalendar from '../pages/life-calendar';
 import UserContext from './Firebase';
-import { Header } from './Header';
+import { Layout } from './Layout';
 
 function UrlNavigation() {
   let user = useContext(UserContext);
   if (user.isLogged())
     return (
       <Router>
-        <Header>
+        <Layout>
           <Switch>
             <Route path='/account'> <AccountPage /> </Route>
             <Route path='/metrics'> <MetricsPage /> </Route>
@@ -38,22 +38,22 @@ function UrlNavigation() {
             <Route exact path='/'> <Dashboard /> </Route>
             <Route path=''> <NotFound /> </Route>
           </Switch>
-        </Header>
+        </Layout>
       </Router>
     );
   if (user.auth === 0)
     return (
       <Router>
-        <Header >
+        <Layout >
           <Switch>
             <Route path=''> <Loading /> </Route>
           </Switch>
-        </Header>
+        </Layout>
       </Router>
     );
   return (
     <Router>
-      <Header>
+      <Layout>
         <Switch>
           <Route path='/sign-up'> <SignUpPage /> </Route>
           <Route path='/sign-in'> <SignInPage /> </Route>
@@ -61,7 +61,7 @@ function UrlNavigation() {
           <Route exact path='/'> <Home /> </Route>
           <Route path=''> <NotFound /> </Route>
         </Switch>
-      </Header>
+      </Layout>
     </Router>
   );
 }

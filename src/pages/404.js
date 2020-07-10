@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
+// import DraggableList from '../components/DraggableList';
 
 function FourOuFour() {
   return (
@@ -14,6 +15,7 @@ function FourOuFour() {
       <Typography variant="subtitle1" gutterBottom>
         Page not found
       </Typography>
+      {/* <DraggableList items={'Lorem ipsum dolor sit'.split(' ')}/> */}
     </Container>
   );
 }

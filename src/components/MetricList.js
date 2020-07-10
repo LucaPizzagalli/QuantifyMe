@@ -6,7 +6,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Zoom from '@material-ui/core/Zoom';
 import UserContext from './Firebase';
-import AlertContext from './Header';
+import AlertContext from './Layout';
 import MetricCard from './MetricCard';
 import EditableMetricCard from './EditableMetricCard';
 import DeletedMetricCard from './DeletedMetricCard';
@@ -14,7 +14,7 @@ import DeletedMetricCard from './DeletedMetricCard';
 function MetricList() {
   let user = useContext(UserContext);
   let showAlert = useContext(AlertContext);
-  let [metrics, setMetrics] = useState(user.info.metrics);
+  let [metrics, setMetrics] = useState(user.getMetrics());
   let [editable, setEditable] = useState({ id: null, delete: false, new: false });
   let [isLoading, setIsLoading] = useState(false);
   let nameRef = useRef(React.createRef());

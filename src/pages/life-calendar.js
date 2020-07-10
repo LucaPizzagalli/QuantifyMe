@@ -1,71 +1,87 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Loading from './loading'
+import UserContext from '../components/Firebase';
+import AlertContext from '../components/Layout';
+import LifeCalendar from '../components/LifeCalendar';
 
 function MetricsPage() {
-  let lifeLength = 90;
+  let user = useContext(UserContext);
+  let showAlert = useContext(AlertContext);
+  let [birthday, setBirthday] = useState(user.getLifespan()[0] ? user.getLifespan()[0] : new Date());
+  let [deathAge, setDeathAge] = useState(user.getLifespan()[1] ? user.getLifespan()[1] : 90);
+  let [isReady, setIsReady] = useState(user.getLifespan()[0] && user.getLifespan()[1]);
+  let [isLoading, setIsLoading] = useState(false);
+
+  function handleSubmit() {
+    setIsLoading(true);
+    user.setLifespan(birthday, deathAge, handleSetLifespanSuccess, handleSetLifespanError);
+  }
+
+  function handleSetLifespanSuccess() {
+    setIsLoading(false);
+    showAlert('Info saved', 'success');
+    setIsReady(true);
+  }
+
+  function handleSetLifespanError(error) {
+    setIsLoading(false);
+    showAlert(error.message, 'error');
+  }
 
   let classes = useStyles();
-  let years = [];
-  let weeks = [];
-  weeks.push(<div className={classes.outCell}></div>);
-  for (let j = 0; j < 52; j++) {
-    weeks.push(<div className={classes.outCell}>{j}</div>);
-  }
-  weeks.push(<div className={classes.outCell}></div>);
-  years.push(<div className={classes.row}>{weeks}</div>)
-  for (let i = 0; i < lifeLength; i++) {
-    let weeks = [];
-    weeks.push(<div className={classes.outCell}>{i}</div>);
-    for (let j = 0; j < 52; j++) {
-      let color = 210 + Math.floor(Math.random() * 30);
-      weeks.push(<div className={classes.cell} style={{ backgroundColor: 'rgb(' + color + ', ' + color + ', ' + color + ')', }}></div>);
-    }
-    weeks.push(<div className={classes.outCell}></div>);
-    years.push(<div className={classes.row}>{weeks}</div>)
-  }
+  if (isLoading)
+    return <Loading />;
+  if (isReady)
+    return (
+      <Container maxWidth="xl">
+        <LifeCalendar />
+      </Container>
+    );
   return (
-    <>
-      <div className={classes.root}>
-        {years}
-      </div>
-    inspired by https://waitbutwhy.com/2014/05/life-weeks.html
-    </>
+    <Container fixed display="flex">
+      <form noValidate className={classes.root}>
+        <MuiPickersUtilsProvider utils={DateFnsUtils} >
+          <DatePicker
+            autoOk
+            disableFuture
+            label="Your birthday"
+            onChange={(input) => setBirthday(input)}
+            format='yyyy/MM/dd'
+            value={birthday}
+          />
+        </MuiPickersUtilsProvider>
+        <TextField
+          id="lifeExpectancy"
+          type="number"
+          inputProps={{ min: '10', max: '150', step: '1' }}
+          label="Your life expectancy"
+          value={deathAge.toString()}
+          onChange={(e) => { if (isNaN(e.target.valueAsNumber)) setDeathAge(0); else setDeathAge(Math.min(150, Math.max(10, e.target.valueAsNumber))) }}
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+        >
+          Create Life Calendar
+        </Button>
+      </form>
+    </Container>
   );
 }
 
 let useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    alignItems: 'center',
     flexDirection: 'column',
-    width: '100%',
-  },
-  row: {
-    display: 'flex',
     alignItems: 'center',
-    width: '100%',
-  },
-  cell: {
-    display: 'flex',
-    alignItems: 'center',
-    flexBasis: 0,
-    flexGrow: 1,
-    height: '2vw'
-  },
-  outCell: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexBasis: 0,
-    flexGrow: 1,
-    height: '2vw'
-  },
-  buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
   },
 }));
 

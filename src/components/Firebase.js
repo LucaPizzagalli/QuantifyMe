@@ -23,6 +23,7 @@ let firebaseConfig = {
 
 let startInfo = {
   email: null,
+  personal: {},
   level: 1,
   metrics: [],
   timers: [],
@@ -84,6 +85,11 @@ class User {
     return this.db.doc('users/' + this.auth.uid);
   }
 
+  // Metrics Operations
+  getMetrics() {
+    return this.info.metrics;
+  }
+
   updateMetrics(newMetrics, addedMetric, deletedMetric, handleUpdateMetricsSuccess, handleUpdateMetricsError) {
     let promises = [this.getDb().update({ metrics: newMetrics })];
     if (addedMetric)
@@ -103,17 +109,23 @@ class User {
       .catch((e) => handleUpdateMetricsError(e));
   }
 
-  updateTimers(newTimers, handleUpdateTimersSuccess, handleUpdateTimersError) {
-    console.log('PRIMA')
+  // Timers operations
+  getTimers() {
+    return this.info.timers;
+  }
+
+  updateTimers(newTimers, handleSuccess, handleError) {
+    console.log('PRIMA') //TODO doesn't enter in catch
     this.getDb().update({ timers: newTimers })
       .then(() => {
         this.info.timers = newTimers;
-        handleUpdateTimersSuccess();
+        handleSuccess();
       })
-      .catch((e) => handleUpdateTimersError(e));
+      .catch((e) => handleError(e));
     console.log('DOPO')
   }
 
+  // Days operations
   saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError) {
     let promises = [this.getDb().collection('days').doc(date).set(newDay)];
     for (let [metricId, value] of Object.entries(newDay))
@@ -128,11 +140,26 @@ class User {
       .catch((e) => handleSaveDayError(e));
   }
 
-  // Smaller Stuff
+  // Account Operations
+  getLifespan() {
+    return [this.info.personal.birthday, this.info.personal.deathAge];
+  }
+
+  setLifespan(birthday, deathAge, handleSuccess, handleError) {
+    this.getDb().update({ 'personal.birthday': birthday, 'personal.deathAge': deathAge })
+    .then(() => {
+      this.info.personal.birthday = birthday;
+      this.info.personal.deathAge = deathAge;
+      handleSuccess();
+    })
+    .catch((e) => handleError(e));
+  }
+
   changeTheme(type) {
     this.handleThemeChange(type)
   }
 
+  // Smaller Stuff
   getWelcomeMessage() {
     if (this.info.level === 1)
       return 'Welcome for the first time to QuantifyMe';
@@ -140,15 +167,6 @@ class User {
       return 'Welcome back to QuantifyMe';
   }
 
-  getMetrics() {
-    return this.info.metrics;
-  }
-
-  getTimers() {
-    console.log('hhhhhhhhh')
-    console.log(this.info.timers)
-    return this.info.timers;
-  }
 }
 
 let UserContext = React.createContext(null);

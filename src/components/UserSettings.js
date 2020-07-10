@@ -9,7 +9,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Zoom from '@material-ui/core/Zoom';
 import UserContext from './Firebase';
-import AlertContext from './Header';
+import AlertContext from './Layout';
 import ChangePasswordForm from './ChangePasswordForm'
 
 function UserSettings() {

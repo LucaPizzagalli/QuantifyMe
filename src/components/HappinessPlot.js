@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import UserContext from '../components/Firebase';
-import AlertContext from '../components/Header';
+import AlertContext from './Layout';
 
 function HappinessPlot() {
   let user = useContext(UserContext);

@@ -15,44 +15,31 @@ import MailIcon from '@material-ui/icons/Mail';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import PAGES from '../utils/Pages';
-import UserContext from '../components/Firebase';
+import UserContext from './Firebase';
 import SignOutButton from './signOutButton'
 
-function Header({ children }) {
-  let [isMenuOpen, setIsMenuOpen] = useState(false);
-  let user = useContext(UserContext);
-
-  let [snackPack, setSnackPack] = useState([]);
-  let [isAlertOpen, setIsAlertOpen] = useState(false);
-  let [messageInfo, setMessageInfo] = useState(undefined);
-
-  useEffect(() => {
-    if (snackPack.length && !messageInfo) {
-      // Set a new snack when we don't have an active one
-      setMessageInfo({ ...snackPack[0] });
-      setSnackPack((prev) => prev.slice(1));
-      setIsAlertOpen(true);
-    } else if (snackPack.length && messageInfo && isAlertOpen) {
-      // Close an active snack when a new one is added
-      setIsAlertOpen(false);
-    }
-  }, [snackPack, messageInfo, isAlertOpen]);
-
+function Layout({ children }) {
+  let [snackPack, setSnackPack] = useState([]); //TODO move down to another component to avoid render
+  
   function showAlert(message, severity = 'info') {
     setSnackPack((prev) => [...prev, { message, severity, key: new Date().getTime() }]);
   }
+  return (
+    <>
+      <Header />
+      <AlertContext.Provider value={showAlert}>
+        {children}
+      </AlertContext.Provider>
+      <Footer snackPack={snackPack} setSnackPack={setSnackPack} />
+    </>
+  );
+}
 
-  function handleAlertClose(e, reason) {
-    // if (reason !== 'clickaway')
-      setIsAlertOpen(false);
-  }
-
-  function handleAlertExited() {
-    setMessageInfo(undefined);
-  }
+function Header() {
+  let [isMenuOpen, setIsMenuOpen] = useState(false);
+  let user = useContext(UserContext);
 
   const classes = useStyles();
-
   let menuItems = [];
   for (let [key, value] of Object.entries(PAGES)) {
     if (user.isLogged() === value.logged) {
@@ -97,8 +84,7 @@ function Header({ children }) {
         open={isMenuOpen}
         classes={{
           paper: classes.drawerPaper,
-        }}
-      >
+        }}>
         <div className={classes.drawerHeader} />
         <List>
           {menuItems}
@@ -106,33 +92,59 @@ function Header({ children }) {
         {/* <Divider /> */}
       </Drawer>
       <div className={classes.drawerHeader} />
-      <AlertContext.Provider value={showAlert}>
-        {children}
-      </AlertContext.Provider>
-      <Snackbar
-        key={messageInfo ? messageInfo.key : undefined}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        open={isAlertOpen}
-        autoHideDuration={5000}
-        onClose={handleAlertClose}
-        onExited={handleAlertExited}
-      // message={messageInfo ? messageInfo.message : undefined}
-      // action={
-      //   <IconButton
-      //     aria-label="close"
-      //     color="inherit"
-      //     className={classes.alertCloseIcon}
-      //     onClick={handleAlertClose}
-      //   >
-      //     <CloseIcon />
-      //   </IconButton>
-      // }
-      >
-        <MuiAlert elevation={6} variant="filled" onClose={handleAlertClose} severity={messageInfo ? messageInfo.severity : undefined}>
-          {messageInfo ? messageInfo.message : undefined}
-        </MuiAlert>
-      </Snackbar>
     </>
+  );
+}
+
+function Footer({ snackPack, setSnackPack }) {
+  let [isAlertOpen, setIsAlertOpen] = useState(false);
+  let [messageInfo, setMessageInfo] = useState(undefined);
+  
+  useEffect(() => {
+    if (snackPack.length && !messageInfo) {
+      // Set a new snack when we don't have an active one
+      setMessageInfo({ ...snackPack[0] });
+      setSnackPack((prev) => prev.slice(1));
+      setIsAlertOpen(true);
+    } else if (snackPack.length && messageInfo && isAlertOpen) {
+      // Close an active snack when a new one is added
+      setIsAlertOpen(false);
+    }
+  }, [snackPack, setSnackPack, messageInfo, isAlertOpen]);
+
+  function handleAlertClose(e, reason) {
+    // if (reason !== 'clickaway')
+    setIsAlertOpen(false);
+  }
+
+  function handleAlertExited() {
+    setMessageInfo(undefined);
+  }
+
+  return (
+    <Snackbar
+      key={messageInfo ? messageInfo.key : undefined}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      open={isAlertOpen}
+      autoHideDuration={5000}
+      onClose={handleAlertClose}
+      onExited={handleAlertExited}
+    // message={messageInfo ? messageInfo.message : undefined}
+    // action={
+    //   <IconButton
+    //     aria-label="close"
+    //     color="inherit"
+    //     className={classes.alertCloseIcon}
+    //     onClick={handleAlertClose}
+    //   >
+    //     <CloseIcon />
+    //   </IconButton>
+    // }
+    >
+      <MuiAlert elevation={6} variant="filled" onClose={handleAlertClose} severity={messageInfo ? messageInfo.severity : undefined}>
+        {messageInfo ? messageInfo.message : undefined}
+      </MuiAlert>
+    </Snackbar>
   );
 }
 
@@ -170,4 +182,4 @@ const useStyles = makeStyles((theme) => ({
 let AlertContext = React.createContext(null);
 
 export default AlertContext;
-export { Header };
+export { Layout };

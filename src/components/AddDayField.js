@@ -47,8 +47,8 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
         InputProps={{ inputProps: { tabIndex: -1 } }}
         value={value}
         label={metric.name}
-        onFocus={(e) => { changeFocus(index); }}
-        onChange={(e) => { setValue(e.target.value); changeFocus(index + 1); }}
+        onFocus={() => changeFocus(index)}
+        onChange={(e) => setValue(e.target.value)}
         fullWidth={true}
         multiline
       />

@@ -4,7 +4,7 @@ import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
 import Container from '@material-ui/core/Container';
 import UserContext from './Firebase';
-import AlertContext from './Header';
+import AlertContext from './Layout';
 import { DayTextField, DayRatingField, DayDateField, DaySubmit } from './AddDayField';
 
 function AddDayForm() {
@@ -27,8 +27,6 @@ function AddDayForm() {
       setX({ x: -(focused + 1) * window.innerWidth }); // TODO velocity
   })
 
-  console.log('focused:')
-  console.log(focused)
   let changeFocus = (index) => {
     index = Math.min(Math.max(-1, index), user.info.metrics.length);
     setFocused(index);
