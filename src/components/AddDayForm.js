@@ -25,7 +25,7 @@ function AddDayForm() {
       changeFocus(focused + 1);
     else
       setX({ x: -(focused + 1) * window.innerWidth }); // TODO velocity
-  })
+  }, { axis: 'x' })
 
   let changeFocus = (index) => {
     index = Math.min(Math.max(-1, index), user.info.metrics.length);
@@ -63,55 +63,63 @@ function AddDayForm() {
   return (
     <animated.div {...bind()} className={classes.cardList} style={{ left: x }}>
       <div key={'date'} className={classes.cardDiv} >
-        <Container fixed display="flex">
-          <DayDateField
-            reference={refDate}
-            index={-1}
-            isFocused={focused === -1}
-            changeFocus={changeFocus}
-          />
-        </Container >
+        {focused <= 1 &&
+          <Container fixed display="flex">
+            <DayDateField
+              reference={refDate}
+              index={-1}
+              isFocused={focused === -1}
+              changeFocus={changeFocus}
+            />
+          </Container >
+        }
       </div>
       {user.info.metrics.map((metric, index) => {
         if (metric.type === 'rating')
           return (
             <div key={index} className={classes.cardDiv} >
-              <Container fixed display="flex">
-                <DayRatingField
-                  metric={metric}
-                  reference={refs.current[index]}
-                  index={index}
-                  changeFocus={changeFocus}
-                  isFocused={focused === index}
-                />
-              </Container >
+              {focused >= index - 1 && focused <= index + 1 &&
+                <Container fixed display="flex">
+                  <DayRatingField
+                    metric={metric}
+                    reference={refs.current[index]}
+                    index={index}
+                    changeFocus={changeFocus}
+                    isFocused={focused === index}
+                  />
+                </Container >
+              }
             </div>);
         else if (metric.type === 'text')
           return (
             <div key={index} className={classes.cardDiv} >
-              <Container fixed display="flex">
-                <DayTextField
-                  metric={metric}
-                  reference={refs.current[index]}
-                  index={index}
-                  changeFocus={changeFocus}
-                  isFocused={focused === index}
-                />
-              </Container >
+              {focused >= index - 1 && focused <= index + 1 &&
+                <Container fixed display="flex">
+                  <DayTextField
+                    metric={metric}
+                    reference={refs.current[index]}
+                    index={index}
+                    changeFocus={changeFocus}
+                    isFocused={focused === index}
+                  />
+                </Container >
+              }
             </div>);
         return null;
       })}
       <div key={'submit'} className={classes.cardDiv} >
-        <Container fixed display="flex">
+        {focused >= user.info.metrics.length - 1 &&
+          < Container fixed display="flex">
           <DaySubmit
-            index={user.info.metrics.length}
-            changeFocus={changeFocus}
-            isFocused={focused === user.info.metrics.length}
-            onSubmit={handleSaveDay}
-            isLoading={isLoading} />
+          index={user.info.metrics.length}
+          changeFocus={changeFocus}
+          isFocused={focused === user.info.metrics.length}
+          onSubmit={handleSaveDay}
+          isLoading={isLoading} />
         </Container >
+        }
       </div>
-    </animated.div>
+    </animated.div >
   );
 }
 
@@ -120,6 +128,7 @@ let useStyles = makeStyles((theme) => ({
     position: 'absolute',
     display: 'flex',
     userSelect: 'none',
+    marginTop: '1rem'
   },
   cardDiv: {
     display: 'flex',

@@ -82,7 +82,7 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
         </Hidden>
       </div>
       <input value={value} ref={reference} type="hidden" />
-      <div className={classes.flexCenter}>
+      <div className={classes.rating}>
         <Radio
           inputRef={refZero}
           name={'rating' + metric.id}
@@ -262,7 +262,7 @@ let useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
     width: '100%',
-    padding: '4rem 4rem',
+    padding: '3% 6%',
     margin: '0',
     borderRadius: '1em',
     // boxShadow: '0 0 4rem 0 blue',
@@ -273,27 +273,18 @@ let useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  rating: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '5rem',
+  },
   title: {
     flexGrow: 1,
     textAlign: 'center',
-  },
-  focusedPaper: {
-    position: 'relative',
-    width: '100%',
-    padding: '4rem 4rem',
-    borderRadius: '1em',
-    // boxShadow: '0 0 4rem 0 blue',
-    zIndex: 1000,
-  },
-  blurredPaper: {
-    padding: '1rem 2rem',
-    margin: '1rem 1rem',
-  },
-  overlapped: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
+    marginTop: '1rem',
+    marginBottom: '0.5rem',
   },
   rating1: { fontSize: '4rem' },
   rating2: { fontSize: '4rem' },

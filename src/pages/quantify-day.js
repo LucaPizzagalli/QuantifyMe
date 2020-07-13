@@ -4,7 +4,7 @@ import AddDayForm from '../components/AddDayForm';
 
 function QuantifyDayPage() {
   return (
-    <div style={{ height: '100vh', position: 'relative', overflowX: 'hidden' }}>
+    <div style={{ height: 'calc(100vh - 80px)', position: 'relative', overflowX: 'hidden' }}>
       <AddDayForm />
     </div>
   );
