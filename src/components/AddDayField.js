@@ -85,6 +85,7 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
       <div className={classes.rating}>
         <Radio
           inputRef={refZero}
+          classes={{ root: mapRatingClass[metric.details.length] }}
           name={'rating' + metric.id}
           checked={value === 0}
           value={0}
@@ -286,10 +287,10 @@ let useStyles = makeStyles((theme) => ({
     marginTop: '1rem',
     marginBottom: '0.5rem',
   },
-  rating1: { fontSize: '4rem' },
-  rating2: { fontSize: '4rem' },
-  rating3: { fontSize: '4rem' },
-  rating4: { fontSize: '4rem' },
+  rating1: { fontSize: '4rem', height: '4rem', width: '4rem' },
+  rating2: { fontSize: '4rem', height: '4rem', width: '4rem' },
+  rating3: { fontSize: '4rem', height: '4rem', width: '4rem' },
+  rating4: { fontSize: '4rem', height: '4rem', width: '4rem' },
   rating5: { fontSize: 'min(4rem, (70/5)vw)' },
   rating6: { fontSize: 'min(4rem, 13vw)' },
   rating7: { fontSize: 'min(4rem, 11vw)' },

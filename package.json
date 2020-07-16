@@ -23,7 +23,8 @@
     "react-router-dom": "latest",
     "react-scripts": "latest",
     "react-spring": "^8.0.27",
-    "react-use-gesture": "^7.0.15"
+    "react-use-gesture": "^7.0.15",
+    "resize-observer-polyfill": "^1.5.1"
   },
   "proxy": "http://localhost:5000",
   "scripts": {

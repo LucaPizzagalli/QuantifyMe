@@ -5,9 +5,16 @@ import { useSprings, animated } from 'react-spring'
 
 // Returns fitting styles for dragged/idle items
 const fn = (order, down, originalIndex, oldIndex, y) => index =>
-  down && index === originalIndex
-    ? { y: oldIndex * 100 + y, scale: 1.3, zIndex: '1', shadow: 15, immediate: n => n === 'y' || n === 'zIndex' }
-    : { y: order.indexOf(index) * 100, scale: 1, zIndex: '0', shadow: 1, immediate: false }
+  // down && index === originalIndex
+    // ? { y: oldIndex * 100 + y, scale: 1.3, zIndex: '1', shadow: 15, immediate: n => n === 'y' || n === 'zIndex' }
+    // : { y: order.indexOf(index) * 100, scale: 1, zIndex: '0', shadow: 1, immediate: false }
+    {
+      if (down && index === originalIndex){
+      console.log(index + ' ' + originalIndex + ' ' + down);
+      return { y: oldIndex * 100 + y, transform: 'scale(1.1)', zIndex: '1', boxShadow: '0 0 1rem', immediate: n => n === 'y' || n === 'zIndex' }
+      }
+      return { y: order.indexOf(index) * 100, transform: 'scale(1)', zIndex: '0', boxShadow: '0 0 0rem', immediate: false }
+    }
 
 function DraggableList({ items }) {
   const order = useRef(items.map((_, index) => index)) // Store indicies as a local ref, this represents the item order
@@ -30,17 +37,16 @@ function DraggableList({ items }) {
     <div>
     <div className={classes.content} style={{ height: items.length * 100 }}>
       giggino
-      {springs.map(({ zIndex, shadow, y, scale }, i) => (
+      {springs.map(({ zIndex, boxShadow, y, transform }, i) => (
         <animated.div
           {...bind(i)}
           key={i}
           className={classes.card}
           style={{
             zIndex,
-            // boxShadow: shadow.to(s => `rgba(0, 0, 0, 0.15) 0px ${s}px ${2 * s}px 0px`),
+            boxShadow,
             top: y,
-            content: 'pippox',
-            transform: 'scale(' + scale.toString() + ')',
+            transform,
           }}
           children={items[i]}
         />

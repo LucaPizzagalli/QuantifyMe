@@ -54,6 +54,7 @@ function HappinessPlot() {
         margin: {l:20, r:20, t:40, b:20},
         xaxis: {fixedrange: true},
         yaxis: {fixedrange: true, 'zeroline': false},
+        dragmode: false,
       }}
       config={{
         showTips: false,
