@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
 
@@ -11,9 +12,10 @@ function DayCard({ metrics, day }) {
 
   let classes = useStyles();
   return (
-    <Card className={isSelected ? classes.rootExpanded : classes.root} onClick={() => setIsSelected(!isSelected)} >
+    <Card onClick={() => setIsSelected(!isSelected)} >
+      <CardActionArea>
       <CardHeader title={day.date} />
-      <CardContent>
+      <CardContent className={isSelected ? classes.rootExpanded : classes.root}>
         {metrics.map((metric) => {
           if (metric.type === 'text')
             return (
@@ -31,6 +33,7 @@ function DayCard({ metrics, day }) {
           return null;
         })}
       </CardContent>
+      </CardActionArea>
     </Card>
   );
 }
@@ -38,25 +41,23 @@ function DayCard({ metrics, day }) {
 let useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
-    height: '20rem',
-      // '&:hover': {
-      //   box-shadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-      // },
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      zIndex: 1,
-      bottom: 0,
-      left: 0,
-      backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)',
-      width: '100%',
-      height: '4em',
-      pointerEvents: 'none',
-    }
+    height: '15rem',
+    // '&::after': {
+    //   content: '""',
+    //   position: 'absolute',
+    //   zIndex: 1,
+    //   bottom: 0,
+    //   left: 0,
+    //   backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)',
+    //   width: '100%',
+    //   height: '4em',
+    //   pointerEvents: 'none',
+    // }
   },
   rootExpanded: {
+    background: theme.palette.background.paper,
     position: 'relative',
-    minHeight: '20rem',
+    minHeight: '15rem',
     height: 'auto'
   }
 }));

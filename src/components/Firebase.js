@@ -47,7 +47,7 @@ class User {
     return !!this.auth;
   }
 
-  activateAuthUserListener(HandleUserAuthChange, handleFailedAuth) {
+  activateAuthUserListener(HandleUserAuthChange, handleError) {
     this.authListener = this.configAuth.onAuthStateChanged(authUser => {
       this.auth = authUser;
       if (authUser) {
@@ -64,12 +64,8 @@ class User {
                 { merge: true })
             }
           })
-          .then(() =>
-            HandleUserAuthChange(true)
-          )
-          .catch((e) =>
-            handleFailedAuth(e)
-          )
+          .then(() => HandleUserAuthChange(true) )
+          .catch((e) => handleError(e) )
       }
       else
         HandleUserAuthChange(false);
@@ -80,17 +76,17 @@ class User {
     this.authListener();
   }
 
-  // Database Operations
+  // Database operations
   getDb() {
     return this.db.doc('users/' + this.auth.uid);
   }
 
-  // Metrics Operations
+  // Metrics operations
   getMetrics() {
     return this.info.metrics;
   }
 
-  updateMetrics(newMetrics, addedMetric, deletedMetric, handleUpdateMetricsSuccess, handleUpdateMetricsError) {
+  updateMetrics(newMetrics, addedMetric, deletedMetric, handleSuccess, handleError) {
     let promises = [this.getDb().update({ metrics: newMetrics })];
     if (addedMetric)
       promises.push(
@@ -104,9 +100,58 @@ class User {
     Promise.all(promises)
       .then(() => {
         this.info.metrics = newMetrics;
-        handleUpdateMetricsSuccess();
+        handleSuccess();
       })
-      .catch((e) => handleUpdateMetricsError(e));
+      .catch((e) => handleError(e));
+  }
+
+  // Days operations
+  saveDay(date, newDay, handleSuccess, handleError) {
+    let promises = [this.getDb().collection('days').doc(date).set({date: date, ...newDay})];
+    for (let [metricId, value] of Object.entries(newDay))
+      promises.push(
+        this.getDb().collection('stats').doc(metricId).update(
+          { ['data.' + date]: value }
+        )
+      );
+
+    Promise.all(promises)
+      .then(() => handleSuccess())
+      .catch((e) => handleError(e));
+  }
+
+  getDaysPage(refDate, order, cursor1, cursor2, isNextPage, handleSuccess, handleError) {
+    let limit = 4;
+    let query = this.getDb().collection('days')
+    .where('date', '<=', refDate)
+    .orderBy('date', order);
+
+    if (order === 'asc' && isNextPage)
+      query = query.startAfter(cursor2)
+      .limit(limit);
+    else if (order === 'asc' && !isNextPage)
+      query = query.endBefore(cursor1)
+      .limitToLast(limit);
+    else if (order === 'desc' && isNextPage && cursor1){
+      query = query.startAfter(cursor2)
+      .limit(limit);
+      console.log('uuuu')
+    }
+    else if (order === 'desc' && !isNextPage && cursor1)
+      query = query.endBefore(cursor1)
+      .limitToLast(limit);
+
+    query.get()
+      .then((querySnapshot) => {
+        let days = [];
+        querySnapshot.forEach((doc) => {
+          days.push({ date: doc.id, ...(doc.data()) });
+        });
+        let cursor1 = querySnapshot.docs[0];
+        let cursor2 = querySnapshot.docs[querySnapshot.docs.length-1];
+        handleSuccess(days, cursor1, cursor2);
+      })
+      .catch((e) => handleError(e));
   }
 
   // Timers operations
@@ -125,21 +170,6 @@ class User {
     console.log('DOPO')
   }
 
-  // Days operations
-  saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError) {
-    let promises = [this.getDb().collection('days').doc(date).set(newDay)];
-    for (let [metricId, value] of Object.entries(newDay))
-      promises.push(
-        this.getDb().collection('stats').doc(metricId).update(
-          { ['data.' + date]: value }
-        )
-      );
-
-    Promise.all(promises)
-      .then(() => handleSaveDaySuccess())
-      .catch((e) => handleSaveDayError(e));
-  }
-
   // Account Operations
   getLifespan() {
     return [this.info.personal.birthday, this.info.personal.deathAge];
@@ -147,12 +177,12 @@ class User {
 
   setLifespan(birthday, deathAge, handleSuccess, handleError) {
     this.getDb().update({ 'personal.birthday': birthday, 'personal.deathAge': deathAge })
-    .then(() => {
-      this.info.personal.birthday = birthday;
-      this.info.personal.deathAge = deathAge;
-      handleSuccess();
-    })
-    .catch((e) => handleError(e));
+      .then(() => {
+        this.info.personal.birthday = birthday;
+        this.info.personal.deathAge = deathAge;
+        handleSuccess();
+      })
+      .catch((e) => handleError(e));
   }
 
   changeTheme(type) {

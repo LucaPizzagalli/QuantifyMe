@@ -113,8 +113,9 @@ function Footer({ snackPack, setSnackPack }) {
   }, [snackPack, setSnackPack, messageInfo, isAlertOpen]);
 
   function handleAlertClose(e, reason) {
-    // if (reason !== 'clickaway')
-    setIsAlertOpen(false);
+    console.log('dddd')
+    if (reason !== 'clickaway')
+      setIsAlertOpen(false);
   }
 
   function handleAlertExited() {
@@ -126,7 +127,7 @@ function Footer({ snackPack, setSnackPack }) {
       key={messageInfo ? messageInfo.key : undefined}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       open={isAlertOpen}
-      autoHideDuration={5000}
+      autoHideDuration={3000}
       onClose={handleAlertClose}
       onExited={handleAlertExited}
     // message={messageInfo ? messageInfo.message : undefined}

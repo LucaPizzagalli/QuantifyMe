@@ -5,7 +5,7 @@ import { useDrag } from 'react-use-gesture'
 import Container from '@material-ui/core/Container';
 import UserContext from './Firebase';
 import AlertContext from './Layout';
-import { DayTextField, DayRatingField, DayDateField, DaySubmit } from './AddDayField';
+import { DayTextField, DayRatingField, DayDateField, DaySubmit, DayDone } from './AddDayField';
 
 function AddDayForm() {
   let user = useContext(UserContext);
@@ -14,6 +14,7 @@ function AddDayForm() {
   let refDate = useRef(React.createRef());
   let [focused, setFocused] = useState(-1);
   let [isLoading, setIsLoading] = useState(false);
+  let [isDone, setIsDone] = useState(false);
 
   let [{ x }, setX] = useSpring(() => ({ x: 0 }));
   let bind = useDrag(({ down, movement: [mx], vxvy }) => {
@@ -52,6 +53,7 @@ function AddDayForm() {
   function handleSaveDaySuccess() {
     showAlert('Day saved', 'success');
     setIsLoading(false);
+    setIsDone(true);
   }
 
   function handleSaveDayError(error) {
@@ -60,10 +62,18 @@ function AddDayForm() {
   }
 
   let classes = useStyles();
+  if (isDone)
+    return (
+      <Container fixed display="flex">
+        <div style={{marginTop: '1rem'}} >
+          <DayDone />
+        </div>
+      </Container>)
+      ;
   return (
     <animated.div {...bind()} className={classes.cardList} style={{ left: x }}>
       <div key={'date'} className={classes.cardDiv} >
-        {focused <= 1 &&
+        {//focused <= 1 &&
           <Container fixed display="flex">
             <DayDateField
               reference={refDate}
@@ -71,14 +81,14 @@ function AddDayForm() {
               isFocused={focused === -1}
               changeFocus={changeFocus}
             />
-          </Container >
+          </Container>
         }
       </div>
       {user.info.metrics.map((metric, index) => {
         if (metric.type === 'rating')
           return (
             <div key={index} className={classes.cardDiv} >
-              {focused >= index - 1 && focused <= index + 1 &&
+              {//focused >= index - 1 && focused <= index + 1 &&
                 <Container fixed display="flex">
                   <DayRatingField
                     metric={metric}
@@ -87,13 +97,13 @@ function AddDayForm() {
                     changeFocus={changeFocus}
                     isFocused={focused === index}
                   />
-                </Container >
+                </Container>
               }
             </div>);
         else if (metric.type === 'text')
           return (
             <div key={index} className={classes.cardDiv} >
-              {focused >= index - 1 && focused <= index + 1 &&
+              {//focused >= index - 1 && focused <= index + 1 &&
                 <Container fixed display="flex">
                   <DayTextField
                     metric={metric}
@@ -102,24 +112,32 @@ function AddDayForm() {
                     changeFocus={changeFocus}
                     isFocused={focused === index}
                   />
-                </Container >
+                </Container>
               }
             </div>);
         return null;
       })}
       <div key={'submit'} className={classes.cardDiv} >
-        {focused >= user.info.metrics.length - 1 &&
-          < Container fixed display="flex">
-          <DaySubmit
-          index={user.info.metrics.length}
-          changeFocus={changeFocus}
-          isFocused={focused === user.info.metrics.length}
-          onSubmit={handleSaveDay}
-          isLoading={isLoading} />
-        </Container >
+        {//focused >= user.info.metrics.length - 1 &&
+          <Container fixed display="flex">
+          {/* <DayDateField
+            reference={refDate}
+            index={user.info.metrics.length}
+            isFocused={focused === user.info.metrics.length}
+            changeFocus={changeFocus}
+            onSubmit={handleSaveDay}
+            isLoading={isLoading}
+            /> */}
+            <DaySubmit
+              index={user.info.metrics.length}
+              changeFocus={changeFocus}
+              isFocused={focused === user.info.metrics.length}
+              onSubmit={handleSaveDay}
+              isLoading={isLoading} />
+          </Container>
         }
       </div>
-    </animated.div >
+    </animated.div>
   );
 }
 

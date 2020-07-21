@@ -1,8 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
-import Plot from 'react-plotly.js';
+// import Plot from 'plotly.js-basic-dist'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import UserContext from '../components/Firebase';
 import AlertContext from './Layout';
+import Plotly from "plotly.js-basic-dist";
+import createPlotlyComponent from "react-plotly.js/factory";
+const Plot = createPlotlyComponent(Plotly);
 
 function HappinessPlot() {
   let user = useContext(UserContext);
@@ -31,6 +34,9 @@ function HappinessPlot() {
   }, [user, showAlert]);
 
   let output = <CircularProgress />;
+  if (!isLoading)
+  console.log(data['date'])
+
   if (!isLoading)
     output = <Plot
       style={{ width: '100%' }}

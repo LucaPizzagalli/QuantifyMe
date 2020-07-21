@@ -33,6 +33,7 @@ function AlertComponent() {
   }
 
   function handleClose(e, reason) {
+    console.log('close');
     if (reason !== 'clickaway')
       setOpen(false);
   }
