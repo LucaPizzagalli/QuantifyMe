@@ -120,26 +120,24 @@ class User {
       .catch((e) => handleError(e));
   }
 
-  getDaysPage(refDate, order, cursor1, cursor2, isNextPage, handleSuccess, handleError) {
-    let limit = 4;
+  getDaysPage(refDate, order, cursor, isNextPage, handleSuccess, handleError) {
+    let limit = 10;
     let query = this.getDb().collection('days')
-    .where('date', '<=', refDate)
-    .orderBy('date', order);
-
-    if (order === 'asc' && isNextPage)
-      query = query.startAfter(cursor2)
-      .limit(limit);
-    else if (order === 'asc' && !isNextPage)
-      query = query.endBefore(cursor1)
-      .limitToLast(limit);
-    else if (order === 'desc' && isNextPage && cursor1){
-      query = query.startAfter(cursor2)
-      .limit(limit);
-      console.log('uuuu')
+    if (refDate && order === 'asc')
+      query = query.where('date', '>=', refDate)
+    else if (refDate && order === 'asc')
+      query = query.where('date', '<=', refDate)
+    query = query.orderBy('date', order);
+    if (isNextPage) {
+      if (cursor)
+        query = query.startAfter(cursor);
+      query = query.limit(limit);
     }
-    else if (order === 'desc' && !isNextPage && cursor1)
-      query = query.endBefore(cursor1)
-      .limitToLast(limit);
+    else {
+      if (cursor)
+        query = query.endBefore(cursor);
+      query = query.limitToLast(limit);
+    }
 
     query.get()
       .then((querySnapshot) => {
