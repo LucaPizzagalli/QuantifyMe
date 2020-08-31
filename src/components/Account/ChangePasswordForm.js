@@ -73,11 +73,13 @@ function ChangePasswordForm() {
         </Button>
         {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
       </div>
-      {error &&
+      {
+        error &&
         <Alert severity="error">
           <AlertTitle>Error</AlertTitle>
           {error.message}
-        </Alert>}
+        </Alert>
+      }
     </form>
   );
 }

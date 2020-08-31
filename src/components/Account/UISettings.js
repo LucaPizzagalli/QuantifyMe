@@ -14,12 +14,13 @@ function UserSettings() {
   let [isLoading, setIsLoading] = useState(false);
 
   function handleChangeTheme(newIsDark) {
-    let theme = newIsDark ? 'dark': 'light';
+    let theme = newIsDark ? 'dark' : 'light';
     setIsDark(newIsDark);
     user.changeTheme(theme);
     setIsLoading(true);
+    showAlert('saving', 'info');
 
-    user.getDb().update( { theme: theme } )
+    user.getDb().update({ theme: theme })
       .then(() => {
         setIsLoading(false);
         showAlert('Settings saved', 'success');
@@ -32,16 +33,20 @@ function UserSettings() {
 
   let classes = useStyles();
   return (
-    <>
     <form className={classes.root} noValidate autoComplete="off">
       <FormControl className={classes.field}>
         <FormControlLabel
-        value="dark-theme"
-        control={<Switch color="primary" checked={isDark} onChange={() => handleChangeTheme(!isDark)} />}
-        label="Dark Theme" />
+          value="dark-theme"
+          control={
+            <div className={classes.wrapper}>
+              <Switch color="primary" checked={isDark} onChange={() => handleChangeTheme(!isDark)} />
+              {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+            </div>
+          }
+          disabled={isLoading}
+          label="Dark Theme" />
       </FormControl>
     </form>
-    </>
   );
 }
 
@@ -52,6 +57,16 @@ let useStyles = makeStyles((theme) => ({
   },
   field: {
     minWidth: '15em',
+  },
+  wrapper: {
+    position: 'relative',
+  },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
   },
 }));
 

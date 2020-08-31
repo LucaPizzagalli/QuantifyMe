@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -11,6 +12,7 @@ import UISettings from './UISettings'
 function UserSettings() {
   let showAlert = useContext(AlertContext);
 
+  let classes = useStyles();
   return (
     <>
       <Accordion>
@@ -20,7 +22,7 @@ function UserSettings() {
           id="theme-options" >
           <Typography >Theme Options</Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails className={classes.accordion}>
           <UISettings />
         </AccordionDetails>
       </Accordion>
@@ -31,7 +33,7 @@ function UserSettings() {
           id="password-change" >
           <Typography>Change Password</Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails className={classes.accordion}>
           <ChangePasswordForm />
         </AccordionDetails>
       </Accordion>
@@ -42,7 +44,7 @@ function UserSettings() {
           id="random" >
           <Typography>Random</Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails className={classes.accordion}>
           <button onClick={() => showAlert('YESS')}>Just show a message</button>
         </AccordionDetails>
       </Accordion>
@@ -50,5 +52,12 @@ function UserSettings() {
   );
 }
 
+let useStyles = makeStyles((theme) => ({
+  accordion: {
+    display: 'flex',
+    flexDirection: 'column',
+    // alignItems: 'center',
+  },
+}));
 
 export default UserSettings;
