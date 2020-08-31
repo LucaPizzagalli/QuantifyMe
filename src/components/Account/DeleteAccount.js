@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
-import UserContext from '../components/Firebase';
+import UserContext from '../Firebase';
 import AlertContext from './Header';
 
 

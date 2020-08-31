@@ -58,24 +58,29 @@ function Diary() {
       </Alert>
     );
   }
-  return (
-    <div className={classes.root}>
-      <Button onClick={handelPrevPage}>prev</Button>
-      <Button onClick={handelNextPage}>next</Button>
-      <FormControlLabel
-        value="ascending"
-        control={<Switch color="primary" checked={isAsc} onChange={() => setIsAsc(!isAsc)} />}
-        label="ascending" />
+  if (days) {
+    return (
+      <div className={classes.root}>
+        <Button onClick={handelPrevPage}>prev</Button>
+        <Button onClick={handelNextPage}>next</Button>
+        <FormControlLabel
+          value="ascending"
+          control={<Switch color="primary" checked={isAsc} onChange={() => setIsAsc(!isAsc)} />}
+          label="ascending" />
 
-      <Grid container spacing={3} style={{ marginTop: '1rem' }}>
-        {days.map((day) => {
-          return (
-            <Grid key={day.date} item xs={12} md={6} xl={4}>
-              <DayCard metrics={user.info.metrics} day={day} />
-            </Grid>
-          )
-        })}
-      </Grid></div>
+        <Grid container spacing={3} style={{ marginTop: '1rem' }}>
+          {days.map((day) => {
+            return (
+              <Grid key={day.date} item xs={12} md={6} xl={4}>
+                <DayCard metrics={user.info.metrics} day={day} />
+              </Grid>
+            )
+          })}
+        </Grid></div>
+    );
+  }
+  return (
+    <p>Insert your first day</p>
   );
 }
 

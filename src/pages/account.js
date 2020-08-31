@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Container from '@material-ui/core/Container';
 import UserContext from '../components/Firebase';
-import UserSettings from '../components/UserSettings';
+import UserSettings from '../components/Account/UserSettings';
 
 
 function AccountPage() {

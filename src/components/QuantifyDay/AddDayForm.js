@@ -3,8 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
 import Container from '@material-ui/core/Container';
-import UserContext from './Firebase';
-import AlertContext from './Layout';
+import UserContext from '../Firebase';
+import AlertContext from '../Layout';
 import { DayTextField, DayRatingField, DayDateField, DaySubmit, DayDone } from './AddDayField';
 
 function AddDayForm() {
@@ -44,7 +44,7 @@ function AddDayForm() {
       if (newDay[metric.id] === -1 || newDay[metric.id] === '')
         newDay[metric.id] = null;
     }
-    let date = (new Date(refDate.current.value)).toISOString().slice(0, 10);
+    let date = (new Date(refDate.current.value)).getTime();
     console.log(date)
     console.log(newDay)
     user.saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError);

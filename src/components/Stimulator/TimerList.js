@@ -5,8 +5,8 @@ import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Zoom from '@material-ui/core/Zoom';
-import UserContext from './Firebase';
-import AlertContext from './Layout';
+import UserContext from '../Firebase';
+import AlertContext from '../Layout';
 import {Countdown, EditableCountdown, DeletedCountdown} from './Countdown';
 
 

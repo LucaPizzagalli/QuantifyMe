@@ -90,7 +90,7 @@ class User {
     let promises = [this.getDb().update({ metrics: newMetrics })];
     if (addedMetric)
       promises.push(
-        this.getDb().collection('stats').doc(addedMetric).set({ data: {} })
+        this.getDb().collection('stats').doc(addedMetric).set({ data: [] })
       );
     if (deletedMetric)
       promises.push(
@@ -107,11 +107,11 @@ class User {
 
   // Days operations
   saveDay(date, newDay, handleSuccess, handleError) {
-    let promises = [this.getDb().collection('days').doc(date).set({date: date, ...newDay})];
+    let promises = [this.getDb().collection('days').doc(date.toString()).set({date: date, ...newDay})];
     for (let [metricId, value] of Object.entries(newDay))
       promises.push(
         this.getDb().collection('stats').doc(metricId).update(
-          { ['data.' + date]: value }
+          { 'data': app.firestore.FieldValue.arrayUnion({date: date, value: value}) }
         )
       );
 

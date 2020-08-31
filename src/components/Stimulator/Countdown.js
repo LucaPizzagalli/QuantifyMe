@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
-import Gong1 from '../audio/gong1.mp3';
+import Gong1 from '../../audio/gong1.mp3';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import Input from '@material-ui/core/TextField';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -65,9 +66,7 @@ function Countdown({ timer, interactive, HandleEditTimer }) {
             <EditIcon />
           </IconButton>
         }
-      />
-      <CardContent>
-        {timeLeft > 0 ?
+        title= {timeLeft > 0 ?
           <div>
             {hours !== 0 &&
               <>
@@ -87,6 +86,9 @@ function Countdown({ timer, interactive, HandleEditTimer }) {
           :
           <Typography variant="h3" component="div">Stooop</Typography>
         }
+      />
+      <CardContent>
+        
         <Button variant="contained" color="primary" onClick={restartTimer} >
           Reset
       </Button>
@@ -99,6 +101,7 @@ function Countdown({ timer, interactive, HandleEditTimer }) {
             Play
         </Button>
         )}
+        <Typography variant="body1">{timer.description}</Typography>
       </CardContent>
     </Card>
   )
@@ -106,6 +109,14 @@ function Countdown({ timer, interactive, HandleEditTimer }) {
 
 
 function EditableCountdown({ timer, HandleDeleteTimer, timeRef, descriptionRef }) {
+  let [time, setTime] = useState(timer.time);
+
+  function handleTimeChange(e){
+    let raw = e.target.value;
+    if (/^\d+$/.test(raw))
+      setTime(parseInt(raw) % 1000000)
+  }
+
   return (
     <Card>
       <CardHeader
@@ -113,21 +124,19 @@ function EditableCountdown({ timer, HandleDeleteTimer, timeRef, descriptionRef }
           <IconButton aria-label="delete" onClick={() => HandleDeleteTimer(timer.id)}>
             <DeleteIcon />
           </IconButton>}
-        title="Edit Timer"
-      />
+        title="Edit Timer" />
       <CardContent>
-        <TextField
+        <Input
           inputRef={timeRef}
-          defaultValue={timer.time}
-          label="Time"
-          fullWidth={true}
-        />
+          value={time}
+          onChange={handleTimeChange}
+          inputProps={{ 'aria-label': 'time' }}
+          fullWidth={true} />
         <TextField
           inputRef={descriptionRef}
           defaultValue={timer.description}
           label="Description"
-          fullWidth={true}
-        />
+          fullWidth={true} />
       </CardContent>
     </Card>
   );

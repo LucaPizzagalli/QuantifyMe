@@ -14,7 +14,7 @@ function DayCard({ metrics, day }) {
   return (
     <Card onClick={() => setIsSelected(!isSelected)} >
       <CardActionArea>
-      <CardHeader title={day.date} />
+      <CardHeader title={(new Date(day.date)).toISOString().slice(0, 10)} />
       <CardContent className={isSelected ? classes.rootExpanded : classes.root}>
         {metrics.map((metric) => {
           if (metric.type === 'text')

@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import MetricList from '../components/MetricList';
+import MetricList from '../components/Metrics/MetricList';
 
 function MetricsPage() {
   return (

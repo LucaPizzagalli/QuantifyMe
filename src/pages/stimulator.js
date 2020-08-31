@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import TimerList from '../components/TimerList';
+import TimerList from '../components/Stimulator/TimerList';
 
 class StimulatorPage extends React.Component {
   render() {

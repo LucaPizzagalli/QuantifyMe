@@ -1,5 +1,5 @@
 import React from 'react';
-import AddDayForm from '../components/AddDayForm';
+import AddDayForm from '../components/QuantifyDay/AddDayForm';
 
 
 function QuantifyDayPage() {

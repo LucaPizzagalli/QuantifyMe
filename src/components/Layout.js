@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
@@ -24,6 +24,7 @@ function Layout({ children }) {
   function showAlert(message, severity = 'info') {
     setSnackPack((prev) => [...prev, { message, severity, key: new Date().getTime() }]);
   }
+
   return (
     <>
       <Header />
@@ -39,11 +40,20 @@ function Header() {
   let [isMenuOpen, setIsMenuOpen] = useState(false);
   let user = useContext(UserContext);
 
-  const classes = useStyles();
+  let classes = useStyles();
   let menuItems = [];
+  let location = useLocation().pathname;
+  let titleLabel = '404 Not Found';
   for (let [key, value] of Object.entries(PAGES)) {
     if (user.isLogged() === value.logged) {
-      let item = <ListItem button key={key} component={RouterLink} to={value.to} onClick={() => setIsMenuOpen(false)}>
+      if (location === value.to)
+        titleLabel = value.label
+      let item = <ListItem
+        button
+        selected={location === value.to}
+        key={key} component={RouterLink}
+        to={value.to}
+        onClick={() => setIsMenuOpen(false)}>
         <ListItemIcon>
           {value.icon ? value.icon : <MailIcon />}
         </ListItemIcon>
@@ -66,13 +76,18 @@ function Header() {
             <MenuIcon />
           </IconButton>
           <Typography
-            className={classes.title}
+            className={classes.logo}
             component={RouterLink}
             to="/"
             variant="h6"
-            color="inherit"
-          >
-            QuantifyMe
+            color="inherit" >
+            QM
+          </Typography>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            color="inherit" >
+            {titleLabel}
           </Typography>
           {user.isLogged() && <SignOutButton />}
         </Toolbar>
@@ -156,9 +171,12 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
+  logo: {
+    marginRight: theme.spacing(2),
+    textDecoration: "none",
+  },
   title: {
     flexGrow: 1,
-    textDecoration: "none",
   },
   drawer: {
     width: 240,

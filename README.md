@@ -10,6 +10,15 @@ Instead, if you want to compile in local with node:
 
     yarn start
 
+To production build
+
+    yarn build
+
+To analyze bundle size
+
+    yarn analyze
+
+
 ## Notes
 
 - minimize plotly bundle or try highcharts
