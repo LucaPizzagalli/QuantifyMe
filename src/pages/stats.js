@@ -1,14 +1,11 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import HappinessPlot from '../components/HappinessPlot';
+import PlotConsole from '../components/Stats/PlotConsole';
 
 function StatsPage () {
     return (
       <Container fixed>
-        <Paper>
-          <HappinessPlot />
-        </Paper>
+          <PlotConsole />
       </Container>
       );
 }

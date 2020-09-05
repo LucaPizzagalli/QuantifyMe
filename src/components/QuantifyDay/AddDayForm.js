@@ -45,8 +45,6 @@ function AddDayForm() {
         newDay[metric.id] = null;
     }
     let date = (new Date(refDate.current.value)).getTime();
-    console.log(date)
-    console.log(newDay)
     user.saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError);
   }
 

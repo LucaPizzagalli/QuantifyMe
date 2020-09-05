@@ -18,7 +18,6 @@ function UserSettings() {
     setIsDark(newIsDark);
     user.changeTheme(theme);
     setIsLoading(true);
-    showAlert('saving', 'info');
 
     user.getDb().update({ theme: theme })
       .then(() => {
@@ -40,7 +39,7 @@ function UserSettings() {
           control={
             <div className={classes.wrapper}>
               <Switch color="primary" checked={isDark} onChange={() => handleChangeTheme(!isDark)} />
-              {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+              {isLoading && <CircularProgress size={30} className={classes.buttonProgress} />}
             </div>
           }
           disabled={isLoading}
@@ -65,8 +64,8 @@ let useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
+    marginTop: -15,
+    marginLeft: -15,
   },
 }));
 

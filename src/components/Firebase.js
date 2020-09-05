@@ -152,6 +152,22 @@ class User {
       .catch((e) => handleError(e));
   }
 
+  getTimeSeries(metrics, handleSuccess, handleError) {
+    let promises = metrics.map( metric => {
+      return this.getDb().collection('stats').doc(metric.id).get();
+    });
+
+    Promise.all(promises)
+      .then(docs => {
+        let timeSeries = docs.map((doc, index) => {
+          let data = doc.data().data.map(tuple => [tuple['date'], tuple['value']]);
+          return {name: metrics[index].name, data:data};
+        });
+        handleSuccess(timeSeries);
+        })
+      .catch((e) => handleError(e));
+  }
+
   // Timers operations
   getTimers() {
     return this.info.timers;
