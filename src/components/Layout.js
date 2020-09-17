@@ -16,7 +16,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import PAGES from '../utils/Pages';
 import UserContext from './Firebase';
-import SignOutButton from './signOutButton'
 
 function Layout({ children }) {
   let [snackPack, setSnackPack] = useState([]); //TODO move down to another component to avoid render
@@ -89,7 +88,7 @@ function Header() {
             color="inherit" >
             {titleLabel}
           </Typography>
-          {user.isLogged() && <SignOutButton />}
+          X
         </Toolbar>
       </AppBar>
       <Drawer

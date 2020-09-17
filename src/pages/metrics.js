@@ -4,7 +4,7 @@ import MetricList from '../components/Metrics/MetricList';
 
 function MetricsPage() {
   return (
-    <Container fixed display="flex">
+    <Container maxWidth="md" display="flex" style={{padding: '1.5rem'}}>
       <MetricList />
     </Container>
   );

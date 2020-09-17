@@ -5,7 +5,9 @@ import { useDrag } from 'react-use-gesture'
 import Container from '@material-ui/core/Container';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
-import { DayTextField, DayRatingField, DayDateField, DaySubmit, DayDone } from './AddDayField';
+import { DayTextField, DayRatingField, DayDateField, DaySubmit } from './AddDayField';
+import DayDone from './DayDone';
+import DayNoMetrics from './DayNoMetrics';
 
 function AddDayForm() {
   let user = useContext(UserContext);
@@ -62,12 +64,16 @@ function AddDayForm() {
   let classes = useStyles();
   if (isDone)
     return (
-      <Container fixed display="flex">
-        <div style={{marginTop: '1rem'}} >
-          <DayDone />
-        </div>
-      </Container>)
-      ;
+      <Container fixed display="flex" style={{ marginTop: '1rem' }}>
+        <DayDone />
+      </Container>);
+
+  if (user.info.metrics.length === 0)
+    return (
+      <Container fixed display="flex" style={{ marginTop: '1rem' }}>
+        <DayNoMetrics />
+      </Container>);
+
   return (
     <animated.div {...bind()} className={classes.cardList} style={{ left: x }}>
       <div key={'date'} className={classes.cardDiv} >
@@ -118,7 +124,7 @@ function AddDayForm() {
       <div key={'submit'} className={classes.cardDiv} >
         {//focused >= user.info.metrics.length - 1 &&
           <Container fixed display="flex">
-          {/* <DayDateField
+            {/* <DayDateField
             reference={refDate}
             index={user.info.metrics.length}
             isFocused={focused === user.info.metrics.length}

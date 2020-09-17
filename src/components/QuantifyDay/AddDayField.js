@@ -288,18 +288,6 @@ function DaySubmit({ index, isFocused, changeFocus, onSubmit, isLoading }) {
   );
 }
 
-
-function DayDone() {
-  let classes = useStyles();
-  return (
-    <Paper className={classes.root} elevation={8} >
-      <Typography variant="h3" className={classes.title}>You Made It</Typography>
-      <Typography variant='body1' className={classes.description}>Good job. Today is done.</Typography>
-    </Paper>
-  );
-}
-
-
 let useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -383,4 +371,4 @@ let useStyles = makeStyles((theme) => ({
 }));
 
 
-export { DayTextField, DayRatingField, DayDateField, DaySubmit, DayDone };
+export { DayTextField, DayRatingField, DayDateField, DaySubmit };

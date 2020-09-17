@@ -64,8 +64,8 @@ class User {
                 { merge: true })
             }
           })
-          .then(() => HandleUserAuthChange(true) )
-          .catch((e) => handleError(e) )
+          .then(() => HandleUserAuthChange(true))
+          .catch((e) => handleError(e))
       }
       else
         HandleUserAuthChange(false);
@@ -74,6 +74,12 @@ class User {
 
   deactivateAuthUserListener() {
     this.authListener();
+  }
+
+  signOut(handleSuccess, handleError) {
+    this.configAuth.signOut()
+    .then(() => handleSuccess())
+    .catch((e) => handleError(e));
   }
 
   // Database operations
@@ -90,7 +96,7 @@ class User {
     let promises = [this.getDb().update({ metrics: newMetrics })];
     if (addedMetric)
       promises.push(
-        this.getDb().collection('stats').doc(addedMetric).set({ data: [] })
+        this.getDb().collection('stats').doc(addedMetric).set({ data: {} })
       );
     if (deletedMetric)
       promises.push(
@@ -107,13 +113,14 @@ class User {
 
   // Days operations
   saveDay(date, newDay, handleSuccess, handleError) {
-    let promises = [this.getDb().collection('days').doc(date.toString()).set({date: date, ...newDay})];
-    for (let [metricId, value] of Object.entries(newDay))
+    let promises = [this.getDb().collection('days').doc(date.toString()).set({ date: date, ...newDay })];
+    for (let [metricId, value] of Object.entries(newDay)) {
       promises.push(
         this.getDb().collection('stats').doc(metricId).update(
-          { 'data': app.firestore.FieldValue.arrayUnion({date: date, value: value}) }
+          { ['data.' + date]: value }
         )
       );
+    }
 
     Promise.all(promises)
       .then(() => handleSuccess())
@@ -146,25 +153,26 @@ class User {
           days.push({ date: doc.id, ...(doc.data()) });
         });
         let cursor1 = querySnapshot.docs[0];
-        let cursor2 = querySnapshot.docs[querySnapshot.docs.length-1];
+        let cursor2 = querySnapshot.docs[querySnapshot.docs.length - 1];
         handleSuccess(days, cursor1, cursor2);
       })
       .catch((e) => handleError(e));
   }
 
   getTimeSeries(metrics, handleSuccess, handleError) {
-    let promises = metrics.map( metric => {
+    let promises = metrics.map(metric => {
       return this.getDb().collection('stats').doc(metric.id).get();
     });
 
     Promise.all(promises)
       .then(docs => {
         let timeSeries = docs.map((doc, index) => {
-          let data = doc.data().data.map(tuple => [tuple['date'], tuple['value']]);
-          return {name: metrics[index].name, data:data};
+          let dataMap = doc.data().data;
+          let data = Object.keys(dataMap).map(key => [Number(key), dataMap[key]]);
+          return { name: metrics[index].name, data: data };
         });
         handleSuccess(timeSeries);
-        })
+      })
       .catch((e) => handleError(e));
   }
 
@@ -201,6 +209,26 @@ class User {
 
   changeTheme(type) {
     this.handleThemeChange(type)
+  }
+
+  updatePassword(newPassword, handleSuccess, handleError) {
+    this.auth.updatePassword(newPassword)
+      .then(() => {
+        handleSuccess('Password Updated');
+      })
+      .catch((e) => handleError(e));
+  }
+
+  deleteAccount(handleSuccess, handleError) {
+    this.auth.delete()
+    // TODO sign out
+    // TODO delete all collections
+    // this.getDb().delete()
+      .then(() => {
+        this.info = {};
+        handleSuccess('Account Deleted');
+      })
+      .catch((e) => handleError(e));
   }
 
   // Smaller Stuff

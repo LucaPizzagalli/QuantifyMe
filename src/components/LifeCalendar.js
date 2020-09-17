@@ -123,20 +123,18 @@ let useStyles = makeStyles((theme) => ({
   cellShell: {
     flexBasis: 0,
     flexGrow: 1,
-    margin: '1px',
+    border: '1px solid white',
   },
   cell: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: '100%',
-    margin: '1px',
   },
   outCell: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: '1px',
   },
   clickedCell: {
     display: 'flex',

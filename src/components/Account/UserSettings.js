@@ -1,17 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import AlertContext from '../Layout';
-import ChangePasswordForm from './ChangePasswordForm'
 import UISettings from './UISettings'
+import AccountSettings from './AccountSettings'
 
 function UserSettings() {
-  let showAlert = useContext(AlertContext);
-
   let classes = useStyles();
   return (
     <>
@@ -29,23 +26,23 @@ function UserSettings() {
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="password-change"
-          id="password-change" >
-          <Typography>Change Password</Typography>
+          aria-controls="account"
+          id="account" >
+          <Typography>Account Settings</Typography>
         </AccordionSummary>
         <AccordionDetails className={classes.accordion}>
-          <ChangePasswordForm />
+          <AccountSettings />
         </AccordionDetails>
       </Accordion>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="random"
-          id="random" >
-          <Typography>Random</Typography>
+          aria-controls="export-data"
+          id="export-data" >
+          <Typography>Export Data</Typography>
         </AccordionSummary>
         <AccordionDetails className={classes.accordion}>
-          <button onClick={() => showAlert('YESS')}>Just show a message</button>
+          Function not yet unavailable
         </AccordionDetails>
       </Accordion>
     </>

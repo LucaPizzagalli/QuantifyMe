@@ -11,7 +11,7 @@ function DeletedMetricCard() {
       <CardContent>
         <Alert severity="warning">
           <AlertTitle>Metric Deleted</AlertTitle>
-          If you save all the records associated with the metric will be also deleted.
+          If you save now, all the records associated with this metric will be deleted.
         </Alert>
       </CardContent>
     </Card>

@@ -10,6 +10,8 @@ import AlertContext from '../Layout';
 import MetricCard from './MetricCard';
 import EditableMetricCard from './EditableMetricCard';
 import DeletedMetricCard from './DeletedMetricCard';
+import FirstMetricCard from './FirstMetricCard';
+import DraggableList from '../DraggableList.js'
 
 function MetricList() {
   let user = useContext(UserContext);
@@ -91,17 +93,14 @@ function MetricList() {
     showAlert(error.message, 'error');
   }
 
-
-  let classes = useStyles();
-  let metricCards = [];
-  for (let metric of metrics) {
+  let metricCards = metrics.map(metric => {
     if (metric.id === editable.id) {
       if (editable.delete)
-        metricCards.push(
+        return (
           <DeletedMetricCard key={metric.id} />
         );
       else {
-        metricCards.push(
+        return (
           <EditableMetricCard
             key={metric.id}
             metric={metric}
@@ -115,18 +114,23 @@ function MetricList() {
       }
     }
     else
-      metricCards.push(
+      return (
         <MetricCard
           key={metric.id}
           metric={metric}
           interactive={editable.id == null}
           HandleEditMetric={HandleEditMetric} />
       );
-  }
+  });
+  if (metrics.length === 0)
+    metricCards = [<FirstMetricCard />];
 
+  let classes = useStyles();
   return (
     <>
-      {metricCards}
+      <DraggableList padding={20}>
+        {metricCards}
+      </DraggableList>
       <Zoom
         key="add-metric-button"
         in={editable.id == null}

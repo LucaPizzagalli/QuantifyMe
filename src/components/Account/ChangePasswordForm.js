@@ -3,11 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
-
 
 function ChangePasswordForm() {
   let user = useContext(UserContext);
@@ -17,7 +14,16 @@ function ChangePasswordForm() {
   let [isLoading, setIsLoading] = useState(false);
   let [isPasswordOneValid, setIsPasswordOneValid] = useState(true);
   let [isPasswordTwoValid, setIsPasswordTwoValid] = useState(true);
-  let [error, setError] = useState(null);
+
+  function handleUpdateSuccess(message) {
+    showAlert(message, 'success');
+    setIsLoading(false);
+  }
+
+  function handleUpdateError(e) {
+    showAlert(e.message, 'error');
+    setIsLoading(false);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -27,16 +33,7 @@ function ChangePasswordForm() {
     setIsPasswordTwoValid(passwordTwoValid);
     if (passwordOneValid && passwordTwoValid) {
       setIsLoading(true);
-      user.configAuth.doPasswordUpdate(passwordOne)
-        .then(
-          () => {
-            showAlert('Password changed', 'success');
-          }
-        )
-        .catch(error => {
-          setError(error);
-          setIsLoading(false);
-        });
+      user.updatePassword(passwordOne, handleUpdateSuccess, handleUpdateError);
     }
   }
 
@@ -73,13 +70,6 @@ function ChangePasswordForm() {
         </Button>
         {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
       </div>
-      {
-        error &&
-        <Alert severity="error">
-          <AlertTitle>Error</AlertTitle>
-          {error.message}
-        </Alert>
-      }
     </form>
   );
 }

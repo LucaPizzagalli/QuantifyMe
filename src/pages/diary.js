@@ -4,7 +4,7 @@ import Diary from '../components/Diary';
 
 function DiaryPage() {
   return (
-    <Container fixed display="flex">
+    <Container fixed display="flex" style={{padding: '1.5rem'}}>
       <Diary />
     </Container>
   );

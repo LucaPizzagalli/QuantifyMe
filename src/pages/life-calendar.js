@@ -59,10 +59,10 @@ function MetricsPage() {
         <TextField
           id="lifeExpectancy"
           type="number"
-          inputProps={{ min: '10', max: '150', step: '1' }}
+          inputProps={{ min: '1', max: '150', step: '1' }}
           label="Your life expectancy"
           value={deathAge.toString()}
-          onChange={(e) => { if (isNaN(e.target.valueAsNumber)) setDeathAge(0); else setDeathAge(Math.min(150, Math.max(10, e.target.valueAsNumber))) }}
+          onChange={(e) => { if (isNaN(e.target.valueAsNumber)) setDeathAge(0); else setDeathAge(Math.min(150, Math.max(1, e.target.valueAsNumber))) }}
         />
         <Button
           type="submit"

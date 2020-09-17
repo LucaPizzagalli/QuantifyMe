@@ -7,8 +7,11 @@ import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import DayCard from './DayCard';
 import UserContext from './Firebase';
+import DayCard from './DayCard';
+import Paper from '@material-ui/core/Paper';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 function Diary() {
   let user = useContext(UserContext);
@@ -49,13 +52,25 @@ function Diary() {
 
   let classes = useStyles();
   if (isLoading)
-    return (<CircularProgress />);
+    return (
+      <div style={{
+        display: 'flex',
+        flexGrow: '1',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '80vh',
+      }}>
+        <CircularProgress size="5rem" />
+      </div>
+    );
   if (error) {
     return (
-      <Alert severity="error">
-        <AlertTitle>Failed to load the diary</AlertTitle>
-        {error.message}
-      </Alert>
+      <Paper>
+        <Alert severity="error">
+          <AlertTitle>Failed to load the diary</AlertTitle>
+          {error.message}
+        </Alert>
+      </Paper>
     );
   }
   if (days) {
@@ -80,7 +95,13 @@ function Diary() {
     );
   }
   return (
-    <p>Insert your first day</p>
+    <Paper>
+      <Alert severity="info">
+        <AlertTitle>No Days Recorded</AlertTitle>
+        Apparently you never recorded a day<br />
+        Go <Link component={RouterLink} to="/quantify-day">here</Link> and start now with today!
+      </Alert>
+    </Paper>
   );
 }
 
