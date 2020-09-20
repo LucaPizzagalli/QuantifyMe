@@ -17,7 +17,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
   let classes = useStyles();
 
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardHeader
         action={
           interactive &&
@@ -61,8 +61,9 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: 345,
+  card: {
+    // maxWidth: 345,
+    flexGrow: 1
   },
   expand: {
     transform: 'rotate(0deg)',

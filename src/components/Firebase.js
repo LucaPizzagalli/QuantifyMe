@@ -78,8 +78,8 @@ class User {
 
   signOut(handleSuccess, handleError) {
     this.configAuth.signOut()
-    .then(() => handleSuccess())
-    .catch((e) => handleError(e));
+      .then(() => handleSuccess())
+      .catch((e) => handleError(e));
   }
 
   // Database operations
@@ -96,7 +96,7 @@ class User {
     let promises = [this.getDb().update({ metrics: newMetrics })];
     if (addedMetric)
       promises.push(
-        this.getDb().collection('stats').doc(addedMetric).set({ data: {} })
+        this.getDb().collection('stats').doc(addedMetric).set({ times: [], values: [] })
       );
     if (deletedMetric)
       promises.push(
@@ -113,17 +113,30 @@ class User {
 
   // Days operations
   saveDay(date, newDay, handleSuccess, handleError) {
-    let promises = [this.getDb().collection('days').doc(date.toString()).set({ date: date, ...newDay })];
+    let promises = [];
+    let metricIds = [];
     for (let [metricId, value] of Object.entries(newDay)) {
-      promises.push(
-        this.getDb().collection('stats').doc(metricId).update(
-          { ['data.' + date]: value }
-        )
-      );
+      metricIds.push(metricId);
+      promises.push(this.getDb().collection('stats').doc(metricId).get());
     }
 
     Promise.all(promises)
-      .then(() => handleSuccess())
+      .then(docs => {
+        let promises2 = [this.getDb().collection('days').doc(date.toString()).set({ date: date, ...newDay })];
+        for (let [index, doc] of Object.entries(docs)) {
+          let times = doc.data().times;
+          let values = doc.data().values;
+          let newIndex = sortedIndex(times, date);
+          times.splice(newIndex, 0, date);
+          values.splice(newIndex, 0, newDay[metricIds[index]]);
+          promises2.push(
+            this.getDb().collection('stats').doc(metricIds[index]).update({ times, values })
+          );
+        }
+        Promise.all(promises2)
+          .then(() => handleSuccess())
+          .catch((e) => handleError(e));
+      })
       .catch((e) => handleError(e));
   }
 
@@ -167,9 +180,10 @@ class User {
     Promise.all(promises)
       .then(docs => {
         let timeSeries = docs.map((doc, index) => {
-          let dataMap = doc.data().data;
-          let data = Object.keys(dataMap).map(key => [Number(key), dataMap[key]]);
-          return { name: metrics[index].name, data: data };
+          let times = doc.data().times;
+          let values = doc.data().values;
+          let data = times.map((time, index) => [time, values[index]]);
+          return { name: metrics[index].name, data };
         });
         handleSuccess(timeSeries);
       })
@@ -221,9 +235,9 @@ class User {
 
   deleteAccount(handleSuccess, handleError) {
     this.auth.delete()
-    // TODO sign out
-    // TODO delete all collections
-    // this.getDb().delete()
+      // TODO sign out
+      // TODO delete all collections
+      // this.getDb().delete()
       .then(() => {
         this.info = {};
         handleSuccess('Account Deleted');
@@ -239,6 +253,20 @@ class User {
       return 'Welcome back to QuantifyMe';
   }
 
+}
+
+function sortedIndex(array, value) {
+  let low = 0;
+  let high = array.length;
+
+  while (low < high) {
+    let mid = (low + high) >>> 1;
+    if (array[mid] < value)
+      low = mid + 1;
+    else
+      high = mid;
+  }
+  return low;
 }
 
 let UserContext = React.createContext(null);

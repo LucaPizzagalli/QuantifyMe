@@ -78,7 +78,7 @@ function DraggableList({ children, padding }) {
             top: y,
             transform,
           }}
-          children={<div ref={measuredRef[i]}>{children[i]}</div>}
+          children={children[i]}
         />
       ))}
     </div>

@@ -7,7 +7,7 @@ function FourOuFour() {
   return (
     <Container>
       <DraggableList padding={40}>
-        <div><p>aaaaa<br />aaaaa</p></div>
+        <div style={{background: 'red', flexGrow: 1}}><p>aaaaa<br />aaaaa</p></div>
         <div><p>bbbbbbbbbb</p></div>
         <div><p>cccccccccc</p></div>
         <div><p>ddddddddd</p></div>
