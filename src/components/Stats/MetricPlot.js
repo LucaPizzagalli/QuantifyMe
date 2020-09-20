@@ -17,6 +17,8 @@ function MetricPlot({ metrics }) {
   }, [user, metrics]);
 
   function HandleGetDataSuccess(newTimeSeries) {
+    for (let index = 0; index < newTimeSeries.length; index++)
+      newTimeSeries[index]['yAxis'] = index;
     setTimeSeries(newTimeSeries);
     setIsLoading(false);
   }
@@ -43,6 +45,13 @@ function MetricPlot({ metrics }) {
 
   options['title']['text'] = '';
   options['xAxis']['type'] = 'datetime';
+  options['yAxis'] = timeSeries.map(() => {
+    return {
+      gridLineWidth: 0,
+      labels: { enabled: false },
+      title: { text: '', }}
+    });
+  options['yAxis'][0]['gridLineWidth'] = 1;
   options['series'] = timeSeries;
 
   return (
@@ -101,23 +110,23 @@ let darkPlot = {
       }
     }
   },
-  yAxis: {
-    gridLineColor: '#707073',
-    labels: {
-      style: {
-        color: '#E0E0E3'
-      }
-    },
-    lineColor: '#707073',
-    minorGridLineColor: '#505053',
-    tickColor: '#707073',
-    tickWidth: 1,
-    title: {
-      style: {
-        color: '#A0A0A3'
-      }
-    }
-  },
+  // yAxis: {
+  //   gridLineColor: '#707073',
+  //   labels: {
+  //     style: {
+  //       color: '#E0E0E3'
+  //     }
+  //   },
+  //   lineColor: '#707073',
+  //   minorGridLineColor: '#505053',
+  //   tickColor: '#707073',
+  //   tickWidth: 1,
+  //   title: {
+  //     style: {
+  //       color: '#A0A0A3'
+  //     }
+  //   }
+  // },
   tooltip: {
     backgroundColor: 'rgba(0, 0, 0, 0.85)',
     style: {

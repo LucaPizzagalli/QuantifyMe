@@ -19,7 +19,7 @@ import UserContext from './Firebase';
 
 function Layout({ children }) {
   let [snackPack, setSnackPack] = useState([]); //TODO move down to another component to avoid render
-  
+
   function showAlert(message, severity = 'info') {
     setSnackPack((prev) => [...prev, { message, severity, key: new Date().getTime() }]);
   }
@@ -113,7 +113,7 @@ function Header() {
 function Footer({ snackPack, setSnackPack }) {
   let [isAlertOpen, setIsAlertOpen] = useState(false);
   let [messageInfo, setMessageInfo] = useState(undefined);
-  
+
   useEffect(() => {
     if (snackPack.length && !messageInfo) {
       // Set a new snack when we don't have an active one
@@ -127,9 +127,8 @@ function Footer({ snackPack, setSnackPack }) {
   }, [snackPack, setSnackPack, messageInfo, isAlertOpen]);
 
   function handleAlertClose(e, reason) {
-    console.log('dddd')
-    if (reason !== 'clickaway')
-      setIsAlertOpen(false);
+    // if (reason !== 'clickaway')
+    setIsAlertOpen(false);
   }
 
   function handleAlertExited() {
