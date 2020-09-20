@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useRef, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useCallback } from 'react'
 import { useDrag } from 'react-use-gesture'
 import { useSprings, animated } from 'react-spring'
 
@@ -9,19 +9,26 @@ function DraggableList({ children, padding }) {
   let order = useRef(children.map((_, index) => index));
   let [springs, setSprings] = useSprings(children.length, updatePositions(false, order.current));
 
-  let [isReady, setIsReady] = useState(false);
-  if (!isReady && heights.current[0]) {
-    setSprings(updatePositions(false, order.current));
-    setIsReady(true);
-  }
 
   let measuredRef = useCallback(
     children.map((_, index) => node => {
       if (node !== null)
         heights.current[index] = node.getBoundingClientRect().height;
-      console.log(heights.current)
     })
-    , [children, isReady]);
+    , [children]);
+
+  useEffect(() => {
+    if (children.length > order.current.length)
+      order.current.push(children.length - 1);
+    // if (children.length < order.current.length) TODO
+    measuredRef.current = children.map((_, index) => node => {
+      if (node !== null)
+        heights.current[index] = node.getBoundingClientRect().height;
+    });
+    setSprings(updatePositions(false, order.current));
+    });
+
+
 
   let bind = useDrag(({ args: [originalIndex], down, movement: [, y] }) => {
     let oldIndex = order.current.indexOf(originalIndex);
@@ -40,17 +47,13 @@ function DraggableList({ children, padding }) {
       newOrder[index] = newOrder[index + direction];
     newOrder[newIndex] = temp;
 
-    setSprings(updatePositions(down, newOrder, originalIndex, order.current, y)); // Feed springs new style data, they'll animate the view without causing a single render
+    setSprings(updatePositions(down, newOrder, originalIndex, order.current, y));
     if (!down)
       order.current = newOrder;
-  })
+  }, { delay: 350 })
 
   function updatePositions(down, newOrder, originalIndex, oldOrder, y) {
     return index => {
-      if (heights.current.length < children.length)
-        console.log('aaaaaaaa')
-      if (order.current.length < children.length)
-        console.log('bbbbbbbb')
       let yOffset = 0;
       if (down && index === originalIndex) {
         for (let i = 0; index !== oldOrder[i]; i++)
@@ -58,7 +61,7 @@ function DraggableList({ children, padding }) {
         return { y: yOffset + y, transform: 'scale(1.1)', zIndex: '1', boxShadow: '0 0 0.2rem', immediate: n => n === 'y' || n === 'zIndex' }
       }
 
-      for (let i = 0; index !== newOrder[i]; i++)
+      for (let i = 0; index !== newOrder[i] && i < newOrder.length; i++)
         yOffset += heights.current[newOrder[i]] + padding;
       return { y: yOffset, transform: 'scale(1)', zIndex: '0', boxShadow: '0 0 0rem', immediate: false }
     };
@@ -78,7 +81,7 @@ function DraggableList({ children, padding }) {
             top: y,
             transform,
           }}
-          children={children[i]}
+          children={<div ref={measuredRef[i]} className={classes.child}>{children[i]}</div>}
         />
       ))}
     </div>
@@ -97,8 +100,11 @@ let useStyles = makeStyles((theme) => ({
     display: 'flex',
     position: 'absolute',
     // pointerEvents: 'auto',
-    background: 'lightblue',
     width: '100%'
+  },
+  child: {
+    display: 'flex',
+    flexGrow: 1,
   }
 }));
 

@@ -115,7 +115,7 @@ class User {
   saveDay(date, newDay, handleSuccess, handleError) {
     let promises = [];
     let metricIds = [];
-    for (let [metricId, value] of Object.entries(newDay)) {
+    for (let metricId of Object.keys(newDay)) {
       metricIds.push(metricId);
       promises.push(this.getDb().collection('stats').doc(metricId).get());
     }
@@ -182,6 +182,8 @@ class User {
         let timeSeries = docs.map((doc, index) => {
           let times = doc.data().times;
           let values = doc.data().values;
+          if(metrics[index].type === 'text')
+            values = values.map(text => text ? 1 : 0);
           let data = times.map((time, index) => [time, values[index]]);
           return { name: metrics[index].name, data };
         });
