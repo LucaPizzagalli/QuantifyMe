@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
@@ -54,11 +55,12 @@ function Countdown({ timer, interactive, HandleEditTimer }) {
       interval.current = setInterval(() => updateTimer(endTime), 1000);
   }
 
+  let classes = useStyles();
   let hours = Math.floor((timeLeft + 999) / 1000 / 60 / 60);
   let minutes = Math.floor((timeLeft + 999) / 1000 / 60 % 60);
   let seconds = Math.floor((timeLeft + 999) / 1000 % 60);
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardHeader
         action={
           interactive &&
@@ -117,8 +119,9 @@ function EditableCountdown({ timer, HandleDeleteTimer, timeRef, descriptionRef }
       setTime(parseInt(raw) % 1000000)
   }
 
+  let classes = useStyles();
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardHeader
         action={
           <IconButton aria-label="delete" onClick={() => HandleDeleteTimer(timer.id)}>
@@ -144,8 +147,9 @@ function EditableCountdown({ timer, HandleDeleteTimer, timeRef, descriptionRef }
 
 
 function DeletedCountdown() {
+  let classes = useStyles();
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardContent>
         <Alert severity="warning">
           <AlertTitle>Timer Deleted</AlertTitle>
@@ -155,5 +159,12 @@ function DeletedCountdown() {
     </Card>
   );
 }
+
+let useStyles = makeStyles((theme) => ({
+  card: {
+    // maxWidth: 345,
+    flexGrow: 1
+  },
+}));
 
 export { Countdown, EditableCountdown, DeletedCountdown };

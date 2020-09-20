@@ -128,6 +128,7 @@ let darkPlot = {
   //   }
   // },
   tooltip: {
+    shared: true,
     backgroundColor: 'rgba(0, 0, 0, 0.85)',
     style: {
       color: '#F0F0F0'
@@ -282,6 +283,7 @@ let lightPlot = {
   tooltip: {
     borderWidth: 0,
     backgroundColor: 'rgba(219,219,216,0.8)',
+    shared: true,
     shadow: false
   },
   legend: {

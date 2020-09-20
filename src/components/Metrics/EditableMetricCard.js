@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -43,8 +44,9 @@ function EditableMetricCard({ metric, isNew, HandleDeleteMetric, nameRef, typeRe
       </Table>;
   }
 
+  let classes = useStyles();
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardHeader
         action={
           <IconButton aria-label="delete" onClick={() => HandleDeleteMetric(metric.id)}>
@@ -99,5 +101,12 @@ function EditableMetricCard({ metric, isNew, HandleDeleteMetric, nameRef, typeRe
     </Card>
   );
 }
+
+let useStyles = makeStyles((theme) => ({
+  card: {
+    // maxWidth: 345,
+    flexGrow: 1
+  },
+}));
 
 export default EditableMetricCard;

@@ -15,7 +15,6 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
   let [isExpanded, setIsExpanded] = useState(false);
 
   let classes = useStyles();
-
   return (
     <Card className={classes.card}>
       <CardHeader
@@ -60,7 +59,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles((theme) => ({
   card: {
     // maxWidth: 345,
     flexGrow: 1

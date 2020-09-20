@@ -87,6 +87,19 @@ class User {
     return this.db.doc('users/' + this.auth.uid);
   }
 
+  exportData(handleSuccess, handleError) {
+    let backup = {info: this.info, days: []};
+    this.getDb().collection('days').get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          backup['days'].push(doc.data());
+        });
+        backup = new Blob([JSON.stringify(backup)], { type: 'application/json' })
+        handleSuccess(backup);
+      })
+      .catch((e) => handleError(e));
+  }
+
   // Metrics operations
   getMetrics() {
     return this.info.metrics;
@@ -182,7 +195,7 @@ class User {
         let timeSeries = docs.map((doc, index) => {
           let times = doc.data().times;
           let values = doc.data().values;
-          if(metrics[index].type === 'text')
+          if (metrics[index].type === 'text')
             values = values.map(text => text ? 1 : 0);
           let data = times.map((time, index) => [time, values[index]]);
           return { name: metrics[index].name, data };

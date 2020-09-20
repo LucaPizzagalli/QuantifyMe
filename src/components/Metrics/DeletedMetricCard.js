@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Alert from '@material-ui/lab/Alert';
@@ -6,8 +7,9 @@ import AlertTitle from '@material-ui/lab/AlertTitle';
 
 function DeletedMetricCard() {
 
+  let classes = useStyles();
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardContent>
         <Alert severity="warning">
           <AlertTitle>Metric Deleted</AlertTitle>
@@ -17,5 +19,12 @@ function DeletedMetricCard() {
     </Card>
   );
 }
+
+let useStyles = makeStyles((theme) => ({
+  card: {
+    // maxWidth: 345,
+    flexGrow: 1
+  },
+}));
 
 export default DeletedMetricCard;

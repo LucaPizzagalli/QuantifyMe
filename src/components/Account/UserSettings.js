@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UISettings from './UISettings'
 import AccountSettings from './AccountSettings'
+import ExportData from './ExportData'
 
 function UserSettings() {
   let classes = useStyles();
@@ -42,7 +43,7 @@ function UserSettings() {
           <Typography>Export Data</Typography>
         </AccordionSummary>
         <AccordionDetails className={classes.accordion}>
-          Function not yet unavailable
+          <ExportData />
         </AccordionDetails>
       </Accordion>
     </>

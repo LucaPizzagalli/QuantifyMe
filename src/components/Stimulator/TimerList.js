@@ -7,7 +7,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Zoom from '@material-ui/core/Zoom';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
-import {Countdown, EditableCountdown, DeletedCountdown} from './Countdown';
+import DraggableList from '../DraggableList.js'
+import { Countdown, EditableCountdown, DeletedCountdown } from './Countdown';
 
 
 function TimerList() {
@@ -86,27 +87,29 @@ function TimerList() {
   let classes = useStyles();
   return (
     <>
-      {
-        timers.map((timer, index) => {
-          if (timer.id === editable.id) {
-            if (editable.delete)
-              return <DeletedCountdown key={timer.id} />
+      <DraggableList padding={20}>
+        {
+          timers.map(timer => {
+            if (timer.id === editable.id) {
+              if (editable.delete)
+                return <DeletedCountdown key={timer.id} />
+              else
+                return <EditableCountdown
+                  key={timer.id}
+                  timer={timer}
+                  HandleDeleteTimer={HandleDeleteTimer}
+                  timeRef={timeRef}
+                  descriptionRef={descriptionRef} />
+            }
             else
-              return <EditableCountdown
+              return <Countdown
                 key={timer.id}
                 timer={timer}
-                HandleDeleteTimer={HandleDeleteTimer}
-                timeRef={timeRef}
-                descriptionRef={descriptionRef} />
-          }
-          else
-            return <Countdown
-              key={timer.id}
-              timer={timer}
-              interactive={editable.id == null}
-              HandleEditTimer={HandleEditTimer} />;
-        })
-      }
+                interactive={editable.id == null}
+                HandleEditTimer={HandleEditTimer} />;
+          })
+        }
+      </DraggableList>
       <Zoom
         key="add-timer-button"
         in={editable.id == null}
