@@ -6,7 +6,7 @@ import TimerList from '../components/Stimulator/TimerList';
 class StimulatorPage extends React.Component {
   render() {
     return (
-      <Container fixed display="flex" style={{padding: '1.5rem'}}>
+      <Container maxWidth="md" fixed display="flex" style={{padding: '1.5rem'}}>
         <Paper>
         < TimerList />
         </Paper>

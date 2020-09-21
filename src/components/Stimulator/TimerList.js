@@ -8,15 +8,16 @@ import Zoom from '@material-ui/core/Zoom';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
 import DraggableList from '../DraggableList.js'
-import { Countdown, EditableCountdown, DeletedCountdown } from './Countdown';
+import { Timer, EditableCountdown, DeletedCountdown } from './Countdown';
 
 
-function TimerList() {
+function ClockList() {
   let user = useContext(UserContext);
   let showAlert = useContext(AlertContext);
-  let [timers, setTimers] = useState(user.getTimers());
+  let [clocks, setClocks] = useState(user.getClocks());
   let [editable, setEditable] = useState({ id: null, delete: false, new: false });
   let [isLoading, setIsLoading] = useState(false);
+  let typeRef = useRef(React.createRef());
   let timeRef = useRef(React.createRef());
   let descriptionRef = useRef(React.createRef());
 
@@ -25,61 +26,63 @@ function TimerList() {
       Notification.requestPermission();
   }, []);
 
-  function HandleAddTimer() { //TODO fix maxID
+  function HandleAddClock() { //TODO fix maxID
     let maxId = 0;
-    for (let timer of timers)
-      maxId = Math.max(maxId, parseInt(timer.id.slice(2)));
-    let newTimer = {
+    for (let clock of clocks)
+      maxId = Math.max(maxId, parseInt(clock.id.slice(2)));
+    let newClock = {
       id: 'id' + (maxId + 1),
+      type: 'timer',
       time: 0,
       description: '',
-      details: []
     };
-    setTimers([...timers, newTimer]);
-    setEditable({ id: newTimer.id, delete: false, new: true });
+    setClocks([...clocks, newClock]);
+    setEditable({ id: newClock.id, delete: false, new: true });
   }
 
-  function HandleEditTimer(id) {
+  function HandleEditClock(id) {
     setEditable({ id: id, delete: false, new: false });
   }
 
-  function HandleDeleteTimer(id) {
+  function HandleDeleteClock(id) {
     setEditable({ id: id, delete: true, new: false });
   }
 
-  function HandleSaveTimers() {
+  function HandleSaveClocks() {
     setIsLoading(true);
     setEditable({ id: null, delete: false, new: false });
-    let newTimers = null;
+    let newClocks = null;
     if (editable.delete) {
-      for (let [index, timer] of timers.entries())
-        if (timer.id === editable.id) {
-          newTimers = [...timers.slice(0, index), ...timers.slice(index + 1)];
+      for (let [index, clock] of clocks.entries())
+        if (clock.id === editable.id) {
+          newClocks = [...clocks.slice(0, index), ...clocks.slice(index + 1)];
           break;
         }
     }
     else {
-      let newTimer = {
+      let newClock = {
         id: editable.id,
-        time: timeRef.current.value,
+        type: typeRef.current.value,
+        time: Number(timeRef.current.value),
         description: descriptionRef.current.value,
       };
-      for (let [index, timer] of timers.entries())
-        if (timer.id === editable.id) {
-          newTimers = [...timers.slice(0, index), newTimer, ...timers.slice(index + 1)];
+      console.log(newClock)
+      for (let [index, clock] of clocks.entries())
+        if (clock.id === editable.id) {
+          newClocks = [...clocks.slice(0, index), newClock, ...clocks.slice(index + 1)];
           break;
         }
     }
-    setTimers(newTimers);
-    user.updateTimers(newTimers, handleUpdateTimersSuccess, handleUpdateTimersError);
+    setClocks(newClocks);
+    user.updateClocks(newClocks, handleUpdateClocksSuccess, handleUpdateClocksError);
   }
 
-  function handleUpdateTimersSuccess() {
+  function handleUpdateClocksSuccess() {
     setIsLoading(false);
-    showAlert('Timers saved', 'success');
+    showAlert('Clocks saved', 'success');
   }
 
-  function handleUpdateTimersError(error) {
+  function handleUpdateClocksError(error) {
     setIsLoading(false);
     showAlert(error.message, 'error');
   }
@@ -89,29 +92,30 @@ function TimerList() {
     <>
       <DraggableList padding={20}>
         {
-          timers.map(timer => {
-            if (timer.id === editable.id) {
+          clocks.map(clock => {
+            if (clock.id === editable.id) {
               if (editable.delete)
-                return <DeletedCountdown key={timer.id} />
+                return <DeletedCountdown key={clock.id} />
               else
                 return <EditableCountdown
-                  key={timer.id}
-                  timer={timer}
-                  HandleDeleteTimer={HandleDeleteTimer}
+                  key={clock.id}
+                  clock={clock}
+                  HandleDeleteClock={HandleDeleteClock}
                   timeRef={timeRef}
+                  typeRef={typeRef}
                   descriptionRef={descriptionRef} />
             }
-            else
-              return <Countdown
-                key={timer.id}
-                timer={timer}
+            else if (clock.type === 'timer')
+              return <Timer
+                key={clock.id}
+                clock={clock}
                 interactive={editable.id == null}
-                HandleEditTimer={HandleEditTimer} />;
+                HandleEditClock={HandleEditClock} />;
           })
         }
       </DraggableList>
       <Zoom
-        key="add-timer-button"
+        key="add-clock-button"
         in={editable.id == null}
         timeout={200}
         style={{
@@ -119,14 +123,14 @@ function TimerList() {
         }}
         unmountOnExit
       >
-        <Fab aria-label="Add timer" className={classes.fab} color="primary" onClick={HandleAddTimer}>
+        <Fab aria-label="Add clock" className={classes.fab} color="primary" onClick={HandleAddClock}>
           {isLoading ?
             <CircularProgress color="inherit" /> :
             <AddIcon />}
         </Fab>
       </Zoom>
       <Zoom
-        key="save-timers-button"
+        key="save-clocks-button"
         in={editable.id != null}
         timeout={200}
         style={{
@@ -134,7 +138,7 @@ function TimerList() {
         }}
         unmountOnExit
       >
-        <Fab aria-label="Save Timers" className={classes.fab} color="primary" onClick={HandleSaveTimers}>
+        <Fab aria-label="Save Clocks" className={classes.fab} color="primary" onClick={HandleSaveClocks}>
           <SaveIcon />
         </Fab>
       </Zoom>
@@ -150,4 +154,4 @@ let useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default TimerList;
+export default ClockList;

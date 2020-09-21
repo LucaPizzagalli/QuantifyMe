@@ -26,7 +26,7 @@ let startInfo = {
   personal: {},
   level: 1,
   metrics: [],
-  timers: [],
+  clocks: [],
   theme: 'light'
 };
 
@@ -205,16 +205,16 @@ class User {
       .catch((e) => handleError(e));
   }
 
-  // Timers operations
-  getTimers() {
-    return this.info.timers;
+  // Clocks operations
+  getClocks() {
+    return this.info.clocks;
   }
 
-  updateTimers(newTimers, handleSuccess, handleError) {
+  updateClocks(newClocks, handleSuccess, handleError) {
     console.log('PRIMA') //TODO doesn't enter in catch
-    this.getDb().update({ timers: newTimers })
+    this.getDb().update({ clocks: newClocks })
       .then(() => {
-        this.info.timers = newTimers;
+        this.info.clocks = newClocks;
         handleSuccess();
       })
       .catch((e) => handleError(e));
