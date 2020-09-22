@@ -127,8 +127,8 @@ function EditableCountdown({ clock, HandleDeleteTimer, typeRef, timeRef, descrip
   today.setHours(0, 0, 0, 0);
   let oldTime = new Date();
   oldTime.setHours(0, 0, 0, clock.time);
-  let typeMapping = { 'timer': 0, 'alarm': 1, 'stop-watch': 2 };
-  let mappingType = { 0: 'timer', 1: 'alarm', 2: 'stop-watch' };
+  let typeMapping = { 'timer': 0, 'alarm': 1, 'stopWatch': 2 };
+  let mappingType = { 0: 'timer', 1: 'alarm', 2: 'stopWatch' };
   let [timer, setTimer] = useState(clock.type === 'timer' ? oldTime : today);
   let [alarm, setAlarm] = useState(clock.type === 'alarm' ? oldTime : new Date());
   let [type, setType] = useState(typeMapping[clock.type]);

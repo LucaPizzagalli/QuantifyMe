@@ -88,31 +88,41 @@ function ClockList() {
   }
 
   let classes = useStyles();
+  let ids = [];
+  let statics = [];
+  let cards = clocks.map(clock => {
+    ids.push(clock.id);
+    if (clock.id === editable.id) {
+      statics.push(clock.id);
+      if (editable.delete)
+        return <DeletedCountdown key={clock.id} />
+      else
+        return <EditableCountdown
+          key={clock.id}
+          clock={clock}
+          HandleDeleteClock={HandleDeleteClock}
+          timeRef={timeRef}
+          typeRef={typeRef}
+          descriptionRef={descriptionRef} />
+    }
+    else if (clock.type === 'timer')
+      return <Timer
+        key={clock.id}
+        clock={clock}
+        interactive={editable.id == null}
+        HandleEditClock={HandleEditClock} />;
+    else if (clock.type === 'alarm')
+      return null;
+    else if (clock.type === 'stopWatch')
+      return null;
+    else
+      return null;
+  });
+
   return (
     <>
-      <DraggableList padding={20}>
-        {
-          clocks.map(clock => {
-            if (clock.id === editable.id) {
-              if (editable.delete)
-                return <DeletedCountdown key={clock.id} />
-              else
-                return <EditableCountdown
-                  key={clock.id}
-                  clock={clock}
-                  HandleDeleteClock={HandleDeleteClock}
-                  timeRef={timeRef}
-                  typeRef={typeRef}
-                  descriptionRef={descriptionRef} />
-            }
-            else if (clock.type === 'timer')
-              return <Timer
-                key={clock.id}
-                clock={clock}
-                interactive={editable.id == null}
-                HandleEditClock={HandleEditClock} />;
-          })
-        }
+      <DraggableList ids={ids} statics={statics} padding={20}>
+        {cards}
       </DraggableList>
       <Zoom
         key="add-clock-button"

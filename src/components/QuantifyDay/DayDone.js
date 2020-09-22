@@ -8,7 +8,7 @@ function DayDone() {
   return (
     <Paper className={classes.root} elevation={8} >
       <Typography variant="h3" className={classes.title}>You Made It</Typography>
-      <Typography variant='body1' className={classes.description}>Good job. Today is done.</Typography>
+      <Typography variant="body1" className={classes.description}>Good job. Today is done.</Typography>
     </Paper>
   );
 }
@@ -16,6 +16,7 @@ function DayDone() {
 let useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'stretch',
     position: 'relative',
@@ -33,6 +34,8 @@ let useStyles = makeStyles((theme) => ({
     marginBottom: '1rem',
   },
   description: {
+    flexGrow: 1,
+    textAlign: 'center',
     paddingTop: '2rem',
     paddingBottom: '2rem',
   },

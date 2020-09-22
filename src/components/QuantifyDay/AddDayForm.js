@@ -5,7 +5,7 @@ import { useDrag } from 'react-use-gesture'
 import Container from '@material-ui/core/Container';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
-import { DayTextField, DayRatingField, DayDateField, DaySubmit } from './AddDayField';
+import { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit } from './AddDayField';
 import DayDone from './DayDone';
 import DayNoMetrics from './DayNoMetrics';
 
@@ -110,6 +110,21 @@ function AddDayForm() {
               {//focused >= index - 1 && focused <= index + 1 &&
                 <Container fixed display="flex">
                   <DayTextField
+                    metric={metric}
+                    reference={refs.current[index]}
+                    index={index}
+                    changeFocus={changeFocus}
+                    isFocused={focused === index}
+                  />
+                </Container>
+              }
+            </div>);
+        else if (metric.type === 'number')
+          return (
+            <div key={index} className={classes.cardDiv} >
+              {//focused >= index - 1 && focused <= index + 1 &&
+                <Container fixed display="flex">
+                  <DayNumberField
                     metric={metric}
                     reference={refs.current[index]}
                     index={index}

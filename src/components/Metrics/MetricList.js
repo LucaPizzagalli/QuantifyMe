@@ -19,9 +19,10 @@ function MetricList() {
   let [metrics, setMetrics] = useState(user.getMetrics());
   let [editable, setEditable] = useState({ id: null, delete: false, new: false });
   let [isLoading, setIsLoading] = useState(false);
-  let nameRef = useRef(React.createRef());
-  let typeRef = useRef(React.createRef());
-  let descriptionRef = useRef(React.createRef());
+  let nameRef = useRef();
+  let typeRef = useRef();
+  let descriptionRef = useRef();
+  let rangeRef = useRef([React.createRef(), React.createRef()]);
   let detailRefs = useRef((new Array(25).fill(0)).map(() => React.createRef()));
 
   function HandleAddMetric() {
@@ -65,13 +66,15 @@ function MetricList() {
         type: typeRef.current.value,
         description: descriptionRef.current.value,
       };
+      if (newMetric.type === 'number')
+        newMetric['range'] = [Number(rangeRef.current[0].current.value), Number(rangeRef.current[1].current.value)];
       if (newMetric.type === 'rating') {
         let details = [];
         for (let ref of detailRefs.current) {
           if (ref.current)
             details.push(ref.current.value);
         }
-        newMetric.details = details;
+        newMetric['details'] = details;
       }
       for (let [index, metric] of metrics.entries())
         if (metric.id === editable.id) {
@@ -93,8 +96,12 @@ function MetricList() {
     showAlert(error.message, 'error');
   }
 
+  let ids = [];
+  let statics = [];
   let metricCards = metrics.map(metric => {
+    ids.push(metric.id);
     if (metric.id === editable.id) {
+      statics.push(metric.id);
       if (editable.delete)
         return (
           <DeletedMetricCard key={metric.id} />
@@ -109,6 +116,7 @@ function MetricList() {
             nameRef={nameRef}
             typeRef={typeRef}
             descriptionRef={descriptionRef}
+            rangeRef={rangeRef}
             detailRefs={detailRefs} />
         );
       }
@@ -122,13 +130,15 @@ function MetricList() {
           HandleEditMetric={HandleEditMetric} />
       );
   });
-  if (metrics.length === 0)
+  if (metrics.length === 0) {
+    ids.push('firstMetric');
     metricCards = [<FirstMetricCard />];
+  }
 
   let classes = useStyles();
   return (
     <>
-      <DraggableList padding={20}>
+      <DraggableList ids={ids} statics={statics} padding={20}>
         {metricCards}
       </DraggableList>
       <Zoom

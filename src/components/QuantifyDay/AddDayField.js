@@ -10,6 +10,8 @@ import Rating from '@material-ui/lab/Rating';
 import Radio from '@material-ui/core/Radio';
 import RadioButtonChecked from '@material-ui/icons/RadioButtonChecked'
 import RadioButtonUnchecked from '@material-ui/icons/RadioButtonUnchecked'
+import Slider from '@material-ui/core/Slider';
+import Input from '@material-ui/core/Input';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import Typography from '@material-ui/core/Typography';
@@ -47,9 +49,60 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
           onFocus={() => changeFocus(index)}
           onChange={(e) => setValue(e.target.value)}
           fullWidth={true}
-          multiline
           rows={5}
         />
+        <Typography variant='body1' className={classes.description}>{metric.description}</Typography>
+      </div>
+      <Hidden mdDown>
+        <IconButton aria-label="next" color="primary" onClick={() => changeFocus(index + 1)}>
+          <NavigateNextIcon classes={{ root: classes.arrow }} />
+        </IconButton>
+      </Hidden>
+    </Paper>
+  );
+}
+
+function DayNumberField({ metric, reference, index, isFocused, changeFocus }) {
+  let [value, setValue] = useState('');
+
+  useEffect(() => {
+    if (isFocused) {
+      reference.current.focus({ preventScroll: true });
+    }
+  }, [reference, isFocused]);
+
+  let classes = useStyles();
+  return (
+    <Paper className={classes.root} elevation={8} >
+      <Hidden mdDown>
+        <IconButton aria-label="previous" color="primary" onClick={() => changeFocus(index - 1)}>
+          <NavigateBeforeIcon classes={{ root: classes.arrow }} />
+        </IconButton>
+      </Hidden>
+      <div className={classes.layout}>
+        <Typography variant="h3" className={classes.title}>{metric.name}</Typography>
+        <div className={classes.horizontalFlex}>
+          <Input
+            inputRef={reference}
+            value={value}
+            margin="dense"
+            onChange={(e) => setValue(Number(e.target.value))}
+            inputProps={{
+              step: 1,
+              type: 'number',
+              'aria-labelledby': 'range-slider',
+            }}
+            style={{ width: 62, margin: '2rem' }}
+          />
+          <Slider
+            min={metric.range[0]}
+            max={metric.range[1]}
+            value={Number(value)}
+            onChange={(_, newValue) => setValue(newValue)}
+            valueLabelDisplay="auto"
+            aria-labelledby="slider"
+          />
+        </div>
         <Typography variant='body1' className={classes.description}>{metric.description}</Typography>
       </div>
       <Hidden mdDown>
@@ -371,4 +424,4 @@ let useStyles = makeStyles((theme) => ({
 }));
 
 
-export { DayTextField, DayRatingField, DayDateField, DaySubmit };
+export { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit };
