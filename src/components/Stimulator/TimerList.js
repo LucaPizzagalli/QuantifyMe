@@ -66,7 +66,6 @@ function ClockList() {
         time: Number(timeRef.current.value),
         description: descriptionRef.current.value,
       };
-      console.log(newClock)
       for (let [index, clock] of clocks.entries())
         if (clock.id === editable.id) {
           newClocks = [...clocks.slice(0, index), newClock, ...clocks.slice(index + 1)];

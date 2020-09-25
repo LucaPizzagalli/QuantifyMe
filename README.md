@@ -18,7 +18,6 @@ To analyze bundle size
 
     yarn analyze
 
-
 ## Notes
 
 - minimize plotly bundle or try highcharts

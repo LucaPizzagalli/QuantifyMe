@@ -22,7 +22,6 @@ import Gong1 from '../../audio/gong1.mp3';
 import { Paper } from '@material-ui/core';
 
 function Timer({ clock, interactive, HandleEditClock }) {
-  console.log(clock.time)
   let [timeLeft, setTimeLeft] = useState(clock.time);
   let [isPlaying, setIsPlaying] = useState(false);
   let interval = useRef();
@@ -67,10 +66,6 @@ function Timer({ clock, interactive, HandleEditClock }) {
   let hours = Math.floor((timeLeft + 999) / 1000 / 60 / 60);
   let minutes = Math.floor((timeLeft + 999) / 1000 / 60 % 60);
   let seconds = Math.floor((timeLeft + 999) / 1000 % 60);
-  console.log('timeLeft')
-  console.log(timeLeft)
-  console.log((timeLeft + 999) / 1000)
-  console.log(hours)
   return (
     <Card className={classes.card}>
       <CardHeader
@@ -134,10 +129,6 @@ function EditableCountdown({ clock, HandleDeleteTimer, typeRef, timeRef, descrip
   let [type, setType] = useState(typeMapping[clock.type]);
 
   let classes = useStyles();
-  console.log('-------')
-  console.log(timer)
-  console.log(today)
-  console.log(timer.getTime() - today.getTime())
   return (
     <Paper className={classes.card}>
       {/* <CardHeader

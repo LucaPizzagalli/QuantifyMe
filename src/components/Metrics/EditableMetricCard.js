@@ -128,6 +128,7 @@ function EditableMetricCard({ metric, isNew, HandleDeleteMetric, nameRef, typeRe
           inputRef={descriptionRef}
           defaultValue={metric.description}
           label="Description"
+          multiline
           fullWidth={true}
         />
         {
