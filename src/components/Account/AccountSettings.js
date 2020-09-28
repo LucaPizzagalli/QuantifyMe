@@ -56,15 +56,15 @@ function AccountSettings() {
         <AccordionDetails className={classes.accordion}>
           <Alert severity="warning">
             <AlertTitle>Permanent Action</AlertTitle>
-            If you decide to delete this account all of your information will be deleted, and the action is not reversible.<br />
-            We suggest to export all the data before proceeding.
+            If you decide to delete this account all your information will be deleted, this action is not reversible.<br />
+            You should consider exporting all your data before proceeding.
+          </Alert>
             <Button
               variant="contained"
               color="primary"
               onClick={() => user.deleteAccount(handleUpdateSuccess, handleUpdateError)}>
               Delete Account
             </Button>
-          </Alert>
         </AccordionDetails>
       </Accordion>
     </>

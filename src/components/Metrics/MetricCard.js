@@ -19,10 +19,11 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
       <div className={classes.baseCard}>
         <div className={classes.image}>
           <img src='https://upload.wikimedia.org/wikipedia/it/9/98/Microsoft_Edge_logo_%282019%29.svg'
+            alt='metric-logo'
             style={{ maxWidth: '100%', draggable: 'false', userSelect: 'none', userDrag: 'none', pointerEvents: 'none' }} />
         </div>
         <div className={classes.info}>
-          <Typography variant="h3" component="h2" className={classes.title}>
+          <Typography variant="h4" component="h2" className={classes.title}>
             {metric.name}
           </Typography>
           {metric.type === 'rating' &&

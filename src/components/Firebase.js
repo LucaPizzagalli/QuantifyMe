@@ -88,7 +88,7 @@ class User {
   }
 
   exportData(handleSuccess, handleError) {
-    let backup = {info: this.info, days: []};
+    let backup = { info: this.info, days: [] };
     this.getDb().collection('days').get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -96,6 +96,69 @@ class User {
         });
         backup = new Blob([JSON.stringify(backup)], { type: 'application/json' })
         handleSuccess(backup);
+      })
+      .catch((e) => handleError(e));
+  }
+
+  importData(backup, options, handleSuccess, handleError) { // TODO: add other options
+    let promises = [];
+    if (options['days']) {
+      let stats = {};
+      this.getDb().collection('stats').get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            stats[doc.id] = doc.data();
+          })
+        })
+        .then(() => {
+          for (let day of backup['days']) {
+            promises.push(this.getDb().collection('days').doc(day['date'].toString()).set(day));
+            for (let metricId of Object.keys(day)) {
+              if (metricId !== 'date' && !(metricId in stats))
+                stats[metricId] = { 'times': [], 'values': [] }
+              if (metricId !== 'date') {
+                stats[metricId]['times'].push(day['date']);
+                stats[metricId]['values'].push(day[metricId]);
+              }
+            }
+          }
+          for (let [metricId, stat] of Object.entries(stats)) {
+            stat = stat['times'].map((time, index) => [time, stat['values'][index]]);
+            stat.sort();
+            let times = stat.map(couple => couple[0]);
+            let values = stat.map(couple => couple[1]);
+            promises.push(
+              this.getDb().collection('stats').doc(metricId).set({ 'times': times, 'values': values })
+            );
+          }
+        });
+    }
+    Promise.all(promises)
+      .then(() => {
+        handleSuccess();
+      })
+      .catch((e) => handleError(e));
+  }
+
+  eraseData(options, handleSuccess, handleError) { // TODO: add other options
+    let promises = [];
+    if (options['days']) {
+      this.getDb().collection('days').get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            promises.push(this.getDb().collection('days').doc(doc.id).delete());
+          })
+        });
+      this.getDb().collection('stats').get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            promises.push(this.getDb().collection('stats').doc(doc.id).delete());
+          })
+        });
+    }
+    Promise.all(promises)
+      .then(() => {
+        handleSuccess();
       })
       .catch((e) => handleError(e));
   }

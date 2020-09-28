@@ -49,7 +49,7 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
           onFocus={() => changeFocus(index)}
           onChange={(e) => setValue(e.target.value)}
           fullWidth={true}
-          rows={5}
+          multiline
         />
         <Typography variant='body1' className={classes.description}>{metric.description}</Typography>
       </div>

@@ -8,7 +8,7 @@ import Dashboard from '../pages/dashboard';
 import SignUpPage from '../pages/sign-up';
 import SignInPage from '../pages/sign-in';
 import ResetPasswordPage from '../pages/reset-password';
-import AccountPage from '../pages/account';
+import SettingsPage from '../pages/settings';
 import MetricsPage from '../pages/metrics';
 import QuantifyDayPage from '../pages/quantify-day';
 import DiaryPage from '../pages/diary';
@@ -25,7 +25,7 @@ function UrlNavigation() {
       <Router>
         <Layout>
           <Switch>
-            <Route path='/account'> <AccountPage /> </Route>
+            <Route path='/settings'> <SettingsPage /> </Route>
             <Route path='/metrics'> <MetricsPage /> </Route>
             <Route path='/quantify-day'> <QuantifyDayPage /> </Route>
             <Route path='/diary'> <DiaryPage /> </Route>
@@ -44,11 +44,9 @@ function UrlNavigation() {
   if (user.auth === 0)
     return (
       <Router>
-        <Layout >
-          <Switch>
-            <Route path=''> <Loading /> </Route>
-          </Switch>
-        </Layout>
+        <Switch>
+          <Route path=''> <Loading /> </Route>
+        </Switch>
       </Router>
     );
   return (

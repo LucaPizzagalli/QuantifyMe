@@ -13,9 +13,10 @@ function ExportData() {
   function handleBackupSuccess(backup) {
     let url = window.URL.createObjectURL(backup);
     let a = document.createElement('a');
+    let today = new Date().toISOString().slice(0, 10);
     a.style.display = 'none';
     a.href = url;
-    a.download = 'backup.json';
+    a.download = 'QuantifyMe-backup-' + today + '.json';
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);

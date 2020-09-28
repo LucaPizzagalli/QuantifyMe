@@ -40,11 +40,11 @@ function AddDayForm() {
     setIsLoading(true);
     let newDay = {}
     for (let [index, metric] of user.info.metrics.entries()) {
-      newDay[metric.id] = refs.current[index].current.value;
-      if (metric.type === 'rating')
-        newDay[metric.id] = parseInt(newDay[metric.id]);
-      if (newDay[metric.id] === -1 || newDay[metric.id] === '')
-        newDay[metric.id] = null;
+      if (newDay[metric.id] !== '-1' && newDay[metric.id] !== '') {
+        newDay[metric.id] = refs.current[index].current.value;
+        if (metric.type === 'rating' || metric.type === 'number')
+          newDay[metric.id] = parseInt(newDay[metric.id]);
+      }
     }
     let date = (new Date(refDate.current.value)).getTime();
     user.saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError);

@@ -117,13 +117,13 @@ function Timer({ clock, interactive, HandleEditClock }) {
 }
 
 
-function EditableCountdown({ clock, HandleDeleteTimer, typeRef, timeRef, descriptionRef }) {
+function EditableClock({ clock, HandleDeleteClock, typeRef, timeRef, descriptionRef }) {
   let today = new Date();
   today.setHours(0, 0, 0, 0);
   let oldTime = new Date();
   oldTime.setHours(0, 0, 0, clock.time);
-  let typeMapping = { 'timer': 0, 'alarm': 1, 'stopWatch': 2 };
-  let mappingType = { 0: 'timer', 1: 'alarm', 2: 'stopWatch' };
+  let typeMapping = { 'timer': 0, 'alarm': 1, 'stopwatch': 2, 'delete': 3 };
+  let mappingType = { 0: 'timer', 1: 'alarm', 2: 'stopwatch', 3: 'stopwatch' };
   let [timer, setTimer] = useState(clock.type === 'timer' ? oldTime : today);
   let [alarm, setAlarm] = useState(clock.type === 'alarm' ? oldTime : new Date());
   let [type, setType] = useState(typeMapping[clock.type]);
@@ -131,42 +131,44 @@ function EditableCountdown({ clock, HandleDeleteTimer, typeRef, timeRef, descrip
   let classes = useStyles();
   return (
     <Paper className={classes.card}>
-      {/* <CardHeader
-        action={
-          <IconButton aria-label="delete" onClick={() => HandleDeleteTimer(timer.id)}>
-            <DeleteIcon />
-          </IconButton>}
-        title="Edit Timer" /> */}
       <Tabs
         value={type}
         onChange={(_, newType) => setType(newType)}
         variant="fullWidth"
         indicatorColor="primary"
         textColor="primary"
-        aria-label="icon tabs example"
+        aria-label="clock-types"
       >
         <Tab id="timer" aria-controls="timer" icon={<HourglassEmptyRoundedIcon />} aria-label="timer" />
         <Tab id="alarm" aria-controls="alarm" icon={<AlarmIcon />} aria-label="alarm" />
-        <Tab id="stop-watch" aria-controls="stop-watch" icon={<TimerIcon />} aria-label="stop-watch" />
+        <Tab id="stopwatch" aria-controls="stopwatch" icon={<TimerIcon />} aria-label="stopwatch" />
+        <Tab id="delete" aria-controls="delete" icon={<DeleteIcon />} aria-label="delete" />
       </Tabs>
       <input value={type === 0 ? timer.getTime() - today.getTime() : alarm.getTime() - today.getTime()} ref={timeRef} type="hidden" />
       <input value={mappingType[type]} ref={typeRef} type="hidden" />
       {type === 0 &&
-        <div>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <TimePicker
-              ampm={false}
-              autoOk
-              variant="static"
-              views={['hours', 'minutes', 'seconds']}
-              openTo="minutes"
-              value={timer}
-              onChange={setTimer}
-            />
-          </MuiPickersUtilsProvider>
+        <div className={classes.tab}>
+          <div>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <TimePicker
+                ampm={false}
+                autoOk
+                variant="static"
+                views={['hours', 'minutes', 'seconds']}
+                openTo="minutes"
+                value={timer}
+                onChange={setTimer}
+              />
+            </MuiPickersUtilsProvider>
+          </div>
+          <TextField
+            inputRef={descriptionRef}
+            defaultValue={clock.description}
+            label="Description"
+            fullWidth={true} />
         </div>}
       {type === 1 &&
-        <div>
+        <div className={classes.tab}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <TimePicker
               ampm={false}
@@ -177,27 +179,42 @@ function EditableCountdown({ clock, HandleDeleteTimer, typeRef, timeRef, descrip
               onChange={setAlarm}
             />
           </MuiPickersUtilsProvider>
+          <TextField
+            inputRef={descriptionRef}
+            defaultValue={clock.description}
+            label="Description"
+            fullWidth={true} />
+        </div>}
+      {type === 2 &&
+        <div className={classes.tab}>
+          <TextField
+            inputRef={descriptionRef}
+            defaultValue={clock.description}
+            label="Description"
+            fullWidth={true} />
+        </div>}
+      {type === 3 &&
+        <div className={classes.tab}>
+          <IconButton aria-label="delete" color="primary" onClick={() => HandleDeleteClock(clock.id)}
+          style={{padding: '3rem'}}>
+            <DeleteIcon />
+          </IconButton>
         </div>}
       <div>
-        <TextField
-          inputRef={descriptionRef}
-          defaultValue={clock.description}
-          label="Description"
-          fullWidth={true} />
       </div>
     </Paper>
   );
 }
 
 
-function DeletedCountdown() {
+function DeletedClock() {
   let classes = useStyles();
   return (
     <Card className={classes.card}>
       <CardContent>
         <Alert severity="warning">
           <AlertTitle>Timer Deleted</AlertTitle>
-          If you save the timer will be deleted
+            The clock will be deleted upon saving.
         </Alert>
       </CardContent>
     </Card>
@@ -210,6 +227,12 @@ let useStyles = makeStyles((theme) => ({
     padding: '1rem',
     flexGrow: 1,
   },
+  tab: {
+    display: 'flex',
+    flexGrow: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+  }
 }));
 
-export { Timer, EditableCountdown, DeletedCountdown };
+export { Timer, EditableClock, DeletedClock };

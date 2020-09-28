@@ -8,7 +8,7 @@ import Zoom from '@material-ui/core/Zoom';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
 import DraggableList from '../DraggableList.js'
-import { Timer, EditableCountdown, DeletedCountdown } from './Countdown';
+import { Timer, EditableClock, DeletedClock } from './Clock';
 
 
 function ClockList() {
@@ -94,9 +94,9 @@ function ClockList() {
     if (clock.id === editable.id) {
       statics.push(clock.id);
       if (editable.delete)
-        return <DeletedCountdown key={clock.id} />
+        return <DeletedClock key={clock.id} />
       else
-        return <EditableCountdown
+        return <EditableClock
           key={clock.id}
           clock={clock}
           HandleDeleteClock={HandleDeleteClock}

@@ -5,36 +5,14 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import UISettings from './UISettings'
-import AccountSettings from './AccountSettings'
 import ExportData from './ExportData'
+import ImportData from './ImportData'
+import EraseData from './EraseData';
 
-function UserSettings() {
+function DataSettings() {
   let classes = useStyles();
   return (
     <>
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="theme-options"
-          id="theme-options" >
-          <Typography >Theme Options</Typography>
-        </AccordionSummary>
-        <AccordionDetails className={classes.accordion}>
-          <UISettings />
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="account"
-          id="account" >
-          <Typography>Account Settings</Typography>
-        </AccordionSummary>
-        <AccordionDetails className={classes.accordion}>
-          <AccountSettings />
-        </AccordionDetails>
-      </Accordion>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -44,6 +22,28 @@ function UserSettings() {
         </AccordionSummary>
         <AccordionDetails className={classes.accordion}>
           <ExportData />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="import-data"
+          id="import-data" >
+          <Typography>Import Data</Typography>
+        </AccordionSummary>
+        <AccordionDetails className={classes.accordion}>
+          <ImportData />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="erase-data"
+          id="erase-data" >
+          <Typography>Erase Data</Typography>
+        </AccordionSummary>
+        <AccordionDetails className={classes.accordion}>
+          <EraseData />
         </AccordionDetails>
       </Accordion>
     </>
@@ -58,4 +58,4 @@ let useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default UserSettings;
+export default DataSettings;
