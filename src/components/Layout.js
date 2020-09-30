@@ -1,10 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -23,7 +22,6 @@ function Layout({ children }) {
   function showAlert(message, severity = 'info') {
     setSnackPack((prev) => [...prev, { message, severity, key: new Date().getTime() }]);
   }
-
   return (
     <>
       <Header />
@@ -42,11 +40,8 @@ function Header() {
   let classes = useStyles();
   let menuItems = [];
   let location = useLocation().pathname;
-  let titleLabel = '404 Not Found';
   for (let [key, value] of Object.entries(PAGES)) {
     if (user.isLogged() === value.logged) {
-      if (location === value.to)
-        titleLabel = value.label
       let item = <ListItem
         button
         selected={location === value.to}
@@ -63,49 +58,47 @@ function Header() {
   }
   return (
     <>
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => { setIsMenuOpen(!isMenuOpen); }}
-            edge="start"
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            className={classes.logo}
-            component={RouterLink}
-            to="/"
-            variant="h6"
-            color="inherit" >
-            QM
-          </Typography>
-          <Typography
-            className={classes.title}
-            variant="h6"
-            color="inherit" >
-            {titleLabel}
-          </Typography>
-          X
-        </Toolbar>
-      </AppBar>
+      <div className={!isMenuOpen ? clsx(classes.appBar, classes.shadow) : classes.appBar}>
+        <IconButton
+          color="inherit"
+          size="large"
+          aria-label="open drawer"
+          onClick={() => { setIsMenuOpen(!isMenuOpen); }}
+          edge="start"
+        >
+          <MenuIcon fontSize="large" />
+        </IconButton>
+      </div>
       <Drawer
         className={classes.drawer}
         variant="persistent"
         anchor="left"
-        open={isMenuOpen}
-        classes={{
-          paper: classes.drawerPaper,
-        }}>
-        <div className={classes.drawerHeader} />
+        open={isMenuOpen}>
+        <div className={classes.drawerHeader}>
+          <IconButton
+            color="inherit"
+            size="large"
+            aria-label="open drawer"
+            onClick={() => { setIsMenuOpen(!isMenuOpen); }}
+            edge="start"
+          >
+            <MenuIcon fontSize="large" />
+          </IconButton>
+          <Typography
+            className={classes.logo}
+            align='center'
+            component={RouterLink}
+            to="/"
+            variant="h6"
+            color="inherit" >
+            QMe
+          </Typography>
+        </div>
         <List>
           {menuItems}
         </List>
         {/* <Divider /> */}
       </Drawer>
-      <div className={classes.drawerHeader} />
     </>
   );
 }
@@ -165,31 +158,33 @@ function Footer({ snackPack, setSnackPack }) {
 const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    borderBottomRightRadius: theme.spacing(6),
+    padding: theme.spacing(0, 1, 1, 2),
+    background: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    transition: 'all 0.5s ease',
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  logo: {
-    marginRight: theme.spacing(2),
-    textDecoration: "none",
-  },
-  title: {
-    flexGrow: 1,
+  shadow: {
+    boxShadow: theme.shadows[5],
   },
   drawer: {
     width: 240,
     flexShrink: 0,
   },
-  drawerPaper: {
-    width: 240,
-  },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1, 1, 2),
+    background: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+  },
+  logo: {
+
+    textDecoration: 'none',
+    flexGrow: 1,
   },
   alertCloseIcon: {
     padding: theme.spacing(0.5),
