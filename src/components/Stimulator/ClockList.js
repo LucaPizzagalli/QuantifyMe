@@ -8,7 +8,8 @@ import Zoom from '@material-ui/core/Zoom';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
 import DraggableList from '../DraggableList.js'
-import { Timer, EditableClock, DeletedClock } from './Clock';
+import { Timer, EditableClock, DeletedClock } from './ClockCard';
+import FirstClockCard from './FirstClockCard';
 
 
 function ClockList() {
@@ -117,6 +118,9 @@ function ClockList() {
     else
       return null;
   });
+
+  if (cards.length === 0)
+    cards = [<FirstClockCard />];
 
   return (
     <>

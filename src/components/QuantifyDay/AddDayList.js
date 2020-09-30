@@ -2,7 +2,6 @@ import React, { useState, useContext, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
-import Container from '@material-ui/core/Container';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
