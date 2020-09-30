@@ -3,6 +3,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
 import Container from '@material-ui/core/Container';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
 import { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit } from './AddDayField';
@@ -64,99 +68,89 @@ function AddDayForm() {
   let classes = useStyles();
   if (isDone)
     return (
-      <Container fixed display="flex" style={{ marginTop: '1rem' }}>
+      <Container fixed display="flex">
         <DayDone />
       </Container>);
 
   if (user.info.metrics.length === 0)
     return (
-      <Container fixed display="flex" style={{ marginTop: '1rem' }}>
+      <Container fixed display="flex">
         <DayNoMetrics />
       </Container>);
 
+  let cards = [];
+  cards.push(
+    <DayDateField
+      reference={refDate}
+      index={-1}
+      isFocused={focused === -1}
+      changeFocus={changeFocus}
+    />
+  );
+  for (let [index, metric] of user.info.metrics.entries()) {
+    if (metric.type === 'rating')
+      cards.push(
+        <DayRatingField
+          metric={metric}
+          reference={refs.current[index]}
+          index={index}
+          changeFocus={changeFocus}
+          isFocused={focused === index}
+        />
+      );
+    else if (metric.type === 'text')
+      cards.push(
+        <DayTextField
+          metric={metric}
+          reference={refs.current[index]}
+          index={index}
+          changeFocus={changeFocus}
+          isFocused={focused === index}
+        />
+      );
+    else if (metric.type === 'number')
+      cards.push(
+        <DayNumberField
+          metric={metric}
+          reference={refs.current[index]}
+          index={index}
+          changeFocus={changeFocus}
+          isFocused={focused === index}
+        />
+      );
+  }
+  cards.push(
+    <DaySubmit
+      index={user.info.metrics.length}
+      changeFocus={changeFocus}
+      isFocused={focused === user.info.metrics.length}
+      onSubmit={handleSaveDay}
+      isLoading={isLoading} />
+  );
+
+
+
   return (
     <animated.div {...bind()} className={classes.cardList} style={{ left: x }}>
-      <div key={'date'} className={classes.cardDiv} >
-        {//focused <= 1 &&
-          <Container fixed display="flex">
-            <DayDateField
-              reference={refDate}
-              index={-1}
-              isFocused={focused === -1}
-              changeFocus={changeFocus}
-            />
-          </Container>
-        }
-      </div>
-      {user.info.metrics.map((metric, index) => {
-        if (metric.type === 'rating')
-          return (
-            <div key={index} className={classes.cardDiv} >
-              {//focused >= index - 1 && focused <= index + 1 &&
-                <Container fixed display="flex">
-                  <DayRatingField
-                    metric={metric}
-                    reference={refs.current[index]}
-                    index={index}
-                    changeFocus={changeFocus}
-                    isFocused={focused === index}
-                  />
-                </Container>
-              }
-            </div>);
-        else if (metric.type === 'text')
-          return (
-            <div key={index} className={classes.cardDiv} >
-              {//focused >= index - 1 && focused <= index + 1 &&
-                <Container fixed display="flex">
-                  <DayTextField
-                    metric={metric}
-                    reference={refs.current[index]}
-                    index={index}
-                    changeFocus={changeFocus}
-                    isFocused={focused === index}
-                  />
-                </Container>
-              }
-            </div>);
-        else if (metric.type === 'number')
-          return (
-            <div key={index} className={classes.cardDiv} >
-              {//focused >= index - 1 && focused <= index + 1 &&
-                <Container fixed display="flex">
-                  <DayNumberField
-                    metric={metric}
-                    reference={refs.current[index]}
-                    index={index}
-                    changeFocus={changeFocus}
-                    isFocused={focused === index}
-                  />
-                </Container>
-              }
-            </div>);
-        return null;
-      })}
-      <div key={'submit'} className={classes.cardDiv} >
-        {//focused >= user.info.metrics.length - 1 &&
-          <Container fixed display="flex">
-            {/* <DayDateField
-            reference={refDate}
-            index={user.info.metrics.length}
-            isFocused={focused === user.info.metrics.length}
-            changeFocus={changeFocus}
-            onSubmit={handleSaveDay}
-            isLoading={isLoading}
-            /> */}
-            <DaySubmit
-              index={user.info.metrics.length}
-              changeFocus={changeFocus}
-              isFocused={focused === user.info.metrics.length}
-              onSubmit={handleSaveDay}
-              isLoading={isLoading} />
-          </Container>
-        }
-      </div>
-    </animated.div>
+      { cards.map((card, index) =>
+        <div key={index} className={classes.cardDiv} >
+          <Hidden mdDown>
+            <IconButton style={index === 0 ? { visibility: 'hidden' }: {}}
+             aria-label="previous" color="primary" onClick={() => changeFocus(index - 2)}>
+              <NavigateBeforeIcon classes={{ root: classes.arrow }} />
+            </IconButton>
+          </Hidden>
+          {card}
+          <Hidden mdDown>
+            <IconButton style={index === cards.length - 1 ? { visibility: 'hidden' }: {}}
+            aria-label="next" color="primary" onClick={() => changeFocus(index)} >
+              <NavigateNextIcon classes={{ root: classes.arrow }} />
+            </IconButton>
+          </Hidden>
+        </div>
+      )
+      }
+    </animated.div >
   );
 }
 
@@ -165,11 +159,20 @@ let useStyles = makeStyles((theme) => ({
     position: 'absolute',
     display: 'flex',
     userSelect: 'none',
-    marginTop: '1rem'
   },
   cardDiv: {
     display: 'flex',
     width: '100vw',
+    height: '100vh',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    padding: theme.spacing(2, 2, 2, 2),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(3, 3, 3, 3),
+    },
+  },
+  arrow: {
+    fontSize: '5rem',
   },
 }));
 

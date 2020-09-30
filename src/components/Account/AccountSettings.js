@@ -27,6 +27,7 @@ function AccountSettings() {
   let classes = useStyles();
   return (
     <>
+    mail: {user.info.email}
       <div>
         <Button
           variant="contained"

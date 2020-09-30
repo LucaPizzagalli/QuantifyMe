@@ -61,7 +61,6 @@ function Header() {
       <div className={!isMenuOpen ? clsx(classes.appBar, classes.shadow) : classes.appBar}>
         <IconButton
           color="inherit"
-          size="large"
           aria-label="open drawer"
           onClick={() => { setIsMenuOpen(!isMenuOpen); }}
           edge="start"
@@ -71,13 +70,13 @@ function Header() {
       </div>
       <Drawer
         className={classes.drawer}
+        classes={{ paper: classes.drawerPaper }}
         variant="persistent"
         anchor="left"
         open={isMenuOpen}>
         <div className={classes.drawerHeader}>
           <IconButton
             color="inherit"
-            size="large"
             aria-label="open drawer"
             onClick={() => { setIsMenuOpen(!isMenuOpen); }}
             edge="start"
@@ -171,8 +170,11 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
   },
   drawer: {
-    width: 240,
+    width: 260,
     flexShrink: 0,
+  },
+  drawerPaper: {
+    width: 260,
   },
   drawerHeader: {
     display: 'flex',
@@ -182,7 +184,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.contrastText,
   },
   logo: {
-
     textDecoration: 'none',
     flexGrow: 1,
   },
