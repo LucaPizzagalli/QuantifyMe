@@ -123,7 +123,8 @@ let useStyles = makeStyles((theme) => ({
   cellShell: {
     flexBasis: 0,
     flexGrow: 1,
-    border: '1px solid white',
+    border: '1px solid',
+    borderColor: theme.palette.background.default,
   },
   cell: {
     display: 'flex',

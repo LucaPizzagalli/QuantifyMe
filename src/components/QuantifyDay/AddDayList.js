@@ -9,11 +9,9 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
-import { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit } from './AddDayField';
-import DayDone from './DayDone';
-import DayNoMetrics from './DayNoMetrics';
+import { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit, DayDone, DayNoMetrics } from './AddDayCard';
 
-function AddDayForm() {
+function AddDayList() {
   let user = useContext(UserContext);
   let showAlert = useContext(AlertContext);
   let refs = useRef(user.info.metrics.map(() => React.createRef()));
@@ -68,15 +66,15 @@ function AddDayForm() {
   let classes = useStyles();
   if (isDone)
     return (
-      <Container fixed display="flex">
+      <div className={classes.cardDiv} >
         <DayDone />
-      </Container>);
+      </div>);
 
   if (user.info.metrics.length === 0)
     return (
-      <Container fixed display="flex">
+      <div className={classes.cardDiv} >
         <DayNoMetrics />
-      </Container>);
+      </div>);
 
   let cards = [];
   cards.push(
@@ -176,4 +174,4 @@ let useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default AddDayForm;
+export default AddDayList;

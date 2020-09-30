@@ -15,6 +15,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
   let [value, setValue] = useState('');
@@ -211,9 +215,35 @@ function DaySubmit({ index, isFocused, changeFocus, onSubmit, isLoading }) {
   );
 }
 
+function DayDone() {
+  let classes = useStyles();
+  return (
+    <Paper className={classes.root} elevation={8} >
+      <div className={classes.layout}>
+        <Typography variant="h3" align='center' className={classes.title}>You Made It</Typography>
+        <Typography variant="body1" className={classes.description}>Good job. Today is done.</Typography>
+      </div>
+    </Paper>
+  );
+}
+
+function DayNoMetrics() {
+  let classes = useStyles();
+  return (
+    <Paper className={classes.root} elevation={8} >
+      <div className={classes.layout}>
+        <Alert severity="info">
+          <AlertTitle>There are no metrics yet</AlertTitle>
+          Here you can log all the info you want about today, but first you need to create a metric! <br />
+          Go <Link component={RouterLink} to="/metrics">here</Link> to create one.
+        </Alert>
+      </div>
+    </Paper>
+  );
+}
+
 let useStyles = makeStyles((theme) => ({
   root: {
-    position: 'relative',
     flexGrow: 1,
     maxWidth: '55rem',
     margin: '0',
@@ -284,4 +314,4 @@ let useStyles = makeStyles((theme) => ({
 }));
 
 
-export { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit };
+export { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit, DayDone, DayNoMetrics };
