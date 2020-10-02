@@ -84,7 +84,7 @@ function Diary() {
           label="ascending" />
 
         <Grid container spacing={3} style={{ marginTop: '1rem' }}>
-          {days.map((day) => {
+          {days.map(day => {
             return (
               <Grid key={day.date} item xs={12} md={6} xl={4}>
                 <DayCard metrics={user.info.metrics} day={day} />

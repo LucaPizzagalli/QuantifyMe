@@ -21,6 +21,10 @@ let firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
+// - level 1: this is the first time that a user log in the app
+// - level 2: the user has already logged one time
+
+
 let startInfo = {
   email: null,
   personal: {},
@@ -324,11 +328,20 @@ class User {
   }
 
   // Smaller Stuff
-  getWelcomeMessage() {
+  getDashboardCards() {
+    let cards = [];
     if (this.info.level === 1)
-      return 'Welcome for the first time to QuantifyMe';
+      cards.push({
+        title: 'Such an Achievement!',
+        message: 'The first step to leave back procrastination is the most important. Welcome to QuantifyMe.',
+      });
     else if (this.info.level === 2)
-      return 'Welcome back to QuantifyMe';
+      cards.push({
+        title: 'Go to log Today',
+        message: 'You have not logged this day, yet. Click here to quantify today',
+        to: '/quantify-day',
+      });
+    return cards;
   }
 
 }

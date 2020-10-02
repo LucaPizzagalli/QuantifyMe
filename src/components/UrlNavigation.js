@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import NotFound from '../pages/404';
 import Loading from '../pages/loading';
 import Home from '../pages/home';
-import Dashboard from '../pages/dashboard';
+import DashboardPage from '../pages/dashboard';
 import SignUpPage from '../pages/sign-up';
 import SignInPage from '../pages/sign-in';
 import ResetPasswordPage from '../pages/reset-password';
@@ -35,7 +35,7 @@ function UrlNavigation() {
             <Route path='/sign-up'> <Home /> </Route>
             <Route path='/sign-in'> <Home /> </Route>
             <Route path='/reset-password'> <Home /> </Route>
-            <Route exact path='/'> <Dashboard /> </Route>
+            <Route exact path='/'> <DashboardPage /> </Route>
             <Route path=''> <NotFound /> </Route>
           </Switch>
         </Layout>

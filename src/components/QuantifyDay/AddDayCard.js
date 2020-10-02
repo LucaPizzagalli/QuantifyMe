@@ -68,14 +68,13 @@ function DayNumberField({ metric, reference, index, isFocused, changeFocus }) {
           <Input
             inputRef={reference}
             value={value}
-            margin="dense"
             onChange={(e) => setValue(Number(e.target.value))}
             inputProps={{
               step: 1,
               type: 'number',
               'aria-labelledby': 'range-slider',
             }}
-            style={{ width: 62, margin: '2rem' }}
+            style={{ width: '5rem', margin: '2rem' }}
           />
           <Slider
             min={metric.range[0]}

@@ -1,15 +1,13 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import Container from '@material-ui/core/Container';
-import UserContext from '../components/Firebase';
+import Dashboard from '../components/Dashboard';
 
-function Dashboard() {
-  let user = useContext(UserContext);
-
+function DashboardPage() {
   return (
     <Container fixed display="flex">
-      {user.getWelcomeMessage()}
+      <Dashboard />
     </Container>
   );
 }
 
-export default Dashboard
+export default DashboardPage

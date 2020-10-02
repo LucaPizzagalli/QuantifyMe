@@ -15,15 +15,15 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
 
   let classes = useStyles();
   return (
-    <Paper className={classes.verticalFlex}>
-      <div className={classes.baseCard}>
-        <div className={classes.image}>
+    <Paper className={classes.preRoot}>
+      <div className={classes.root}>
+        <div className={classes.logo}>
           <img src='https://upload.wikimedia.org/wikipedia/it/9/98/Microsoft_Edge_logo_%282019%29.svg'
             alt='metric-logo'
             style={{ maxWidth: '100%', draggable: 'false', userSelect: 'none', userDrag: 'none', pointerEvents: 'none' }} />
         </div>
-        <div className={classes.info}>
-          <Typography variant="h4" component="h2" className={classes.title}>
+        <div className={classes.nameTypeLayout}>
+          <Typography variant="h4" component="h2" className={classes.name}>
             {metric.name}
           </Typography>
           {metric.type === 'rating' &&
@@ -45,7 +45,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
             />
           }
           {metric.type === 'text' &&
-            <div className={classes.info}>
+            <div className={classes.type}>
               <Typography component="div" variant="h5" fontWeight="fontWeightBold" style={{ textShadow: '0px 1px, 1px 0px, 1px 1px', letterSpacing: '1px' }}>
                 <Typography component="span" variant="h4">A</Typography>aa
               </Typography>
@@ -82,35 +82,32 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
 }
 
 let useStyles = makeStyles((theme) => ({
-  verticalFlex: {
-    // maxWidth: 345,
+  preRoot: {
     flexGrow: 1,
     display: 'flex',
     padding: '1rem 2rem 1rem 2rem',
     flexDirection: 'column',
   },
-  baseCard: {
-    // maxWidth: 345,
+  root: {
     flexGrow: 1,
     display: 'flex',
   },
-  image: {
+  logo: {
     flex: '1 1 20%',
     margin: '2rem 2rem 2rem 2rem',
   },
-  info: {
+  nameTypeLayout: {
     flex: '3 3 80%',
     margin: '1rem 2rem 1rem 2rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
-  title: {
+  name: {
     margin: '1rem 0 1rem 0',
   },
   type: {
     margin: '1rem 0 1rem 0',
-
   },
   description: {
     flexGrow: 1,
