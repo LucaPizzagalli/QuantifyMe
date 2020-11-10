@@ -11,7 +11,10 @@ import MetricCard from './MetricCard';
 import EditableMetricCard from './EditableMetricCard';
 import DeletedMetricCard from './DeletedMetricCard';
 import FirstMetricCard from './FirstMetricCard';
-import DraggableList from '../DraggableList.js'
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
+import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 
 function MetricList() {
   let user = useContext(UserContext);
@@ -48,9 +51,17 @@ function MetricList() {
     setEditable({ id: id, delete: true, new: false });
   }
 
+  function HandleSwapMetrics(index1, index2) {
+    let newMetrics = [...metrics];
+    newMetrics[index1] = metrics[index2];
+    newMetrics[index2] = metrics[index1];
+    setMetrics(newMetrics);
+    if (!editable.id)
+      setEditable({ id: -1, delete: false, new: false });
+  }
+
   function HandleSaveMetrics() {
     setIsLoading(true);
-    setEditable({ id: null, delete: false, new: false });
     let newMetrics = null;
     if (editable.delete) {
       for (let [index, metric] of metrics.entries())
@@ -59,7 +70,7 @@ function MetricList() {
           break;
         }
     }
-    else {
+    else if(editable.id != -1) {
       let newMetric = {
         id: editable.id,
         name: nameRef.current.value,
@@ -82,6 +93,9 @@ function MetricList() {
           break;
         }
     }
+    else
+      newMetrics = metrics;
+    setEditable({ id: null, delete: false, new: false });
     setMetrics(newMetrics);
     user.updateMetrics(newMetrics, editable.new ? editable.id : null, editable.delete ? editable.id : null, handleUpdateMetricsSuccess, handleUpdateMetricsError);
   }
@@ -138,9 +152,21 @@ function MetricList() {
   let classes = useStyles();
   return (
     <>
-      <DraggableList ids={ids} statics={statics} padding={20}>
-        {metricCards}
-      </DraggableList>
+      { metricCards.map((card, index) =>
+        <div key={index} className={classes.cardDiv}>
+          <div className={classes.arrows}>
+            <Button style={index === 0 ? { visibility: 'hidden' } : {}}
+              aria-label="move-up" variant="contained" onClick={() => HandleSwapMetrics(index - 1, index)}>
+              <ArrowUpwardRoundedIcon classes={{ root: classes.arrow }} />
+            </Button>
+            <IconButton style={index === metrics.length - 1 ? { visibility: 'hidden' } : {}}
+              aria-label="move-down" variant="contained" onClick={() => HandleSwapMetrics(index, index + 1)} >
+              <ArrowDownwardRoundedIcon variant="contained" classes={{ root: classes.arrow }} />
+            </IconButton>
+          </div>
+          {card}
+        </div>
+      )}
       <Zoom
         key="add-metric-button"
         in={editable.id == null}
@@ -178,6 +204,16 @@ let useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
+  },
+  cardDiv: {
+    display: 'flex',
+    // alignItems: 'stretch',
+    // justifyContent: 'center',
+    padding: theme.spacing(2, 2, 2, 2),
+  },
+  arrows: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 

@@ -56,9 +56,11 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
           </Typography>
         </div>
       </div>
-      <IconButton aria-label="edit" onClick={() => HandleEditMetric(metric.id)} className={classes.edit}>
-        <EditIcon />
-      </IconButton>
+      { interactive &&
+        <IconButton aria-label="edit" onClick={() => HandleEditMetric(metric.id)} className={classes.edit}>
+          <EditIcon />
+        </IconButton>
+      }
       {metric.type === 'rating' &&
         <>
           <IconButton
@@ -84,6 +86,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
 let useStyles = makeStyles((theme) => ({
   preRoot: {
     flexGrow: 1,
+    position: 'relative',
     display: 'flex',
     padding: '1rem 2rem 1rem 2rem',
     flexDirection: 'column',

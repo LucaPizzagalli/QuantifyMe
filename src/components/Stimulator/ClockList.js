@@ -7,7 +7,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Zoom from '@material-ui/core/Zoom';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
-import DraggableList from '../DraggableList.js'
 import { Timer, EditableClock, DeletedClock } from './ClockCard';
 import FirstClockCard from './FirstClockCard';
 
@@ -124,9 +123,9 @@ function ClockList() {
 
   return (
     <>
-      <DraggableList ids={ids} statics={statics} padding={20}>
+      <div>
         {cards}
-      </DraggableList>
+      </div>
       <Zoom
         key="add-clock-button"
         in={editable.id == null}
