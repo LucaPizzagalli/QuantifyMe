@@ -2,12 +2,63 @@ import React, { useState, useContext, useEffect } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
-import Highcharts from 'highcharts';
+import Highcharts from 'highcharts'
+import HC_more from 'highcharts/highcharts-more'
 import HighchartsReact from 'highcharts-react-official';
 import UserContext from '../Firebase';
+HC_more(Highcharts)
 
+Highcharts.theme = {
+  colors: ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',
+    '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+  chart: {
+    backgroundColor: '#2A2A2A',
+  },
+  xAxis: {
+    labels: {
+      style: {
+        color: '#E0E0E3'
+      }
+    },
+    lineColor: '#707073',
+    tickColor: '#707073',
+    title: {
+      style: {
+        color: '#A0A0A3'
 
-function MetricPlot({ metrics }) {
+      }
+    }
+  },
+  yAxis: {
+    labels: {
+      style: {
+        color: '#E0E0E3'
+      }
+    },
+    lineColor: '#707073',
+    gridLineWidth: 0,
+    tickColor: '#707073',
+    tickWidth: 1,
+    title: {
+      style: {
+        color: '#A0A0A3'
+      }
+    }
+  },
+
+  legend: {
+    itemStyle: {
+      font: '9pt Trebuchet MS, Verdana, sans-serif',
+      color: 'black'
+    },
+    itemHoverStyle: {
+      color: 'gray'
+    }
+  }
+};
+Highcharts.setOptions(Highcharts.theme);
+
+function TimeSeriesPlot({ metrics }) {
   let user = useContext(UserContext);
   let [timeSeries, setTimeSeries] = useState(null);
   let [isLoading, setIsLoading] = useState(true);
@@ -37,22 +88,29 @@ function MetricPlot({ metrics }) {
       </Alert>
     );
 
-  let options = {};
-  if (user.info.theme === 'dark')
-    options = darkPlot;
-  else
-    options = lightPlot;
+  // let options = {};
+  // if (user.info.theme === 'dark')
+  //   options = darkPlot;
+  // else
+  //   options = lightPlot;
 
-  options['title']['text'] = '';
-  options['xAxis']['type'] = 'datetime';
-  options['yAxis'] = timeSeries.map(() => {
-    return {
-      gridLineWidth: 0,
-      labels: { enabled: false },
-      title: { text: '', }}
-    });
-  options['yAxis'][0]['gridLineWidth'] = 1;
-  options['series'] = timeSeries;
+  let options = {
+    title: {
+      text: ''
+    },
+    xAxis: {
+      type: 'datetime',
+    },
+    yAxis: timeSeries.map(() => {
+      return {
+        gridLineWidth: 0,
+        labels: { enabled: false },
+        title: { text: '', }
+      }
+    }),
+    // options['yAxis'][0]['gridLineWidth'] = 1;
+    series: timeSeries,
+  }
 
   return (
     <div>
@@ -64,17 +122,136 @@ function MetricPlot({ metrics }) {
   );
 }
 
-let darkPlot = {
-  colors: ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',
-    '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
-  chart: {
-    backgroundColor: {
-      linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-      stops: [
-        [0, '#2a2a2b'],
-        [1, '#3e3e40']
-      ]
+
+function DependencyPlot({ metricX, metricY, metricColor }) {
+  let user = useContext(UserContext);
+  let [data, setData] = useState(null);
+  let [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let metrics = [metricX, metricY];
+    if (metricColor)
+      metrics.push(metricColor)
+    user.getTimeSeries(metrics, HandleGetDataSuccess, HandleGetDataError);
+  }, [user, metricX, metricY, metricColor]);
+
+  function HandleGetDataSuccess(timeSeries) {
+    let dataX = timeSeries[0].data;
+    let dataY = timeSeries[1].data;
+    let points = new Map()
+    let indexY = 0;
+    for (let indexX = 0; indexX < dataX.length; indexX++) {
+      while (dataX[indexX][0] > dataY[indexY][0] && indexY < dataY.length)
+        indexY++;
+      if (dataX[indexX][0] === dataY[indexY][0]) {
+        let x = dataX[indexX][1];
+        let y = dataY[indexY][1];
+        if (points.has(x)) {
+          if (points.get(x).has(y))
+            points.get(x).set(y, points.get(x).get(y) + 1);
+          else
+            points.get(x).set(y, 1);
+        }
+        else
+          points.set(x, new Map([[y, 1]]));
+      }
+    }
+    let newData = []
+    for (let [x, value] of points)
+      for (let [y, z] of value)
+        newData.push({ x: x, y: y, z: z })
+    // if (timeSeries.length === 3)
+    //   setColor(timeSeries[2]);
+    setData(newData);
+    setIsLoading(false);
+  }
+
+  function HandleGetDataError(e) {
+    setIsLoading(e.message);
+  }
+
+  if (isLoading === true)
+    return <CircularProgress />;
+  if (isLoading)
+    return (
+      <Alert severity="error">
+        <AlertTitle>Error while retrieving data</AlertTitle>
+        {isLoading}
+      </Alert>
+    );
+
+  // let options = {};
+  // if (user.info.theme === 'dark')
+  //   options = darkPlot;
+  // else
+  //   options = lightPlot;
+
+  let options = {
+    title: {
+      text: '',
     },
+    chart: {
+      type: 'bubble',
+    },
+    series: [{ data: data }],
+    xAxis: {
+      title: {
+        text: 'testo x',
+      },
+    },
+    plotOptions: {
+      bubble: {
+        minSize: 8,
+        maxSize: 8,
+      },
+    },
+  }
+
+  return (
+    <div>
+      <HighchartsReact
+        highcharts={Highcharts}
+        options={options}
+      />
+    </div >
+  );
+}
+
+// accessibility: {
+//     point: {
+//         valueDescriptionFormat: '{index}. {point.name}, fat: {point.x}g, sugar: {point.y}g, obesity: {point.z}%.'
+//     }
+// },
+
+// plotLines: [{
+//     color: 'black',
+//     dashStyle: 'dot',
+//     width: 2,
+//     value: 65,
+//     label: {
+//         rotation: 0,
+//         y: 15,
+//         style: {
+//             fontStyle: 'italic'
+//         },
+//         text: 'Safe fat intake 65g/day'
+//     },
+//     zIndex: 3
+// }],
+
+// tooltip: {
+//     useHTML: true,
+//     headerFormat: '<table>',
+//     pointFormat: '<tr><th colspan="2"><h3>{point.country}</h3></th></tr>' +
+//         '<tr><th>Fat intake:</th><td>{point.x}g</td></tr>' +
+//         '<tr><th>Sugar intake:</th><td>{point.y}g</td></tr>' +
+//         '<tr><th>Obesity (adults):</th><td>{point.z}%</td></tr>',
+//     footerFormat: '</table>',
+//     followPointer: true
+// },
+
+let darkPlot = {
+  chart: {
     style: {
       fontFamily: '\'Unica One\', sans-serif'
     },
@@ -110,23 +287,23 @@ let darkPlot = {
       }
     }
   },
-  // yAxis: {
-  //   gridLineColor: '#707073',
-  //   labels: {
-  //     style: {
-  //       color: '#E0E0E3'
-  //     }
-  //   },
-  //   lineColor: '#707073',
-  //   minorGridLineColor: '#505053',
-  //   tickColor: '#707073',
-  //   tickWidth: 1,
-  //   title: {
-  //     style: {
-  //       color: '#A0A0A3'
-  //     }
-  //   }
-  // },
+  yAxis: {
+    gridLineColor: '#707073',
+    labels: {
+      style: {
+        color: '#E0E0E3'
+      }
+    },
+    lineColor: '#707073',
+    minorGridLineColor: '#505053',
+    tickColor: '#707073',
+    tickWidth: 1,
+    title: {
+      style: {
+        color: '#A0A0A3'
+      }
+    }
+  },
   tooltip: {
     shared: true,
     backgroundColor: 'rgba(0, 0, 0, 0.85)',
@@ -321,4 +498,4 @@ let lightPlot = {
   background2: '#F0F0EA'
 };
 
-export default MetricPlot
+export { TimeSeriesPlot, DependencyPlot }

@@ -25,6 +25,9 @@ function MetricList() {
   let nameRef = useRef();
   let typeRef = useRef();
   let descriptionRef = useRef();
+  let logoRef = useRef();
+  let color1Ref = useRef();
+  let color2Ref = useRef();
   let rangeRef = useRef([React.createRef(), React.createRef()]);
   let detailRefs = useRef((new Array(25).fill(0)).map(() => React.createRef()));
 
@@ -70,12 +73,14 @@ function MetricList() {
           break;
         }
     }
-    else if(editable.id != -1) {
+    else if(editable.id !== -1) {
       let newMetric = {
         id: editable.id,
         name: nameRef.current.value,
         type: typeRef.current.value,
         description: descriptionRef.current.value,
+        logo: logoRef.current.value,
+        color: [color1Ref.current.value, color2Ref.current.value],
       };
       if (newMetric.type === 'number')
         newMetric['range'] = [Number(rangeRef.current[0].current.value), Number(rangeRef.current[1].current.value)];
@@ -130,6 +135,9 @@ function MetricList() {
             nameRef={nameRef}
             typeRef={typeRef}
             descriptionRef={descriptionRef}
+            color1Ref={color1Ref}
+            color2Ref={color2Ref}
+            logoRef={logoRef}
             rangeRef={rangeRef}
             detailRefs={detailRefs} />
         );
@@ -159,7 +167,7 @@ function MetricList() {
               aria-label="move-up" variant="contained" onClick={() => HandleSwapMetrics(index - 1, index)}>
               <ArrowUpwardRoundedIcon classes={{ root: classes.arrow }} />
             </Button>
-            <IconButton style={index === metrics.length - 1 ? { visibility: 'hidden' } : {}}
+            <IconButton style={index === metricCards.length - 1 ? { visibility: 'hidden' } : {}}
               aria-label="move-down" variant="contained" onClick={() => HandleSwapMetrics(index, index + 1)} >
               <ArrowDownwardRoundedIcon variant="contained" classes={{ root: classes.arrow }} />
             </IconButton>
