@@ -85,7 +85,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
 
 let useStyles = makeStyles((theme) => ({
   preRoot: {
-    flexGrow: 1,
+    width: '100%',
     position: 'relative',
     display: 'flex',
     padding: '1rem 2rem 1rem 2rem',

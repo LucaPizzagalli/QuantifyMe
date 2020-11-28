@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, responsiveFontSizes, ThemeProvider } from '@material-ui/core/styles';
 import basePalette from './theme';
 import UserContext from './components/Firebase';
 import UrlNavigation from './components/UrlNavigation';
 
-export default function App() {
+
+let typographyTheme = responsiveFontSizes(createMuiTheme());
+
+
+function App() {
   let userRef = useRef(useContext(UserContext));
   let [, setIsAuth] = useState(0);
   let [theme, setTheme] = useState({ palette: { ...basePalette, type: userRef.current.info.theme } });
@@ -34,8 +37,12 @@ export default function App() {
 
   return (
     <ThemeProvider theme={createMuiTheme(theme)}>
-      <CssBaseline />
-      <UrlNavigation />
+      <ThemeProvider theme={typographyTheme}>
+        <CssBaseline />
+        <UrlNavigation />
+      </ThemeProvider>
     </ThemeProvider>
   );
 }
+
+export default App;

@@ -15,6 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
+import { SwitchIcon } from '../Icons';
 
 function MetricList() {
   let user = useContext(UserContext);
@@ -73,7 +74,7 @@ function MetricList() {
           break;
         }
     }
-    else if(editable.id !== -1) {
+    else if (editable.id !== -1) {
       let newMetric = {
         id: editable.id,
         name: nameRef.current.value,
@@ -159,21 +160,16 @@ function MetricList() {
 
   let classes = useStyles();
   return (
-    <>
+    <div className={classes.cardList}>
       { metricCards.map((card, index) =>
-        <div key={index} className={classes.cardDiv}>
-          <div className={classes.arrows}>
-            <Button style={index === 0 ? { visibility: 'hidden' } : {}}
-              aria-label="move-up" variant="contained" onClick={() => HandleSwapMetrics(index - 1, index)}>
-              <ArrowUpwardRoundedIcon classes={{ root: classes.arrow }} />
-            </Button>
-            <IconButton style={index === metricCards.length - 1 ? { visibility: 'hidden' } : {}}
-              aria-label="move-down" variant="contained" onClick={() => HandleSwapMetrics(index, index + 1)} >
-              <ArrowDownwardRoundedIcon variant="contained" classes={{ root: classes.arrow }} />
-            </IconButton>
-          </div>
-          {card}
-        </div>
+        [
+          index > 0 &&
+            <IconButton key={'swap-' + index}
+              aria-label="swap" variant="contained" onClick={() => HandleSwapMetrics(index - 1, index)} >
+              <SwitchIcon variant="contained" classes={{ root: classes.arrow }} />
+            </IconButton>,
+          card
+        ]
       )}
       <Zoom
         key="add-metric-button"
@@ -203,7 +199,7 @@ function MetricList() {
           <SaveIcon />
         </Fab>
       </Zoom>
-    </>
+    </div>
   );
 }
 
@@ -213,15 +209,10 @@ let useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
-  cardDiv: {
-    display: 'flex',
-    // alignItems: 'stretch',
-    // justifyContent: 'center',
-    padding: theme.spacing(2, 2, 2, 2),
-  },
-  arrows: {
+  cardList: {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
   },
 }));
 
