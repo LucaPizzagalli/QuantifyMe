@@ -12,9 +12,6 @@ import EditableMetricCard from './EditableMetricCard';
 import DeletedMetricCard from './DeletedMetricCard';
 import FirstMetricCard from './FirstMetricCard';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
-import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import { SwitchIcon } from '../Icons';
 
 function MetricList() {

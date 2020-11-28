@@ -6,9 +6,6 @@ import UserContext from './components/Firebase';
 import UrlNavigation from './components/UrlNavigation';
 
 
-let typographyTheme = responsiveFontSizes(createMuiTheme());
-
-
 function App() {
   let userRef = useRef(useContext(UserContext));
   let [, setIsAuth] = useState(0);
@@ -36,11 +33,9 @@ function App() {
 
 
   return (
-    <ThemeProvider theme={createMuiTheme(theme)}>
-      <ThemeProvider theme={typographyTheme}>
-        <CssBaseline />
-        <UrlNavigation />
-      </ThemeProvider>
+    <ThemeProvider theme={responsiveFontSizes(createMuiTheme(theme))}>
+      <CssBaseline />
+      <UrlNavigation />
     </ThemeProvider>
   );
 }
