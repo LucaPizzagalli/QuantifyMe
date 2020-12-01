@@ -4,17 +4,39 @@ import glob
 
 def main():
     '''main'''
-    svgs = {}
+    content = "import React from 'react';\nimport { makeStyles } from '@material-ui/core/styles';\n\n\n"
+    map_text = ""
+
     for filename in glob.glob('*.svg'):
-        svgs[filename] = get_minified_svg(filename)
+        icon_name = filename[:-4]
+        component_name = ''.join([name.title() for name in icon_name.split('-')]) + 'Icon'
 
-    react_dict = '{'
-    for name, svg in svgs.items():
-        react_dict += '\'' + name + '\': ' + svg + ','
-    react_dict += '}'
+        map_text += f"  ['{icon_name}', {component_name}],\n"
+        svg = get_minified_svg(filename)
+        content += get_component(component_name, svg)
 
-    with open('out.txt', 'w') as f:
-        f.write(react_dict)
+    content += "let customIcons = new Map([\n"
+    content += map_text
+    content += "])\n\n"
+    content += "let iconColors = [['#5e5eec', '#2e2ee6'], ['#d75454', '#b72a2a'], ['#49d949', '#23a523']];\n\n"
+    content += "let useStyles = makeStyles((theme) => ({\n"
+    content += "  col1: { fill: props => props.col1, },\n"
+    content += "  col2: { fill: props => props.col2, },\n"
+    content += "  col3: { fill: props => props.col3, },\n"
+    content += "  col4: { fill: props => props.col4, },\n"
+    content += "}));\n\n"
+    content += "export { customIcons, iconColors };\n"
+
+    with open('CustomIcons.js', 'w') as handle:
+        handle.write(content)
+
+
+def get_component(component_name, svg):
+    component = "function " + component_name + "({ color }) {\n"
+    component += "  let classes = useStyles({ col1: color[0], col2: color[1], col3: '#adadad', col4: '#bebebe' });\n"
+    component += "  return " + svg + ";\n"
+    component += "}\n\n\n"
+    return component
 
 
 def create_parsers(keys):

@@ -9,6 +9,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
+import { customIcons } from '../CustomIcons'
+
 
 function MetricCard({ metric, interactive, HandleEditMetric }) {
   let [isExpanded, setIsExpanded] = useState(false);
@@ -18,9 +20,10 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
     <Paper className={classes.preRoot}>
       <div className={classes.root}>
         <div className={classes.logo}>
-          <img src='https://upload.wikimedia.org/wikipedia/it/9/98/Microsoft_Edge_logo_%282019%29.svg'
+          {customIcons.get(metric.logo)({ color:metric.color } )}
+          {/* <img src='https://upload.wikimedia.org/wikipedia/it/9/98/Microsoft_Edge_logo_%282019%29.svg'
             alt='metric-logo'
-            style={{ maxWidth: '100%', draggable: 'false', userSelect: 'none', userDrag: 'none', pointerEvents: 'none' }} />
+            style={{ maxWidth: '100%', draggable: 'false', userSelect: 'none', userDrag: 'none', pointerEvents: 'none' }} /> */}
         </div>
         <div className={classes.nameTypeLayout}>
           <Typography variant="h4" component="h2" className={classes.name}>
@@ -31,7 +34,8 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
               value={metric.details.length - 1}
               max={metric.details.length - 1}
               size="large"
-              readOnly />
+              readOnly
+              style={{ color: metric.color[0] }} />
           }
           {metric.type === 'number' &&
             <Slider style={{ width: '60%', }} className={classes.type}
@@ -42,7 +46,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
               valueLabelDisplay="off"
               marks={[{ value: metric.range[0], label: metric.range[0] }, { value: metric.range[1], label: metric.range[1] }]}
               readOnly
-            />
+              style={{ color: metric.color[0] }} />
           }
           {metric.type === 'text' &&
             <div className={classes.type}>
@@ -58,7 +62,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
       </div>
       { interactive &&
         <IconButton aria-label="edit" onClick={() => HandleEditMetric(metric.id)} className={classes.edit}>
-          <EditIcon />
+          <EditIcon style={{ color: metric.color[0] }} />
         </IconButton>
       }
       {metric.type === 'rating' &&

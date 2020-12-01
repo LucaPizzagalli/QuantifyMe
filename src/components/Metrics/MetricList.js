@@ -14,6 +14,7 @@ import FirstMetricCard from './FirstMetricCard';
 import IconButton from '@material-ui/core/IconButton';
 import { SwitchIcon } from '../Icons';
 
+
 function MetricList() {
   let user = useContext(UserContext);
   let showAlert = useContext(AlertContext);
@@ -38,7 +39,9 @@ function MetricList() {
       name: '',
       type: 'text',
       description: '',
-      details: []
+      details: [],
+      logo: null,
+      color: null,
     };
     setMetrics([...metrics, newMetric]);
     setEditable({ id: newMetric.id, delete: false, new: true });
