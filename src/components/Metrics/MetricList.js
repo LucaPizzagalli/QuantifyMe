@@ -166,7 +166,7 @@ function MetricList() {
           index > 0 &&
             <IconButton key={'swap-' + index}
               aria-label="swap" variant="contained" onClick={() => HandleSwapMetrics(index - 1, index)} >
-              <SwitchIcon variant="contained" classes={{ root: classes.arrow }} />
+              <SwitchIcon variant="contained" />
             </IconButton>,
           card
         ]
@@ -204,15 +204,15 @@ function MetricList() {
 }
 
 let useStyles = makeStyles((theme) => ({
-  fab: {
-    position: 'absolute',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
-  },
   cardList: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
   },
 }));
 

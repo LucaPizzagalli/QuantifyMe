@@ -9,6 +9,8 @@ import UserContext from '../Firebase';
 import AlertContext from '../Layout';
 import { Timer, EditableClock, DeletedClock } from './ClockCard';
 import FirstClockCard from './FirstClockCard';
+import IconButton from '@material-ui/core/IconButton';
+import { SwitchIcon } from '../Icons';
 
 
 function ClockList() {
@@ -26,8 +28,8 @@ function ClockList() {
       Notification.requestPermission();
   }, []);
 
-  function HandleAddClock() { //TODO fix maxID
-    let maxId = 0;
+  function HandleAddClock() {
+    let maxId = -1;
     for (let clock of clocks)
       maxId = Math.max(maxId, parseInt(clock.id.slice(2)));
     let newClock = {
@@ -48,9 +50,17 @@ function ClockList() {
     setEditable({ id: id, delete: true, new: false });
   }
 
+  function HandleSwapClocks(index1, index2) {
+    let newClocks = [...clocks];
+    newClocks[index1] = clocks[index2];
+    newClocks[index2] = clocks[index1];
+    setClocks(newClocks);
+    if (!editable.id)
+      setEditable({ id: -1, delete: false, new: false });
+  }
+
   function HandleSaveClocks() {
     setIsLoading(true);
-    setEditable({ id: null, delete: false, new: false });
     let newClocks = null;
     if (editable.delete) {
       for (let [index, clock] of clocks.entries())
@@ -72,6 +82,7 @@ function ClockList() {
           break;
         }
     }
+    setEditable({ id: null, delete: false, new: false });
     setClocks(newClocks);
     user.updateClocks(newClocks, handleUpdateClocksSuccess, handleUpdateClocksError);
   }
@@ -89,7 +100,7 @@ function ClockList() {
   let classes = useStyles();
   let ids = [];
   let statics = [];
-  let cards = clocks.map(clock => {
+  let clockCards = clocks.map(clock => {
     ids.push(clock.id);
     if (clock.id === editable.id) {
       statics.push(clock.id);
@@ -99,6 +110,7 @@ function ClockList() {
         return <EditableClock
           key={clock.id}
           clock={clock}
+          isNew={editable.new}
           HandleDeleteClock={HandleDeleteClock}
           timeRef={timeRef}
           typeRef={typeRef}
@@ -118,14 +130,21 @@ function ClockList() {
       return null;
   });
 
-  if (cards.length === 0)
-    cards = [<FirstClockCard />];
+  if (clockCards.length === 0)
+    clockCards = [<FirstClockCard />];
 
   return (
-    <>
-      <div>
-        {cards}
-      </div>
+    <div className={classes.cardList}>
+      { clockCards.map((card, index) =>
+        [
+          index > 0 &&
+            <IconButton key={'swap-' + index}
+              aria-label="swap" variant="contained" onClick={() => HandleSwapClocks(index - 1, index)} >
+              <SwitchIcon variant="contained" />
+            </IconButton>,
+          card
+        ]
+      )}
       <Zoom
         key="add-clock-button"
         in={editable.id == null}
@@ -154,11 +173,16 @@ function ClockList() {
           <SaveIcon />
         </Fab>
       </Zoom>
-    </>
+    </div>
   );
 }
 
 let useStyles = makeStyles((theme) => ({
+  cardList: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   fab: {
     position: 'absolute',
     bottom: theme.spacing(2),

@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+import Paper from '@material-ui/core/Paper';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 
@@ -9,21 +8,22 @@ function DeletedMetricCard() {
 
   let classes = useStyles();
   return (
-    <Card className={classes.card}>
-      <CardContent>
+    <Paper className={classes.card}>
         <Alert severity="warning">
           <AlertTitle>Metric Deleted</AlertTitle>
           If you save now, all the records associated with this metric will be deleted.
         </Alert>
-      </CardContent>
-    </Card>
+    </Paper>
   );
 }
 
 let useStyles = makeStyles((theme) => ({
   card: {
-    // maxWidth: 345,
-    flexGrow: 1
+    width: '100%',
+    position: 'relative',
+    display: 'flex',
+    padding: '1rem 2rem 1rem 2rem',
+    flexDirection: 'column',
   },
 }));
 

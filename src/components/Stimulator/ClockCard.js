@@ -3,9 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
@@ -67,37 +64,25 @@ function Timer({ clock, interactive, HandleEditClock }) {
   let minutes = Math.floor((timeLeft + 999) / 1000 / 60 % 60);
   let seconds = Math.floor((timeLeft + 999) / 1000 % 60);
   return (
-    <Card className={classes.card}>
-      <CardHeader
-        action={
-          interactive &&
-          <IconButton aria-label="edit" onClick={() => HandleEditClock(clock.id)}>
-            <EditIcon />
-          </IconButton>
-        }
-        title={timeLeft > 0 ?
-          <div>
-            {hours !== 0 &&
-              <>
-                <Typography variant="h3" component="span">{' ' + hours}</Typography>
-                <Typography variant="subtitle1" component="span">h</Typography>
-              </>
-            }
-            {(minutes !== 0 || hours !== 0) &&
-              <>
-                <Typography variant="h3" component="span">{' ' + minutes}</Typography>
-                <Typography variant="subtitle1" component="span">m</Typography>
-              </>
-            }
-            <Typography variant="h3" component="span">{' ' + seconds}</Typography>
-            <Typography variant="subtitle1" component="span">s</Typography>
-          </div>
-          :
-          <Typography variant="h3" component="div">{clock.description}</Typography>
-        }
-      />
-      <CardContent>
+    <Paper className={classes.card}>
+      {timeLeft > 0 ?
+        <div>
+          {hours !== 0 && <>
+            <Typography variant="h3" component="span">{' ' + hours}</Typography>
+            <Typography variant="subtitle1" component="span">h</Typography>
+          </>}
+          {(minutes !== 0 || hours !== 0) && <>
+            <Typography variant="h3" component="span">{' ' + minutes}</Typography>
+            <Typography variant="subtitle1" component="span">m</Typography>
+          </>}
+          <Typography variant="h3" component="span">{' ' + seconds}</Typography>
+          <Typography variant="subtitle1" component="span">s</Typography>
+        </div>
+        :
+        <Typography variant="h3" component="div">Stop</Typography>
+      }
 
+      <div>
         <Button variant="contained" color="primary" onClick={restartTimer} >
           Reset
         </Button>
@@ -111,19 +96,24 @@ function Timer({ clock, interactive, HandleEditClock }) {
           </Button>
         )}
         <Typography variant="body1">{clock.description}</Typography>
-      </CardContent>
-    </Card>
+      </div>
+      { interactive &&
+        <IconButton aria-label="edit" onClick={() => HandleEditClock(clock.id)} className={classes.edit}>
+          <EditIcon />
+        </IconButton>
+      }
+    </Paper>
   )
 }
 
 
-function EditableClock({ clock, HandleDeleteClock, typeRef, timeRef, descriptionRef }) {
+function EditableClock({ clock, isNew, HandleDeleteClock, typeRef, timeRef, descriptionRef }) {
   let today = new Date();
   today.setHours(0, 0, 0, 0);
   let oldTime = new Date();
   oldTime.setHours(0, 0, 0, clock.time);
-  let typeMapping = { 'timer': 0, 'alarm': 1, 'stopwatch': 2, 'delete': 3 };
-  let mappingType = { 0: 'timer', 1: 'alarm', 2: 'stopwatch', 3: 'stopwatch' };
+  let typeMapping = { 'timer': 0, 'alarm': 1, 'stopwatch': 2 };
+  let mappingType = { 0: 'timer', 1: 'alarm', 2: 'stopwatch' };
   let [timer, setTimer] = useState(clock.type === 'timer' ? oldTime : today);
   let [alarm, setAlarm] = useState(clock.type === 'alarm' ? oldTime : new Date());
   let [type, setType] = useState(typeMapping[clock.type]);
@@ -131,22 +121,28 @@ function EditableClock({ clock, HandleDeleteClock, typeRef, timeRef, description
   let classes = useStyles();
   return (
     <Paper className={classes.card}>
-      <Tabs
-        value={type}
-        onChange={(_, newType) => setType(newType)}
-        variant="fullWidth"
-        indicatorColor="primary"
-        textColor="primary"
-        aria-label="clock-types"
-      >
-        <Tab id="timer" aria-controls="timer" icon={<HourglassEmptyRoundedIcon />} aria-label="timer" />
-        <Tab id="alarm" aria-controls="alarm" icon={<AlarmIcon />} aria-label="alarm" />
-        <Tab id="stopwatch" aria-controls="stopwatch" icon={<TimerIcon />} aria-label="stopwatch" />
-        <Tab id="delete" aria-controls="delete" icon={<DeleteIcon />} aria-label="delete" />
-      </Tabs>
-      <input value={type === 0 ? timer.getTime() - today.getTime() : alarm.getTime() - today.getTime()} ref={timeRef} type="hidden" />
+      {isNew &&
+        <Tabs
+          value={type}
+          onChange={(_, newType) => setType(newType)}
+          variant="fullWidth"
+          indicatorColor="primary"
+          textColor="primary"
+          aria-label="clock-types"
+        >
+          <Tab id="timer" aria-controls="timer" icon={<HourglassEmptyRoundedIcon />} aria-label="timer" />
+          <Tab id="alarm" aria-controls="alarm" icon={<AlarmIcon />} aria-label="alarm" />
+          <Tab id="stopwatch" aria-controls="stopwatch" icon={<TimerIcon />} aria-label="stopwatch" />
+        </Tabs>
+      }
+      {!isNew &&
+        <IconButton aria-label="delete" onClick={() => HandleDeleteClock(clock.id)} className={classes.edit}>
+          <DeleteIcon />
+        </IconButton>
+      }
+      <input value={mappingType[type] === 'timer' ? timer.getTime() - today.getTime() : alarm.getTime() - today.getTime()} ref={timeRef} type="hidden" />
       <input value={mappingType[type]} ref={typeRef} type="hidden" />
-      {type === 0 &&
+      {mappingType[type] === 'timer' &&
         <div className={classes.tab}>
           <div>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -167,7 +163,7 @@ function EditableClock({ clock, HandleDeleteClock, typeRef, timeRef, description
             label="Description"
             fullWidth={true} />
         </div>}
-      {type === 1 &&
+      {mappingType[type] === 'alarm' &&
         <div className={classes.tab}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <TimePicker
@@ -185,7 +181,7 @@ function EditableClock({ clock, HandleDeleteClock, typeRef, timeRef, description
             label="Description"
             fullWidth={true} />
         </div>}
-      {type === 2 &&
+      {mappingType[type] === 'stopwatch' &&
         <div className={classes.tab}>
           <TextField
             inputRef={descriptionRef}
@@ -193,15 +189,6 @@ function EditableClock({ clock, HandleDeleteClock, typeRef, timeRef, description
             label="Description"
             fullWidth={true} />
         </div>}
-      {type === 3 &&
-        <div className={classes.tab}>
-          <IconButton aria-label="delete" color="primary" onClick={() => HandleDeleteClock(clock.id)}
-          style={{padding: '3rem'}}>
-            <DeleteIcon />
-          </IconButton>
-        </div>}
-      <div>
-      </div>
     </Paper>
   );
 }
@@ -210,29 +197,34 @@ function EditableClock({ clock, HandleDeleteClock, typeRef, timeRef, description
 function DeletedClock() {
   let classes = useStyles();
   return (
-    <Card className={classes.card}>
-      <CardContent>
-        <Alert severity="warning">
-          <AlertTitle>Timer Deleted</AlertTitle>
+    <Paper className={classes.card}>
+      <Alert severity="warning">
+        <AlertTitle>Timer Deleted</AlertTitle>
             The clock will be deleted upon saving.
         </Alert>
-      </CardContent>
-    </Card>
+    </Paper>
   );
 }
 
 let useStyles = makeStyles((theme) => ({
   card: {
-    // maxWidth: 345,
-    padding: '1rem',
-    flexGrow: 1,
+    width: '100%',
+    position: 'relative',
+    display: 'flex',
+    padding: '1rem 2rem 1rem 2rem',
+    flexDirection: 'column',
   },
   tab: {
     display: 'flex',
     flexGrow: 1,
     alignItems: 'center',
     flexDirection: 'column',
-  }
+  },
+  edit: {
+    position: 'absolute',
+    top: '0.5rem',
+    right: '0.5rem',
+  },
 }));
 
 export { Timer, EditableClock, DeletedClock };

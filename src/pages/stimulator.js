@@ -6,12 +6,10 @@ import ClockList from '../components/Stimulator/ClockList';
 class StimulatorPage extends React.Component {
   render() {
     return (
-      <Container maxWidth="md" fixed display="flex" style={{padding: '1.5rem'}}>
-        <Paper>
+      <Container maxWidth="md" fixed display="flex" style={{ padding: '1.5rem' }}>
         < ClockList />
-        </Paper>
       </Container>
-      );
+    );
   }
 }
 
