@@ -1,6 +1,5 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
 import ClockList from '../components/Stimulator/ClockList';
 
 class StimulatorPage extends React.Component {

@@ -38,7 +38,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
               style={{ color: metric.color[0] }} />
           }
           {metric.type === 'number' &&
-            <Slider style={{ width: '60%', }} className={classes.type}
+            <Slider className={classes.type}
               min={metric.range[0]}
               max={metric.range[1]}
               value={metric.range}
@@ -46,7 +46,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
               valueLabelDisplay="off"
               marks={[{ value: metric.range[0], label: metric.range[0] }, { value: metric.range[1], label: metric.range[1] }]}
               readOnly
-              style={{ color: metric.color[0] }} />
+              style={{ width: '60%', color: metric.color[0] }} />
           }
           {metric.type === 'text' &&
             <div className={classes.type}>
