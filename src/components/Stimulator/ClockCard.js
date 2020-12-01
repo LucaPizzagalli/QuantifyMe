@@ -18,6 +18,7 @@ import { MuiPickersUtilsProvider, TimePicker } from "@material-ui/pickers";
 import Gong1 from '../../audio/gong1.mp3';
 import { Paper } from '@material-ui/core';
 
+
 function Timer({ clock, interactive, HandleEditClock }) {
   let [timeLeft, setTimeLeft] = useState(clock.time);
   let [isPlaying, setIsPlaying] = useState(false);
@@ -206,6 +207,7 @@ function DeletedClock() {
   );
 }
 
+
 let useStyles = makeStyles((theme) => ({
   card: {
     width: '100%',
@@ -226,5 +228,6 @@ let useStyles = makeStyles((theme) => ({
     right: '0.5rem',
   },
 }));
+
 
 export { Timer, EditableClock, DeletedClock };
