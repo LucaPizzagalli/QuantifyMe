@@ -38,7 +38,6 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
         <Typography variant="h3" align='center' className={classes.title}>{metric.name}</Typography>
         <TextField className={classes.textField}
           inputRef={reference}
-          InputProps={{ inputProps: { tabIndex: -1 } }}
           value={value}
           label={metric.name}
           onFocus={() => changeFocus(index)}
@@ -46,7 +45,8 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
           fullWidth={true}
           multiline
           InputProps={{
-            className: classes.multilineColor
+            inputProps: { tabIndex: -1 },
+            className: classes.multilineColor,
           }} />
         <div className={classes.description}>
           <div className={classes.logo}>
