@@ -92,7 +92,7 @@ let useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'relative',
     display: 'flex',
-    padding: '1rem 2rem 1rem 2rem',
+    padding: theme.spacing(1, 2, 1, 2),
     flexDirection: 'column',
   },
   root: {
@@ -101,20 +101,20 @@ let useStyles = makeStyles((theme) => ({
   },
   logo: {
     flex: '1 1 20%',
-    margin: '2rem 2rem 2rem 2rem',
+    margin: theme.spacing(2, 2, 2, 2),
   },
   nameTypeLayout: {
     flex: '3 3 80%',
-    margin: '1rem 2rem 1rem 2rem',
+    margin: theme.spacing(1, 2, 1, 2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
   name: {
-    margin: '1rem 0 1rem 0',
+    margin: theme.spacing(1, 0, 1, 0),
   },
   type: {
-    margin: '1rem 0 1rem 0',
+    margin: theme.spacing(1, 0, 1, 0),
   },
   description: {
     flexGrow: 1,

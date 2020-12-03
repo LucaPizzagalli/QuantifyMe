@@ -47,7 +47,10 @@ function AddDayList() {
           newDay[metric.id] = parseInt(newDay[metric.id]);
       }
     }
-    let date = (new Date(refDate.current.value)).getTime();
+    let date = new Date(new Date(refDate.current.value).toDateString()).getTime();
+    console.log(refDate.current.value)
+    console.log(new Date(new Date(refDate.current.value).toDateString()))
+    console.log(date)
     user.saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError);
   }
 
@@ -76,6 +79,7 @@ function AddDayList() {
       </div>);
 
   let cards = [];
+  let colors = [];
   cards.push(
     <DayDateField
       reference={refDate}
@@ -84,6 +88,7 @@ function AddDayList() {
       changeFocus={changeFocus}
     />
   );
+  colors.push(null);
   for (let [index, metric] of user.info.metrics.entries()) {
     if (metric.type === 'rating')
       cards.push(
@@ -115,6 +120,7 @@ function AddDayList() {
           isFocused={focused === index}
         />
       );
+    colors.push(metric.color[0])
   }
   cards.push(
     <DaySubmit
@@ -134,14 +140,14 @@ function AddDayList() {
           <Hidden mdDown>
             <IconButton style={index === 0 ? { visibility: 'hidden' }: {}}
              aria-label="previous" color="primary" onClick={() => changeFocus(index - 2)}>
-              <NavigateBeforeIcon classes={{ root: classes.arrow }} />
+              <NavigateBeforeIcon classes={{ root: classes.arrow }} style={{ color: colors[index] }}/>
             </IconButton>
           </Hidden>
           {card}
           <Hidden mdDown>
             <IconButton style={index === cards.length - 1 ? { visibility: 'hidden' }: {}}
             aria-label="next" color="primary" onClick={() => changeFocus(index)} >
-              <NavigateNextIcon classes={{ root: classes.arrow }} />
+              <NavigateNextIcon classes={{ root: classes.arrow }} style={{ color: colors[index] }} />
             </IconButton>
           </Hidden>
         </div>

@@ -19,6 +19,8 @@ import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
+import { customIcons } from '../CustomIcons'
+
 
 function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
   let [value, setValue] = useState('');
@@ -43,10 +45,17 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
           onChange={(e) => setValue(e.target.value)}
           fullWidth={true}
           multiline
-        />
-        <Typography variant="body1" align="justify" className={classes.description}>{metric.description}</Typography>
+          InputProps={{
+            className: classes.multilineColor
+          }} />
+        <div className={classes.description}>
+          <div className={classes.logo}>
+            {customIcons.get(metric.logo)({ color: metric.color })}
+          </div>
+          <Typography variant="body1" align="justify">{metric.description}</Typography>
+        </div>
       </div>
-    </Paper>
+    </Paper >
   );
 }
 
@@ -83,9 +92,14 @@ function DayNumberField({ metric, reference, index, isFocused, changeFocus }) {
             onChange={(_, newValue) => setValue(newValue)}
             valueLabelDisplay="auto"
             aria-labelledby="slider"
-          />
+            style={{ color: metric.color[0] }} />
         </div>
-        <Typography variant="body1" align="justify" className={classes.description}>{metric.description}</Typography>
+        <div className={classes.description}>
+          <div className={classes.logo}>
+            {customIcons.get(metric.logo)({ color: metric.color })}
+          </div>
+          <Typography variant="body1" align="justify">{metric.description}</Typography>
+        </div>
       </div>
     </Paper>
   );
@@ -118,7 +132,7 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
             onChange={() => { setValue(0); changeFocus(index + 1); }}
             max={1}
             size="large"
-          />
+            style={{ color: metric.color[0] }} />
           <Rating
             classes={{ sizeLarge: mapRatingClass[metric.details.length] }}
             name="rating"
@@ -126,9 +140,14 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
             onChange={(e, newValue) => { setValue(newValue); changeFocus(index + 1); }}
             max={metric.details.length - 1}
             size="large"
-          />
+            style={{ color: metric.color[0] }} />
         </div>
-        <Typography variant="body1" align="justify" className={classes.description}>{metric.description}</Typography>
+        <div className={classes.description}>
+          <div className={classes.logo}>
+            {customIcons.get(metric.logo)({ color: metric.color })}
+          </div>
+          <Typography variant="body1" align="justify">{metric.description}</Typography>
+        </div>
         <Table aria-label='details-table'>
           <TableBody>
             {metric.details.map((detail, index) =>
@@ -273,6 +292,10 @@ let useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
+  logo: {
+    float: 'left',
+    width: '30%',
+  },
   description: {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
@@ -297,6 +320,9 @@ let useStyles = makeStyles((theme) => ({
   rating9: { fontSize: 'min(4rem, 8vw)' },
   rating10: { fontSize: 'min(4rem, 7vw)' },
   rating11: { fontSize: 'min(4rem, 6vw)' },
+  multilineColor: {
+    color: 'red'
+  },
 
   button: {
     padding: '2rem',
