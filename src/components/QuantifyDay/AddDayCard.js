@@ -258,7 +258,7 @@ function DayNoMetrics() {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     maxWidth: '55rem',

@@ -87,7 +87,7 @@ function MetricCard({ metric, interactive, HandleEditMetric }) {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   preRoot: {
     width: '100%',
     position: 'relative',

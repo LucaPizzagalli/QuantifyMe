@@ -208,7 +208,7 @@ function DeletedClock() {
 }
 
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   card: {
     width: '100%',
     position: 'relative',

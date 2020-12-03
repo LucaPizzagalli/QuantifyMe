@@ -157,7 +157,7 @@ function AddDayList() {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   cardList: {
     position: 'absolute',
     display: 'flex',

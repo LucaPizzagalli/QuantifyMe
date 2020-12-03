@@ -50,7 +50,7 @@ function DataSettings() {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   accordion: {
     display: 'flex',
     flexDirection: 'column',

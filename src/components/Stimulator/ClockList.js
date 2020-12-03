@@ -177,7 +177,7 @@ function ClockList() {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   cardList: {
     display: 'flex',
     flexDirection: 'column',

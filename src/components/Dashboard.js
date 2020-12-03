@@ -55,7 +55,7 @@ function Dashboard() {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },

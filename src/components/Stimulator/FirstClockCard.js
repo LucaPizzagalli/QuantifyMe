@@ -18,7 +18,7 @@ function FirstClockCard() {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   card: {
     // maxWidth: 345,
     flexGrow: 1

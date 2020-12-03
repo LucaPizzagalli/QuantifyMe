@@ -49,7 +49,7 @@ function UserSettings() {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   root: {
     margin: theme.spacing(1),
     width: '25ch',

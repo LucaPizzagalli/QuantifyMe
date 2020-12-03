@@ -19,7 +19,7 @@ def main():
     content += map_text
     content += "])\n\n"
     content += "let iconColors = [['#5e5eec', '#2e2ee6'], ['#d75454', '#b72a2a'], ['#49d949', '#23a523']];\n\n"
-    content += "let useStyles = makeStyles((theme) => ({\n"
+    content += "let useStyles = makeStyles(theme => ({\n"
     content += "  col1: { fill: props => props.col1, },\n"
     content += "  col2: { fill: props => props.col2, },\n"
     content += "  col3: { fill: props => props.col3, },\n"

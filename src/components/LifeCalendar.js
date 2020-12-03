@@ -108,7 +108,7 @@ function WeekCell({ day, type }) {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     alignItems: 'center',

@@ -77,7 +77,7 @@ function ResetPasswordForm() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',

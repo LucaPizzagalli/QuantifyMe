@@ -38,7 +38,7 @@ function DayCard({ metrics, day }) {
   );
 }
 
-let useStyles = makeStyles((theme) => ({
+let useStyles = makeStyles(theme => ({
   root: {
     position: 'relative',
     height: '15rem',
