@@ -31,7 +31,7 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
     }
   }, [reference, isFocused]);
 
-  let classes = useStyles();
+  let classes = useStyles({col: metric.color[0]});
   return (
     <Paper className={classes.root} elevation={8} >
       <div className={classes.layout}>
@@ -44,10 +44,8 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
           onChange={(e) => setValue(e.target.value)}
           fullWidth={true}
           multiline
-          InputProps={{
-            inputProps: { tabIndex: -1 },
-            className: classes.multilineColor,
-          }} />
+          InputProps={{ tabIndex: -1, classes: { underline: classes.underline } }}
+          InputLabelProps={{ style: { color: metric.color[0] } }} />
         <div className={classes.description}>
           <div className={classes.logo}>
             {customIcons.get(metric.logo)({ color: metric.color })}
@@ -320,9 +318,7 @@ let useStyles = makeStyles((theme) => ({
   rating9: { fontSize: 'min(4rem, 8vw)' },
   rating10: { fontSize: 'min(4rem, 7vw)' },
   rating11: { fontSize: 'min(4rem, 6vw)' },
-  multilineColor: {
-    color: 'red'
-  },
+  underline: { '&::after': { borderColor: props => props.col } },
 
   button: {
     padding: '2rem',

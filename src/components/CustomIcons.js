@@ -43,10 +43,10 @@ let customIcons = new Map([
 let iconColors = [['#5e5eec', '#2e2ee6'], ['#d75454', '#b72a2a'], ['#49d949', '#23a523']];
 
 let useStyles = makeStyles((theme) => ({
-  col1: { fill: props => props.col1, },
-  col2: { fill: props => props.col2, },
-  col3: { fill: props => props.col3, },
-  col4: { fill: props => props.col4, },
+  col1: { fill: props => props.col1 },
+  col2: { fill: props => props.col2 },
+  col3: { fill: props => props.col3 },
+  col4: { fill: props => props.col4 },
 }));
 
 
