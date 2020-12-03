@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { useTheme } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
@@ -11,13 +12,13 @@ HC_more(Highcharts)
 
 function TimeSeriesPlot({ metrics }) {
   let user = useContext(UserContext);
+  let theme = useTheme();
   let [timeSeries, setTimeSeries] = useState(null);
   let [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     user.getTimeSeries(metrics, HandleGetDataSuccess, HandleGetDataError);
-    if (user.info.theme === 'dark')
-      Highcharts.setOptions(darkPlot);
+    Highcharts.setOptions(darkPlot(theme));
   }, [user, metrics]);
 
   function HandleGetDataSuccess(newTimeSeries) {
@@ -47,12 +48,15 @@ function TimeSeriesPlot({ metrics }) {
     },
     yAxis: timeSeries.map(() => {
       return {
+        lineWidth: 0,
+        tickWidth: 0,
         gridLineWidth: 0,
         labels: { enabled: false },
         title: { text: '', }
-      }
+      };
     }),
     // options['yAxis'][0]['gridLineWidth'] = 1;
+    tooltip: { shared: true },
     series: timeSeries,
   }
 
@@ -69,6 +73,7 @@ function TimeSeriesPlot({ metrics }) {
 
 function DependencyPlot({ metricX, metricY, metricColor }) {
   let user = useContext(UserContext);
+  let theme = useTheme();
   let [data, setData] = useState(null);
   let [isLoading, setIsLoading] = useState(true);
 
@@ -77,8 +82,7 @@ function DependencyPlot({ metricX, metricY, metricColor }) {
     if (metricColor)
       metrics.push(metricColor)
     user.getTimeSeries(metrics, HandleGetDataSuccess, HandleGetDataError);
-    if (user.info.theme === 'dark')
-      Highcharts.setOptions(darkPlot);
+    Highcharts.setOptions(darkPlot(theme));
   }, [user, metricX, metricY, metricColor]);
 
   function HandleGetDataSuccess(timeSeries) {
@@ -156,104 +160,95 @@ function DependencyPlot({ metricX, metricY, metricColor }) {
   );
 }
 
-let darkPlot = {
-  colors: ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',
-    '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
-  chart: {
-    backgroundColor: '#2A2A2A',
-  },
-  title: { text: '' },
-  xAxis: {
-    labels: {
+function darkPlot(theme) {
+  return {
+    // colors: ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+    colors: [
+      theme.palette.primary.main,
+      theme.palette.secondary.main,
+      theme.palette.info.main,
+      theme.palette.warning.main,
+      theme.palette.error.main,
+    ],
+    chart: {
+      backgroundColor: theme.palette.background.paper,
       style: {
-        color: '#E0E0E3'
+        fontFamily: theme.typography.fontFamily,
+      },
+    },
+    title: { text: '' },
+    xAxis: {
+      lineWidth: 1,
+      lineColor: theme.palette.text.secondary,
+      tickWidth: 1,
+      tickLength: 6,
+      tickColor: theme.palette.text.secondary,
+      gridLineWidth: 0,
+      labels: {
+        style: {
+          color: theme.palette.text.primary
+        }
+      },
+      title: {
+        style: {
+          color: theme.palette.text.primary
+        }
       }
     },
-    lineColor: '#707073',
-    tickColor: '#707073',
-    title: {
-      style: {
-        color: '#A0A0A3'
-
-      }
-    }
-  },
-  yAxis: {
-    labels: {
-      style: {
-        color: '#E0E0E3'
+    yAxis: {
+      lineWidth: 1,
+      lineColor: theme.palette.text.secondary,
+      tickWidth: 1,
+      tickLength: 6,
+      tickColor: theme.palette.text.secondary,
+      gridLineWidth: 0,
+      labels: {
+        style: {
+          color: theme.palette.text.primary
+        }
+      },
+      title: {
+        style: {
+          color: theme.palette.text.primary
+        }
       }
     },
-    lineColor: '#707073',
-    gridLineWidth: 0,
-    tickColor: '#707073',
-    tickWidth: 1,
-    title: {
+    tooltip: {
+      shape: 'square',
+      backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.grey[700],
+      borderRadius: 10,
+      borderWidth: 0,
       style: {
-        color: '#A0A0A3'
+        color:theme.palette.text.primary,
       }
-    }
-  },
-  legend: {
-    itemStyle: {
-      font: '9pt Trebuchet MS, Verdana, sans-serif',
-      color: 'black'
     },
-    itemHoverStyle: {
-      color: 'gray'
-    }
-  },
-  credits: {
-    enabled: false
-  },
+    legend: {
+      itemStyle: {
+        color: theme.palette.text.primary,
+      },
+      itemHoverStyle: {
+        color: 'gray'
+      }
+    },
+    credits: {
+      enabled: false
+    },
+    plotOptions: {
+      series: {
+        marker: {
+          symbol: 'circle'
+        }
+      },
+    },
+  }
 };
 
 let old_dark = {
-  chart: {
-    style: {
-      fontFamily: '\'Unica One\', sans-serif'
-    },
-  },
   xAxis: {
-    gridLineColor: '#707073',
-    labels: {
-      style: {
-        color: '#E0E0E3'
-      }
-    },
-    lineColor: '#707073',
     minorGridLineColor: '#505053',
-    tickColor: '#707073',
-    title: {
-      style: {
-        color: '#A0A0A3'
-
-      }
-    }
   },
   yAxis: {
-    gridLineColor: '#707073',
-    labels: {
-      style: {
-        color: '#E0E0E3'
-      }
-    },
-    lineColor: '#707073',
     minorGridLineColor: '#505053',
-    tickColor: '#707073',
-    tickWidth: 1,
-    title: {
-      style: {
-        color: '#A0A0A3'
-      }
-    }
-  },
-  tooltip: {
-    shared: true,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
-    style: {
-      color: '#F0F0F0'
-    }
   },
   plotOptions: {
     series: {
@@ -362,61 +357,5 @@ let old_dark = {
   maskColor: 'rgba(255,255,255,0.3)'
 };
 
-let lightPlot = {
-  colors: ['#7cb5ec', '#f7a35c', '#90ee7e', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',
-    '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
-  chart: {
-    backgroundColor: null,
-    style: {
-      fontFamily: 'Dosis, sans-serif'
-    }
-  },
-  title: {
-    style: {
-      fontSize: '16px',
-      fontWeight: 'bold',
-      textTransform: 'uppercase'
-    }
-  },
-  tooltip: {
-    borderWidth: 0,
-    backgroundColor: 'rgba(219,219,216,0.8)',
-    shared: true,
-    shadow: false
-  },
-  legend: {
-    itemStyle: {
-      fontWeight: 'bold',
-      fontSize: '13px'
-    }
-  },
-  xAxis: {
-    gridLineWidth: 1,
-    labels: {
-      style: {
-        fontSize: '12px'
-      }
-    }
-  },
-  yAxis: {
-    minorTickInterval: 'auto',
-    title: {
-      style: {
-        textTransform: 'uppercase'
-      }
-    },
-    labels: {
-      style: {
-        fontSize: '12px'
-      }
-    }
-  },
-  plotOptions: {
-    candlestick: {
-      lineColor: '#404048'
-    }
-  },
-  background2: '#F0F0EA'
-};
 
 export { TimeSeriesPlot, DependencyPlot }

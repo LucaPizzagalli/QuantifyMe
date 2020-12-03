@@ -154,7 +154,7 @@ function Footer({ snackPack, setSnackPack }) {
   );
 }
 
-const useStyles = makeStyles(theme => ({
+let useStyles = makeStyles(theme => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     position: 'fixed',
