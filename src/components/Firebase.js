@@ -31,7 +31,7 @@ let startInfo = {
   level: 1,
   metrics: [],
   clocks: [],
-  theme: 'light'
+  theme: 'light',
 };
 
 class User {
@@ -160,8 +160,22 @@ class User {
           })
         });
     }
+    if (options['metrics'])
+      promises.push(this.getDb().update({ metrics: [] }));
+    if (options['clocks'])
+      promises.push(this.getDb().update({ clocks: [] }));
+    if (options['extra']) {
+      promises.push(this.getDb().update({
+        email: null,
+        personal: {},
+        level: 1,
+        theme: 'light',
+      }));
+    }
     Promise.all(promises)
-      .then(() => {
+      .then(() => this.getDb().get())
+      .then((doc) => {
+        this.info = doc.data();
         handleSuccess();
       })
       .catch((e) => handleError(e));
