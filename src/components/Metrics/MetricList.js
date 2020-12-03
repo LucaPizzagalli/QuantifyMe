@@ -155,7 +155,7 @@ function MetricList() {
   });
   if (metrics.length === 0) {
     ids.push('firstMetric');
-    metricCards = [<FirstMetricCard />];
+    metricCards = [<FirstMetricCard key="no-metrics"/>];
   }
 
   let classes = useStyles();

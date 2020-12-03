@@ -104,9 +104,10 @@ class User {
       .catch((e) => handleError(e));
   }
 
-  importData(backup, options, handleSuccess, handleError) { // TODO: add other options
+  importData(backup, options, handleSuccess, handleError) {
+    console.log(backup)
     let promises = [];
-    if (options['days']) {
+    if (options.days) {
       let stats = {};
       this.getDb().collection('stats').get()
         .then(querySnapshot => {
@@ -115,38 +116,52 @@ class User {
           })
         })
         .then(() => {
-          for (let day of backup['days']) {
-            promises.push(this.getDb().collection('days').doc(day['date'].toString()).set(day));
+          for (let day of backup.days) {
+            promises.push(this.getDb().collection('days').doc(day.date.toString()).set(day));
             for (let metricId of Object.keys(day)) {
               if (metricId !== 'date' && !(metricId in stats))
-                stats[metricId] = { 'times': [], 'values': [] }
+                stats[metricId] = { times: [], values: [] }
               if (metricId !== 'date') {
-                stats[metricId]['times'].push(day['date']);
-                stats[metricId]['values'].push(day[metricId]);
+                stats[metricId].times.push(day.date);
+                stats[metricId].values.push(day[metricId]);
               }
             }
           }
           for (let [metricId, stat] of Object.entries(stats)) {
-            stat = stat['times'].map((time, index) => [time, stat['values'][index]]);
+            stat = stat.times.map((time, index) => [time, stat.values[index]]);
             stat.sort();
             let times = stat.map(couple => couple[0]);
             let values = stat.map(couple => couple[1]);
             promises.push(
-              this.getDb().collection('stats').doc(metricId).set({ 'times': times, 'values': values })
+              this.getDb().collection('stats').doc(metricId).set({ times: times, values: values })
             );
           }
         });
     }
+    if (options.metrics)
+      promises.push(this.getDb().update({ metrics: backup.info.metrics }));
+    if (options.clocks)
+      promises.push(this.getDb().update({ clocks: backup.info.clocks }));
+    if (options.extra) {
+      promises.push(this.getDb().update({
+        email: backup.info.email,
+        personal: backup.info.personal,
+        level: backup.info.level,
+        theme: backup.info.theme,
+      }));
+    }
     Promise.all(promises)
-      .then(() => {
+      .then(() => this.getDb().get())
+      .then((doc) => {
+        this.info = doc.data();
         handleSuccess();
       })
       .catch((e) => handleError(e));
   }
 
-  eraseData(options, handleSuccess, handleError) { // TODO: add other options
+  eraseData(options, handleSuccess, handleError) {
     let promises = [];
-    if (options['days']) {
+    if (options.days) {
       this.getDb().collection('days').get()
         .then(querySnapshot => {
           querySnapshot.forEach(doc => {
@@ -160,11 +175,11 @@ class User {
           })
         });
     }
-    if (options['metrics'])
+    if (options.metrics)
       promises.push(this.getDb().update({ metrics: [] }));
-    if (options['clocks'])
+    if (options.clocks)
       promises.push(this.getDb().update({ clocks: [] }));
-    if (options['extra']) {
+    if (options.extra) {
       promises.push(this.getDb().update({
         email: null,
         personal: {},
