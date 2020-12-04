@@ -124,7 +124,7 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
           <Rating
             ref={refZero}
             classes={{ sizeLarge: mapRatingClass[metric.details.length] }}
-            name="0rating"
+            name={metric.id+'-0-rating'}
             emptyIcon={<FiberManualRecordIcon fontSize="inherit" />}
             icon={<FiberManualRecordIcon fontSize="inherit" />}
             onChange={() => { setValue(0); changeFocus(index + 1); }}
@@ -133,7 +133,7 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
             style={{ color: metric.color[0] }} />
           <Rating
             classes={{ sizeLarge: mapRatingClass[metric.details.length] }}
-            name="rating"
+            name={metric.id+'-rating'}
             value={value}
             onChange={(e, newValue) => { setValue(newValue); changeFocus(index + 1); }}
             max={metric.details.length - 1}
