@@ -5,6 +5,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -19,8 +20,10 @@ function PlotConsole() {
 
   let [selectedMetrics, setSelectedMetrics] = useState([]);
   let [selectedIds, setSelectedIds] = useState([]);
+  let [timeSeriesError, setTimeSeriesError] = useState('');
 
   function handleChangeMetrics(e) {
+    setTimeSeriesError('');
     let newSelectedMetrics = e.target.value.map(id => {
       for (let metric of user.getMetrics())
         if (metric.id === id)
@@ -36,17 +39,29 @@ function PlotConsole() {
     setSelectedMetrics(selectedMetrics.filter(metric => metric.id !== removedId));
   };
 
+  function HandleAddPlot() {
+    // setPlots([selectedMetrics, ...plots]); //TODO Why is this not working??
+    if (selectedMetrics.length > 0)
+      setPlots([...plots, ['time-series', { metrics: selectedMetrics }]]);
+    else
+      setTimeSeriesError('Add some metrics');
+  }
+
   let [xMetric, setXMetric] = useState();
   let [yMetric, setYMetric] = useState();
   let [colorMetric, setColorMetric] = useState();
+  let [xError, setXError] = useState('');
+  let [yError, setYError] = useState('');
 
   function handleSetXMetric(e) {
+    setXError('');
     for (let metric of user.getMetrics())
       if (metric.id === e.target.value)
         setXMetric(metric);
   };
 
   function handleSetYMetric(e) {
+    setYError('');
     for (let metric of user.getMetrics())
       if (metric.id === e.target.value)
         setYMetric(metric);
@@ -65,12 +80,12 @@ function PlotConsole() {
 
   function HandleAddDependencyPlot() {
     // setPlots([selectedMetrics, ...plots]); //TODO Why is this not working??
-    setPlots([...plots, ['dependency', { x: xMetric, y: yMetric, color: colorMetric }]]);
-  }
-
-  function HandleAddPlot() {
-    // setPlots([selectedMetrics, ...plots]); //TODO Why is this not working??
-    setPlots([...plots, ['time-series', { metrics: selectedMetrics }]]);
+    if (xMetric && yMetric)
+      setPlots([...plots, ['dependency', { x: xMetric, y: yMetric, color: colorMetric }]]);
+    if (!xMetric)
+      setXError('Choose metric');
+    if (!yMetric)
+      setYError('Choose metric');
   }
 
   let classes = useStyles();
@@ -79,7 +94,7 @@ function PlotConsole() {
       <Paper className={classes.paper} key="console">
         <div className={classes.block}>
           <div className={classes.subBlock}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formControl} error={timeSeriesError.length > 0}>
               <InputLabel id="metrics-select-label">Data to plot</InputLabel>
               <Select
                 labelId="metrics-select-label"
@@ -100,6 +115,7 @@ function PlotConsole() {
                   ))
                 }
               </Select>
+              <FormHelperText>{timeSeriesError}</FormHelperText>
             </FormControl>
           </div>
           <div className={classes.chips}> {
@@ -117,7 +133,7 @@ function PlotConsole() {
 
         <div className={classes.block}>
           <div className={classes.subBlock}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formControl} error={xError.length > 0}>
               <InputLabel id="metric-x">X data</InputLabel>
               <Select
                 labelId="metric-x"
@@ -132,8 +148,9 @@ function PlotConsole() {
                   ))
                 }
               </Select>
+              <FormHelperText>{xError}</FormHelperText>
             </FormControl>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formControl} error={yError.length > 0}>
               <InputLabel id="metric-y">Y data</InputLabel>
               <Select
                 labelId="metric-y"
@@ -148,6 +165,7 @@ function PlotConsole() {
                   ))
                 }
               </Select>
+              <FormHelperText>{yError}</FormHelperText>
             </FormControl>
             <FormControl className={classes.formControl}>
               <InputLabel id="metric-color">Color data</InputLabel>
