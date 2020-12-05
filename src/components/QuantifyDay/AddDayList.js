@@ -13,7 +13,7 @@ import { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit, 
 function AddDayList() {
   let user = useContext(UserContext);
   let showAlert = useContext(AlertContext);
-  let refs = useRef(user.info.metrics.map(() => React.createRef()));
+  let refs = useRef(user.getMetrics().map(() => React.createRef()));
   let refDate = useRef(React.createRef());
   let [focused, setFocused] = useState(-1);
   let [isLoading, setIsLoading] = useState(false);
@@ -32,7 +32,7 @@ function AddDayList() {
   }, { axis: 'x' })
 
   let changeFocus = (index) => {
-    index = Math.min(Math.max(-1, index), user.info.metrics.length);
+    index = Math.min(Math.max(-1, index), user.getMetrics().length);
     setFocused(index);
     setX({ x: -(index + 1) * window.innerWidth })
   }
@@ -40,7 +40,7 @@ function AddDayList() {
   function handleSaveDay() {
     setIsLoading(true);
     let newDay = {}
-    for (let [index, metric] of user.info.metrics.entries()) {
+    for (let [index, metric] of user.getMetrics().entries()) {
       if (newDay[metric.id] !== '-1' && newDay[metric.id] !== '') {
         newDay[metric.id] = refs.current[index].current.value;
         if (metric.type === 'rating' || metric.type === 'number')
@@ -48,9 +48,6 @@ function AddDayList() {
       }
     }
     let date = new Date(new Date(refDate.current.value).toDateString()).getTime();
-    console.log(refDate.current.value)
-    console.log(new Date(new Date(refDate.current.value).toDateString()))
-    console.log(date)
     user.saveDay(date, newDay, handleSaveDaySuccess, handleSaveDayError);
   }
 
@@ -72,7 +69,7 @@ function AddDayList() {
         <DayDone />
       </div>);
 
-  if (user.info.metrics.length === 0)
+  if (user.getMetrics().length === 0)
     return (
       <div className={classes.cardDiv} >
         <DayNoMetrics />
@@ -89,7 +86,7 @@ function AddDayList() {
     />
   );
   colors.push(null);
-  for (let [index, metric] of user.info.metrics.entries()) {
+  for (let [index, metric] of user.getMetrics().entries()) {
     if (metric.type === 'rating')
       cards.push(
         <DayRatingField
@@ -124,9 +121,9 @@ function AddDayList() {
   }
   cards.push(
     <DaySubmit
-      index={user.info.metrics.length}
+      index={user.getMetrics().length}
       changeFocus={changeFocus}
-      isFocused={focused === user.info.metrics.length}
+      isFocused={focused === user.getMetrics().length}
       onSubmit={handleSaveDay}
       isLoading={isLoading} />
   );

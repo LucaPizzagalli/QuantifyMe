@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -15,49 +15,53 @@ import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, TimePicker } from "@material-ui/pickers";
-import Gong1 from '../../audio/gong1.mp3';
 import { Paper } from '@material-ui/core';
+import ClocksContext from './Clocks';
 
 
 function Timer({ clock, interactive, HandleEditClock }) {
-  let [timeLeft, setTimeLeft] = useState(clock.time);
-  let [isPlaying, setIsPlaying] = useState(false);
+  let runningClocks = useContext(ClocksContext);
+  let [timeLeft, setTimeLeft] = useState(runningClocks.getTimeLeft(clock) ? runningClocks.getTimeLeft(clock) : clock.time);
+  let [isPlaying, setIsPlaying] = useState(runningClocks.isClockRunning(clock));
   let interval = useRef();
-  let [audio] = useState(new Audio(Gong1));
 
   useEffect(() => {
+    if (isPlaying) {
+      let endTime = new Date(new Date().getTime() + timeLeft);
+      interval.current = setInterval(() => updateTimer(endTime), 1000);
+    }
     return () => clearInterval(interval.current);
-  }, []);
+  }, [isPlaying, timeLeft]);
 
   function updateTimer(endTime) {
     let newTimeLeft = endTime - new Date();
     setTimeLeft(newTimeLeft);
     if (newTimeLeft <= 0) {
-      pauseTimer();
-      audio.play();
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(clock.description);
-      }
+      clearInterval(interval.current);
+      setIsPlaying(false);
     }
   }
 
   function pauseTimer() {
+    runningClocks.pauseTimer(clock);
     clearInterval(interval.current);
     setIsPlaying(false);
   }
 
   function playTimer() {
-    let endTime = new Date(new Date().getTime() + timeLeft);
+    let endTime = runningClocks.startTimer(clock);
     interval.current = setInterval(() => updateTimer(endTime), 1000);
     setIsPlaying(true);
   }
 
   function restartTimer() {
+    runningClocks.resetTimer(clock);
     clearInterval(interval.current);
-    let endTime = new Date(new Date().getTime() + clock.time);
-    setTimeLeft(endTime - new Date());
-    if (isPlaying)
+    setTimeLeft(clock.time);
+    if (isPlaying) {
+      let endTime = runningClocks.startTimer(clock);
       interval.current = setInterval(() => updateTimer(endTime), 1000);
+    }
   }
 
   let classes = useStyles();

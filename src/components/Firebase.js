@@ -10,6 +10,7 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
+
 let firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -317,6 +318,7 @@ class User {
     console.log('DOPO')
   }
 
+
   // Account Operations
   getLifespan() {
     return [this.info.personal.birthday, this.info.personal.deathAge];
@@ -333,7 +335,11 @@ class User {
   }
 
   changeTheme(type) {
-    this.handleThemeChange(type)
+    this.handleThemeChange(type);
+  }
+
+  getTheme() {
+    return this.info.theme;
   }
 
   updatePassword(newPassword, handleSuccess, handleError) {
