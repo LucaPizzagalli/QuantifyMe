@@ -136,7 +136,7 @@ function AddDayList() {
   return (
     <animated.div {...bind()} className={classes.cardList} style={{ left: x }}>
       { cards.map((card, index) =>
-        <div key={index} className={classes.cardDiv} >
+        <div key={index} className={classes.cardDiv} style={Math.abs(index-1-focused) > 1 ? {visibility: 'hidden'} : {}} >
           <Hidden mdDown>
             <IconButton style={index === 0 ? { visibility: 'hidden' }: {}}
              aria-label="previous" color="primary" onClick={() => changeFocus(index - 2)}>

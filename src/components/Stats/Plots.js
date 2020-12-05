@@ -19,7 +19,7 @@ function TimeSeriesPlot({ metrics }) {
   useEffect(() => {
     user.getTimeSeries(metrics, HandleGetDataSuccess, HandleGetDataError);
     Highcharts.setOptions(darkPlot(theme));
-  }, [user, metrics]);
+  }, [user, metrics, theme]);
 
   function HandleGetDataSuccess(newTimeSeries) {
     for (let index = 0; index < newTimeSeries.length; index++)
@@ -83,7 +83,7 @@ function DependencyPlot({ metricX, metricY, metricColor }) {
       metrics.push(metricColor)
     user.getTimeSeries(metrics, HandleGetDataSuccess, HandleGetDataError);
     Highcharts.setOptions(darkPlot(theme));
-  }, [user, metricX, metricY, metricColor]);
+  }, [user, metricX, metricY, metricColor, theme]);
 
   function HandleGetDataSuccess(timeSeries) {
     let dataX = timeSeries[0].data;
