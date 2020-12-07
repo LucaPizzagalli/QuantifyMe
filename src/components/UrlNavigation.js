@@ -20,9 +20,10 @@ import { Layout } from './Layout';
 
 function UrlNavigation() {
   let user = useContext(UserContext);
+  console.log(process.env.PUBLIC_URL)
   if (user.isLogged())
     return (
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Layout>
           <Switch>
             <Route path='/settings'> <SettingsPage /> </Route>
@@ -43,14 +44,14 @@ function UrlNavigation() {
     );
   if (user.auth === 0)
     return (
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Switch>
           <Route path=''> <Loading /> </Route>
         </Switch>
       </Router>
     );
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Layout>
         <Switch>
           <Route path='/sign-up'> <SignUpPage /> </Route>

@@ -18,6 +18,11 @@ To analyze bundle size
 
     yarn analyze
 
+upload
+
+    cd upload
+    export GOOGLE_APPLICATION_CREDENTIALS="QuantifyMe-01b128cb6517.json"
+
 ## Notes
 
 - minimize plotly bundle or try highcharts
