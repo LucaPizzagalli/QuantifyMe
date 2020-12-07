@@ -22,6 +22,7 @@ upload
 
     cd upload
     export GOOGLE_APPLICATION_CREDENTIALS="QuantifyMe-01b128cb6517.json"
+    python3 upload.py
 
 ## Notes
 

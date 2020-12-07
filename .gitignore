@@ -1,5 +1,7 @@
 # React
-*.env
+*.env.development
+*.env.production
+upload/QuantifyMe-01b128cb6517.json
 
 # dependencies
 node_modules
