@@ -63,8 +63,7 @@ function Header() {
           color="inherit"
           aria-label="open drawer"
           onClick={() => { setIsMenuOpen(!isMenuOpen); }}
-          edge="start"
-        >
+          edge="start" >
           <MenuIcon fontSize="large" />
         </IconButton>
       </div>
@@ -79,15 +78,15 @@ function Header() {
             color="inherit"
             aria-label="open drawer"
             onClick={() => { setIsMenuOpen(!isMenuOpen); }}
-            edge="start"
-          >
+            edge="start" >
             <MenuIcon fontSize="large" />
           </IconButton>
           <Typography
             className={classes.logo}
-            align='center'
             component={RouterLink}
-            to="/"
+            onClick={() => setIsMenuOpen(false)}
+            align="center"
+            to="/dashboard"
             variant="h6"
             color="inherit" >
             QMe

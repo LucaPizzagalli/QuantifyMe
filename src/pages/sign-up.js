@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
@@ -13,6 +15,8 @@ function SignUpPage() {
     <Container fixed display="flex">
       <h1>SignUp</h1>
       <SignUpForm />
+      <p>Already have an account? <Link component={RouterLink} to="/sign-in">Log In</Link></p>
+      <p>Forgot password? <Link component={RouterLink} to="/reset-password">Reset Password</Link></p>
     </Container>
   );
 }

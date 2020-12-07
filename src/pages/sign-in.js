@@ -15,7 +15,7 @@ function SignInPage() {
     <Container fixed display="flex">
       <h1>SignIn</h1>
       <SignInForm />
-      <p> Don't have an account? <Link component={RouterLink} to="/signup">Sign Up</Link> </p>
+      <p>Don't have an account? <Link component={RouterLink} to="/sign-up">Sign Up</Link></p>
     </Container>
   );
 }

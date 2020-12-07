@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import NotFound from '../pages/404';
 import Loading from '../pages/loading';
-import Home from '../pages/home';
 import DashboardPage from '../pages/dashboard';
 import SignUpPage from '../pages/sign-up';
 import SignInPage from '../pages/sign-in';
@@ -33,9 +32,10 @@ function UrlNavigation() {
             <Route path='/stats'> <Stats /> </Route>
             <Route path='/stimulator'> <Stimulator /> </Route>
             <Route path='/life-calendar'> <LifeCalendar /> </Route>
-            <Route path='/sign-up'> <Home /> </Route>
-            <Route path='/sign-in'> <Home /> </Route>
-            <Route path='/reset-password'> <Home /> </Route>
+            <Route path='/sign-up'> <DashboardPage /> </Route>
+            <Route path='/sign-in'> <DashboardPage /> </Route>
+            <Route path='/reset-password'> <DashboardPage /> </Route>
+            <Route path='/dashboard'> <DashboardPage /> </Route>
             <Route exact path='/'> <DashboardPage /> </Route>
             <Route path=''> <NotFound /> </Route>
           </Switch>
@@ -57,8 +57,7 @@ function UrlNavigation() {
           <Route path='/sign-up'> <SignUpPage /> </Route>
           <Route path='/sign-in'> <SignInPage /> </Route>
           <Route path='/reset-password'> <ResetPasswordPage /> </Route>
-          <Route exact path='/'> <Home /> </Route>
-          <Route path=''> <NotFound /> </Route>
+          <Route path=''> <SignUpPage /> </Route>
         </Switch>
       </Layout>
     </Router>
