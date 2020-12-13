@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ListItem from '@material-ui/core/ListItem';
@@ -95,6 +96,15 @@ function Header() {
         <List>
           {menuItems}
         </List>
+        <div style={{display: 'flex', height: 'min(100%,10rem)', alignItems: 'center', justifyContent: 'center',}}>
+          <Button
+          component={RouterLink}
+          to={'/procrastination'}
+          variant="contained"
+          color="primary">
+            Panic
+          </Button>
+        </div>
         {/* <Divider /> */}
       </Drawer>
     </>

@@ -1,8 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
+import Paper from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -13,51 +11,59 @@ import { Link as RouterLink } from 'react-router-dom';
 
 function Dashboard() {
   let user = useContext(UserContext);
-  let [cardInfos, _] = useState(user.getDashboardCards());
+  let [cardInfos, setCardInfos] = useState(user.getDashboardCards());
+
+  function HandleDismissInfo(index){
+    let newCardInfos = [...cardInfos];
+    newCardInfos.splice(index, 1);
+    setCardInfos(newCardInfos);
+  }
 
   let classes = useStyles();
   return (
     <Grid container spacing={3} style={{ marginTop: '1rem' }}>
       {cardInfos.map((cardInfo, index) => {
         let content =
-          <CardContent>
+          <div className={classes.root}>
+            <Typography variant="h5" component="h2" className={classes.title}>
+              {cardInfo.title}
+            </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
               {cardInfo.message}
             </Typography>
-          </CardContent>;
-        let header =
-          <CardHeader
-            action={
-              <IconButton aria-label="dismiss">
-                <ClearIcon />
-              </IconButton>
-            }
-            title={cardInfo.title}
-          />;
-        let card = null;
-        if (cardInfo.to)
-          card =
-            <Card><CardActionArea component={RouterLink} to={cardInfo.to}>
-              {header}{content}
-            </CardActionArea></Card>;
-        else
-          card =
-            <Card>
-              {header}{content}
-            </Card>;
+          </div>;
         return (
           <Grid key={index} item xs={12} md={6} xl={4}>
-            {card}
+            <Paper className={classes.card}>
+              {cardInfo.to ? <CardActionArea component={RouterLink} to={cardInfo.to}>{content}</CardActionArea> : content}
+              <IconButton aria-label="dismiss" onClick={() => HandleDismissInfo(index)} className={classes.dismiss}>
+                <ClearIcon />
+              </IconButton>
+            </Paper>
           </Grid>
-        )
+        );
       })}
     </Grid>
   );
 }
 
 let useStyles = makeStyles(theme => ({
+  card: {
+    width: '100%',
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+  },
   root: {
-    flexGrow: 1,
+    padding: theme.spacing(2, 2, 2, 2),
+  },
+  title: {
+    margin: theme.spacing(0, 0, 4, 0),
+  },
+  dismiss: {
+    position: 'absolute',
+    top: '0.5rem',
+    right: '0.5rem',
   },
 }));
 

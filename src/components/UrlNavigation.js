@@ -15,6 +15,7 @@ import Stats from '../pages/stats';
 import Stimulator from '../pages/stimulator';
 import LifeCalendar from '../pages/life-calendar';
 import UserContext from './Firebase';
+import ProcrastinationPage from '../pages/procrastination';
 import { Layout } from './Layout';
 
 function UrlNavigation() {
@@ -36,6 +37,7 @@ function UrlNavigation() {
             <Route path='/sign-in'> <DashboardPage /> </Route>
             <Route path='/reset-password'> <DashboardPage /> </Route>
             <Route path='/dashboard'> <DashboardPage /> </Route>
+            <Route path='/procrastination'> <ProcrastinationPage /> </Route>
             <Route exact path='/'> <DashboardPage /> </Route>
             <Route path=''> <NotFound /> </Route>
           </Switch>
