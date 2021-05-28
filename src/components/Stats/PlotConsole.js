@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Input from '@material-ui/core/Input';
@@ -12,11 +12,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import UserContext from '../Firebase';
-import { TimeSeriesPlot, DependencyPlot } from './Plots';
 
-function PlotConsole() {
-  let user = useContext(UserContext);
+
+function PlotConsole({metrics, handleAddPlot}) {
 
   let [selectedMetrics, setSelectedMetrics] = useState([]);
   let [selectedIds, setSelectedIds] = useState([]);
@@ -24,14 +22,8 @@ function PlotConsole() {
 
   function handleChangeMetrics(e) {
     setTimeSeriesError('');
-    let newSelectedMetrics = e.target.value.map(id => {
-      for (let metric of user.getMetrics())
-        if (metric.id === id)
-          return metric;
-      return null;
-    });
     setSelectedIds(e.target.value);
-    setSelectedMetrics(newSelectedMetrics);
+    setSelectedMetrics(e.target.value.map(id => metrics[id]));
   };
 
   function handleRemoveMetric(removedId) {
@@ -39,10 +31,9 @@ function PlotConsole() {
     setSelectedMetrics(selectedMetrics.filter(metric => metric.id !== removedId));
   };
 
-  function HandleAddPlot() {
-    // setPlots([selectedMetrics, ...plots]); //TODO Why is this not working??
+  function handleCheckTimeSeries() {
     if (selectedMetrics.length > 0)
-      setPlots([...plots, ['time-series', { metrics: selectedMetrics }]]);
+      handleAddPlot({ type: 'time-series', metrics: selectedMetrics });
     else
       setTimeSeriesError('Add some metrics');
   }
@@ -55,33 +46,26 @@ function PlotConsole() {
 
   function handleSetXMetric(e) {
     setXError('');
-    for (let metric of user.getMetrics())
-      if (metric.id === e.target.value)
-        setXMetric(metric);
+    setXMetric(metrics[e.target.value]);
   };
 
   function handleSetYMetric(e) {
     setYError('');
-    for (let metric of user.getMetrics())
-      if (metric.id === e.target.value)
-        setYMetric(metric);
+    setYMetric(metrics[e.target.value]);
   };
 
   function handleSetColorMetric(e) {
     if (e.target.value === '--')
       setColorMetric(null);
     else
-      for (let metric of user.getMetrics())
-        if (metric.id === e.target.value)
-          setColorMetric(metric);
+      setColorMetric(metrics[e.target.value]);
   };
 
-  let [plots, setPlots] = useState([]);
-
-  function HandleAddDependencyPlot() {
-    // setPlots([selectedMetrics, ...plots]); //TODO Why is this not working??
-    if (xMetric && yMetric)
-      setPlots([...plots, ['dependency', { x: xMetric, y: yMetric, color: colorMetric }]]);
+  function handleCheckCorrelationPlot() {
+    if (xMetric && yMetric && colorMetric)
+      handleAddPlot({type: 'correlation', metrics: [xMetric, yMetric, colorMetric ]});
+    else if (xMetric && yMetric)
+      handleAddPlot({type: 'correlation', metrics: [xMetric, yMetric ]});
     if (!xMetric)
       setXError('Choose metric');
     if (!yMetric)
@@ -90,124 +74,109 @@ function PlotConsole() {
 
   let classes = useStyles();
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper} key="console">
-        <div className={classes.block}>
-          <div className={classes.subBlock}>
-            <FormControl className={classes.formControl} error={timeSeriesError.length > 0}>
-              <InputLabel id="metrics-select-label">Data to plot</InputLabel>
-              <Select
-                labelId="metrics-select-label"
-                id="metrics-select"
-                multiple
-                value={selectedIds}
-                onChange={handleChangeMetrics}
-                input={<Input />}
-                // renderValue={'giggino'}
-                renderValue={() => selectedMetrics.map(metric => metric.name).join(', ')}
-                MenuProps={{ PaperProps: { style: { maxHeight: 800, width: 250 } } }} >
-                {
-                  user.getMetrics().map(metric => (
-                    <MenuItem key={metric.id} value={metric.id}>
-                      <Checkbox checked={selectedIds.indexOf(metric.id) > -1} />
-                      <ListItemText primary={metric.name} />
-                    </MenuItem>
-                  ))
-                }
-              </Select>
-              <FormHelperText>{timeSeriesError}</FormHelperText>
-            </FormControl>
-          </div>
-          <div className={classes.chips}> {
-            selectedMetrics.map(metric =>
-              <Chip key={metric.id} label={metric.name} onDelete={() => handleRemoveMetric(metric.id)} className={classes.chip} />
-            )
-          }
-          </div>
-          <div className={classes.subBlock}>
-            <Button onClick={HandleAddPlot} variant="contained" color="primary">Show</Button>
-          </div>
+    <Paper className={classes.paper} key="console">
+      <div className={classes.block}>
+        <div className={classes.subBlock}>
+          <FormControl className={classes.formControl} error={timeSeriesError.length > 0}>
+            <InputLabel id="metrics-select-label">Data to plot</InputLabel>
+            <Select
+              labelId="metrics-select-label"
+              id="metrics-select"
+              multiple
+              value={selectedIds}
+              onChange={handleChangeMetrics}
+              input={<Input />}
+              // renderValue={'giggino'}
+              renderValue={() => selectedMetrics.map(metric => metric.name).join(', ')}
+              MenuProps={{ PaperProps: { style: { maxHeight: 800, width: 250 } } }} >
+              {
+                Object.keys(metrics).map(id => (
+                  <MenuItem key={id} value={id}>
+                    <Checkbox checked={selectedIds.indexOf(id) > -1} />
+                    <ListItemText primary={metrics[id].name} />
+                  </MenuItem>
+                ))
+              }
+            </Select>
+            <FormHelperText>{timeSeriesError}</FormHelperText>
+          </FormControl>
         </div>
-
-        <Divider variant="middle" />
-
-        <div className={classes.block}>
-          <div className={classes.subBlock}>
-            <FormControl className={classes.formControl} error={xError.length > 0}>
-              <InputLabel id="metric-x">X data</InputLabel>
-              <Select
-                labelId="metric-x"
-                id="metric-x"
-                value={xMetric ? xMetric.id : ''}
-                onChange={handleSetXMetric}
-                renderValue={() => xMetric.name}
-                MenuProps={{ PaperProps: { style: { maxHeight: 800, width: 250 } } }} >
-                {
-                  user.getMetrics().map(metric => (
-                    <MenuItem key={metric.id} value={metric.id}>{metric.name}</MenuItem>
-                  ))
-                }
-              </Select>
-              <FormHelperText>{xError}</FormHelperText>
-            </FormControl>
-            <FormControl className={classes.formControl} error={yError.length > 0}>
-              <InputLabel id="metric-y">Y data</InputLabel>
-              <Select
-                labelId="metric-y"
-                id="metric-y"
-                value={yMetric ? yMetric.id : ''}
-                onChange={handleSetYMetric}
-                renderValue={() => yMetric.name}
-                MenuProps={{ PaperProps: { style: { maxHeight: 800, width: 250 } } }} >
-                {
-                  user.getMetrics().map(metric => (
-                    <MenuItem key={metric.id} value={metric.id}>{metric.name}</MenuItem>
-                  ))
-                }
-              </Select>
-              <FormHelperText>{yError}</FormHelperText>
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="metric-color">Color data</InputLabel>
-              <Select
-                labelId="metric-color"
-                id="metric-color"
-                value={colorMetric ? colorMetric.id : ''}
-                onChange={handleSetColorMetric}
-                renderValue={() => colorMetric.name}
-                MenuProps={{ PaperProps: { style: { maxHeight: 800, width: 250 } } }} >
-                <MenuItem key={'--'} value={'--'}>--</MenuItem>
-                {
-                  user.getMetrics().map(metric => (
-                    <MenuItem key={metric.id} value={metric.id}>{metric.name}</MenuItem>
-                  ))
-                }
-              </Select>
-            </FormControl>
-          </div>
-          <div className={classes.subBlock}>
-            <Button onClick={HandleAddDependencyPlot} variant="contained" color="primary">Show</Button>
-          </div>
+        <div className={classes.chips}> {
+          selectedMetrics.map(metric =>
+            <Chip key={metric.id} label={metric.name} onDelete={() => handleRemoveMetric(metric.id)} className={classes.chip} />
+          )
+        }
         </div>
-      </Paper>
-      {
-        plots.map((plot, index) => {
-          if (plot[0] === 'time-series')
-            return <Paper key={'plot' + index} className={classes.paper}><TimeSeriesPlot metrics={plot[1].metrics} /></Paper>;
-          if (plot[0] === 'dependency')
-            return <Paper key={'plot' + index} className={classes.paper}><DependencyPlot metricX={plot[1].x} metricY={plot[1].y} color={plot[1].metricColor} /></Paper>;
-          return null
-        })
-      }
-    </div>
+        <div className={classes.subBlock}>
+          <Button onClick={handleCheckTimeSeries} variant="contained" color="primary">Show</Button>
+        </div>
+      </div>
+
+      <Divider variant="middle" />
+
+      <div className={classes.block}>
+        <div className={classes.subBlock}>
+          <FormControl className={classes.formControl} error={xError.length > 0}>
+            <InputLabel id="metric-x">X data</InputLabel>
+            <Select
+              labelId="metric-x"
+              id="metric-x"
+              value={xMetric ? xMetric.id : ''}
+              onChange={handleSetXMetric}
+              renderValue={() => xMetric.name}
+              MenuProps={{ PaperProps: { style: { maxHeight: 800, width: 250 } } }} >
+              {
+                Object.keys(metrics).map(id => (
+                  <MenuItem key={id} value={id}>{metrics[id].name}</MenuItem>
+                ))
+              }
+            </Select>
+            <FormHelperText>{xError}</FormHelperText>
+          </FormControl>
+          <FormControl className={classes.formControl} error={yError.length > 0}>
+            <InputLabel id="metric-y">Y data</InputLabel>
+            <Select
+              labelId="metric-y"
+              id="metric-y"
+              value={yMetric ? yMetric.id : ''}
+              onChange={handleSetYMetric}
+              renderValue={() => yMetric.name}
+              MenuProps={{ PaperProps: { style: { maxHeight: 800, width: 250 } } }} >
+              {
+                Object.keys(metrics).map(id => (
+                  <MenuItem key={id} value={id}>{metrics[id].name}</MenuItem>
+                ))
+              }
+            </Select>
+            <FormHelperText>{yError}</FormHelperText>
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="metric-color">Color data</InputLabel>
+            <Select
+              labelId="metric-color"
+              id="metric-color"
+              value={colorMetric ? colorMetric.id : ''}
+              onChange={handleSetColorMetric}
+              renderValue={() => colorMetric.name}
+              MenuProps={{ PaperProps: { style: { maxHeight: 800, width: 250 } } }} >
+              <MenuItem key={'--'} value={'--'}>--</MenuItem>
+              {
+                Object.keys(metrics).map(id => (
+                  <MenuItem key={id} value={id}>{metrics[id].name}</MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
+        </div>
+        <div className={classes.subBlock}>
+          <Button onClick={handleCheckCorrelationPlot} variant="contained" color="primary">Show</Button>
+        </div>
+      </div>
+    </Paper>
   );
 }
 
 let useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
   paper: {
     display: 'flex',
     flexDirection: 'column',

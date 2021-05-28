@@ -1,13 +1,25 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import PlotConsole from '../components/Stats/PlotConsole';
+import Stats from '../components/Stats/Stats';
 
-function StatsPage () {
-    return (
-      <Container fixed display="flex" style={{padding: '1.5rem'}}>
-          <PlotConsole />
-      </Container>
-      );
+
+function StatsPage() {
+  let classes = useStyles();
+  return (
+    <Container maxWidth="md" className={classes.root}>
+      <Stats />
+    </Container>
+  );
 }
+
+let useStyles = makeStyles(theme => ({
+  root: {
+    padding: theme.spacing(0, 1, 1, 1),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+}));
 
 export default StatsPage

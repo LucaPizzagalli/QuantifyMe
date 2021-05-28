@@ -7,39 +7,42 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
 
-function DayCard({ metrics, day }) {
+function DayCard({ groups, metrics, day }) {
   let [isSelected, setIsSelected] = useState(false);
 
   let classes = useStyles();
 
   let fields = [];
-  for (let metric of metrics) {
-    if (metric.type === 'text' && day[metric.id])
-      fields.push(
-        <div key={metric.id} className={classes.field}>
-          <Typography variant='body1' className={classes.name}><strong>{metric.name}</strong></Typography>
-          <Typography variant='body1' className={classes.value}>{day[metric.id]}</Typography>
-        </div>
-      );
-    else if (metric.type === 'number' && day[metric.id] !== undefined)
-      fields.push(
-        <div key={metric.id} className={classes.field}>
-          <Typography variant='body1' className={classes.name}><strong>{metric.name}</strong></Typography>
-          <Typography variant='body1' className={classes.value}>{day[metric.id]}</Typography>
-        </div>
-      );
-    else if (metric.type === 'rating' && day[metric.id] >= 0)
-      fields.push(
-        <div key={metric.id} className={classes.field}>
-          <Typography variant='body1' className={classes.name}><strong>{metric.name} </strong></Typography>
-          <Rating
-          max={metric.details.length}
-          name={metric.id}
-          value={day[metric.id]}
-          readOnly
-          className={classes.value}/>
-        </div>
-      );
+  for (let group of groups) {
+    for (let metricId of group.metrics) {
+      let metric = metrics[metricId];
+      if (metric.type === 'text' && day[metric.id])
+        fields.push(
+          <div key={metric.id} className={classes.field}>
+            <Typography variant='body1' className={classes.name}><strong>{metric.name}</strong></Typography>
+            <Typography variant='body1' className={classes.value}>{day[metric.id]}</Typography>
+          </div>
+        );
+      else if (metric.type === 'number' && day[metric.id] !== undefined)
+        fields.push(
+          <div key={metric.id} className={classes.field}>
+            <Typography variant='body1' className={classes.name}><strong>{metric.name}</strong></Typography>
+            <Typography variant='body1' className={classes.value}>{day[metric.id]}</Typography>
+          </div>
+        );
+      else if (metric.type === 'rating' && day[metric.id] !== undefined)
+        fields.push(
+          <div key={metric.id} className={classes.field}>
+            <Typography variant='body1' className={classes.name}><strong>{metric.name} </strong></Typography>
+            <Rating
+              max={metric.length}
+              name={metric.id}
+              value={day[metric.id]}
+              readOnly
+              className={classes.value} />
+          </div>
+        );
+    }
   }
   return (
     <Card onClick={() => setIsSelected(!isSelected)} >

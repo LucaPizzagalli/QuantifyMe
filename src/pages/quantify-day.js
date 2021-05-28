@@ -1,11 +1,11 @@
 import React from 'react';
-import AddDayList from '../components/QuantifyDay/AddDayList';
+import QuantifyDay from '../components/QuantifyDay/QuantifyDay';
 
 
 function QuantifyDayPage() {
   return (
     <div style={{ height: '100vh', position: 'relative', overflowX: 'hidden' }}>
-      <AddDayList />
+      <QuantifyDay />
     </div>
   );
 }

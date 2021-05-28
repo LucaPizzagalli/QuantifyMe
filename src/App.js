@@ -11,14 +11,11 @@ function App() {
   let userRef = useRef(useContext(UserContext));
   let clocksRef = useRef(useContext(ClocksContext));
   let [, setIsAuth] = useState(0);
-  let [theme, setTheme] = useState({ palette: { ...basePalette, type: userRef.current.getTheme() } });
+  let [themeType, setThemeType] = useState(userRef.current.getTheme());
+  let [themeSpacing, setThemeSpacing] = useState(3);
 
-  let handleThemeChange = useCallback((newTheme) => {
-    setTheme({ palette: { ...basePalette, type: newTheme } });
-  }, []);
-
-  let handleFailedAuth = useCallback((e) => {
-    console.log('Mio Alert: ' + e);
+  let handleThemeChange = useCallback((newThemeType) => {
+    setThemeType(newThemeType);
   }, []);
 
   let handleAuthChange = useCallback((isLogged) => {
@@ -29,18 +26,35 @@ function App() {
     setIsAuth(isLogged);
   }, [handleThemeChange]);
 
+  let handleFailedAuth = useCallback((e) => {
+    console.log('Mio Alert: ' + e);
+  }, []);
+
+  let handleResize = useCallback(() => {
+    setThemeSpacing(window.innerWidth < 650 ? 3 : 8);
+  }, []);
+
   useEffect(() => {
+    window.addEventListener("resize", handleResize);
     let user = userRef.current;
     user.activateAuthUserListener(handleAuthChange, handleFailedAuth);
-    user.handleThemeChange = handleThemeChange;
-    return () => user.deactivateAuthUserListener()
-  }, [handleAuthChange, handleThemeChange, handleFailedAuth]);
+    handleResize();
 
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      user.deactivateAuthUserListener();
+    }
+  }, [handleAuthChange, handleResize, handleFailedAuth]);
 
   return (
-    <ThemeProvider theme={responsiveFontSizes(createMuiTheme(theme))}>
+    <ThemeProvider theme={responsiveFontSizes(createMuiTheme(
+      {
+        palette: { ...basePalette, type: themeType },
+        spacing: themeSpacing,
+      }
+    ))}>
       <CssBaseline />
-      <UrlNavigation />
+      <UrlNavigation changeTheme={handleThemeChange}/>
     </ThemeProvider>
   );
 }

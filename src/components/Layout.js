@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ListItem from '@material-ui/core/ListItem';
@@ -14,6 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+
 import PAGES from '../utils/Pages';
 import UserContext from './Firebase';
 
@@ -75,13 +75,11 @@ function Header() {
         anchor="left"
         open={isMenuOpen}>
         <div className={classes.drawerHeader}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => { setIsMenuOpen(!isMenuOpen); }}
-            edge="start" >
-            <MenuIcon fontSize="large" />
-          </IconButton>
+          <div className={classes.hiddenAppButton}>
+            <IconButton edge="start" >
+              <MenuIcon fontSize="large" />
+            </IconButton>
+          </div>
           <Typography
             className={classes.logo}
             component={RouterLink}
@@ -96,15 +94,6 @@ function Header() {
         <List>
           {menuItems}
         </List>
-        <div style={{display: 'flex', height: 'min(100%,10rem)', alignItems: 'center', justifyContent: 'center',}}>
-          <Button
-          component={RouterLink}
-          to={'/procrastination'}
-          variant="contained"
-          color="primary">
-            Panic
-          </Button>
-        </div>
         {/* <Divider /> */}
       </Drawer>
     </>
@@ -169,14 +158,24 @@ let useStyles = makeStyles(theme => ({
     position: 'fixed',
     top: 0,
     left: 0,
-    borderBottomRightRadius: theme.spacing(6),
-    padding: theme.spacing(0, 1, 1, 2),
+    borderBottomRightRadius: '3rem',
+    paddingTop: '0',
+    paddingRight: '0.5rem',
+    paddingBottom: '0.5rem',
+    paddingLeft: '0.8rem',
     background: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
     transition: 'all 0.5s ease',
   },
   shadow: {
     boxShadow: theme.shadows[5],
+  },
+  hiddenAppButton: {
+    visibility: 'hidden',
+    paddingTop: '0',
+    paddingRight: '0.5rem',
+    paddingBottom: '0.5rem',
+    paddingLeft: '0.8rem',
   },
   drawer: {
     width: 260,
@@ -188,7 +187,7 @@ let useStyles = makeStyles(theme => ({
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(0, 1, 1, 2),
+    padding: theme.spacing(0, 1, 0, 2),
     background: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
   },

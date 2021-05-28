@@ -17,11 +17,12 @@ function EraseData() {
   let [eraseDays, setEraseDays] = useState(false);
   let [eraseMetrics, setEraseMetrics] = useState(false);
   let [eraseClocks, setEraseClocks] = useState(false);
+  let [erasePlots, setErasePlots] = useState(false);
   let [eraseExtra, setEraseExtra] = useState(false);
 
   function handleErase(e) {
     setIsLoading(true);
-    let options = { days: eraseDays, metrics: eraseMetrics, clocks: eraseClocks, extra: eraseExtra };
+    let options = { days: eraseDays, metrics: eraseMetrics, clocks: eraseClocks, plots: erasePlots, extra: eraseExtra };
     user.eraseData(options, handleEraseSuccess, handleEraseError);
   }
 
@@ -52,6 +53,10 @@ function EraseData() {
           label="Timers, Alarms, Stopwatches"
         />
         <FormControlLabel
+          control={<Checkbox checked={erasePlots} onChange={() => setErasePlots(!erasePlots)} name="plots" color="primary" />}
+          label="Charts"
+        />
+        <FormControlLabel
           control={<Checkbox checked={eraseExtra} onChange={() => setEraseExtra(!eraseExtra)} name="clocks" color="primary" />}
           label="Others"
         />
@@ -61,7 +66,7 @@ function EraseData() {
         If you decide to delete this account all the selected information will be deleted, this action is not reversible. You should consider exporting your data before proceeding.
       </Alert>
       <div className={classes.wrapper}>
-        <Button variant="contained" color="primary" onClick={handleErase}>
+        <Button variant="contained" color="primary" onClick={handleErase} disabled={isLoading}>
           Permanently Erase Data
         </Button>
         {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}

@@ -7,11 +7,12 @@ import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import UserContext from './Firebase';
-import DayCard from './DayCard';
 import Paper from '@material-ui/core/Paper';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
+
+import UserContext from '../Firebase';
+import DayCard from './DayCard';
 
 function Diary() {
   let user = useContext(UserContext);
@@ -19,7 +20,7 @@ function Diary() {
   let [error, setError] = useState(null);
   let [isLoading, setIsLoading] = useState(true);
   // let [refDate, setRefDate] = useState((new Date()).toISOString().slice(0, 10));
-  let [refDate, setRefDate] = useState(null);
+  let refDate = useState(null)[0];
   let [cursor1, setCursor1] = useState(null);
   let [cursor2, setCursor2] = useState(null);
   let [isAsc, setIsAsc] = useState(false);
@@ -50,6 +51,8 @@ function Diary() {
     setError(error);
   }
 
+  let groups = user.getGroups();
+  let metrics = user.getMetrics();
   let classes = useStyles();
   if (isLoading)
     return (
@@ -87,11 +90,12 @@ function Diary() {
           {days.map(day => {
             return (
               <Grid key={day.date} item xs={12} md={6} xl={4}>
-                <DayCard metrics={user.info.metrics} day={day} />
+                <DayCard groups={groups} metrics={metrics} day={day} />
               </Grid>
             )
           })}
-        </Grid></div>
+        </Grid>
+      </div>
     );
   }
   return (

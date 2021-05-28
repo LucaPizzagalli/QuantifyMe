@@ -1,13 +1,14 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import Groups from '../components/Metrics/Groups';
+import EditableGroup from '../components/Metrics/EditableGroup';
 
-function MetricsPage() {
+
+function EditMetricsPage() {
   let classes = useStyles();
   return (
     <Container maxWidth="md" display="flex" className={classes.root}>
-      <Groups />
+      <EditableGroup />
     </Container>
   );
 }
@@ -18,4 +19,6 @@ let useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
   },
 }));
-export default MetricsPage;
+
+
+export default EditMetricsPage;

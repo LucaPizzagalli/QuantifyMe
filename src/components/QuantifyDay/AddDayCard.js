@@ -19,7 +19,7 @@ import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
-import { customIcons } from '../CustomIcons'
+import { logos } from '../CustomIcons'
 
 
 function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
@@ -48,7 +48,7 @@ function DayTextField({ metric, reference, index, isFocused, changeFocus }) {
           InputLabelProps={{ style: { color: metric.color[0] } }} />
         <div className={classes.description}>
           <div className={classes.logo}>
-            {customIcons.get(metric.logo)({ color: metric.color })}
+            {logos.get(metric.logo)({ color: metric.color })}
           </div>
           <Typography variant="body1" align="justify">{metric.description}</Typography>
         </div>
@@ -81,7 +81,7 @@ function DayNumberField({ metric, reference, index, isFocused, changeFocus }) {
               type: 'number',
               'aria-labelledby': 'range-slider',
             }}
-            style={{ width: '5rem', margin: '2rem' }}
+            style={{ width: '6ch', margin: '2rem' }}
           />
           <Slider
             min={metric.range[0]}
@@ -94,7 +94,7 @@ function DayNumberField({ metric, reference, index, isFocused, changeFocus }) {
         </div>
         <div className={classes.description}>
           <div className={classes.logo}>
-            {customIcons.get(metric.logo)({ color: metric.color })}
+            {logos.get(metric.logo)({ color: metric.color })}
           </div>
           <Typography variant="body1" align="justify">{metric.description}</Typography>
         </div>
@@ -142,7 +142,7 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
         </div>
         <div className={classes.description}>
           <div className={classes.logo}>
-            {customIcons.get(metric.logo)({ color: metric.color })}
+            {logos.get(metric.logo)({ color: metric.color })}
           </div>
           <Typography variant="body1" align="justify">{metric.description}</Typography>
         </div>
@@ -162,33 +162,24 @@ function DayRatingField({ metric, reference, index, isFocused, changeFocus }) {
 }
 
 
-function DayDateField({ reference, index, isFocused, changeFocus }) {
-  let [value, setValue] = useState(new Date());
-
-  useEffect(() => {
-    if (isFocused)
-      reference.current.focus({ preventScroll: true });
-  }, [reference, isFocused]);
+function DayDateField({ reference, index, date, setDate }) {
 
   let classes = useStyles();
   return (
     <Paper className={classes.root} elevation={8} >
       <div className={classes.layout}>
         <Typography variant="h3" align='center' className={classes.title}>Date</Typography>
-        <input value={value} ref={reference} type="hidden" />
         <div className={classes.rating}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DatePicker
               autoOk
               disableFuture
               label="Date"
-              onChange={(input) => setValue(input)}
-              onAccept={() => changeFocus(index + 1)}
-              // onFocus={() => changeFocus(index)}
+              onChange={setDate}
               format="yyyy/MM/dd"
               autoFocus={true}
-              value={value}
-              disableToolbar
+              value={date}
+              // disableToolbar
               variant="static"
             />
           </MuiPickersUtilsProvider>
@@ -200,13 +191,7 @@ function DayDateField({ reference, index, isFocused, changeFocus }) {
 }
 
 
-function DaySubmit({ index, isFocused, changeFocus, onSubmit, isLoading }) {
-  let reference = useRef(React.createRef());
-
-  useEffect(() => {
-    if (isFocused)
-      reference.current.focus({ preventScroll: true });
-  }, [reference, isFocused]);
+function DaySubmit({ index, onSubmit, isLoading }) {
 
   let classes = useStyles();
   return (
@@ -215,10 +200,8 @@ function DaySubmit({ index, isFocused, changeFocus, onSubmit, isLoading }) {
         <Typography variant="h3" align='center' className={classes.title}>Submit</Typography>
         <div className={classes.buttonWrapper}>
           <Button className={classes.button}
-            ref={reference}
             variant="contained"
             color="primary"
-            onFocus={() => { changeFocus(index); }}
             disabled={isLoading}
             onClick={onSubmit}
           >

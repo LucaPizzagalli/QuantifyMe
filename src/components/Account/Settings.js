@@ -5,7 +5,7 @@ import UISettings from './UISettings'
 import AccountSettings from './AccountSettings'
 import DataSettings from './DataSettings'
 
-function Settings() {
+function Settings({changeTheme}) {
   let [openTab, setOpenTab] = useState(0);
 
   return (
@@ -23,7 +23,7 @@ function Settings() {
         <Tab id="data" aria-controls="data" label="Data" aria-label="data" />
       </Tabs>
       { openTab === 0 &&
-        <UISettings />
+        <UISettings changeTheme={changeTheme} />
       }
       { openTab === 1 &&
         <AccountSettings />

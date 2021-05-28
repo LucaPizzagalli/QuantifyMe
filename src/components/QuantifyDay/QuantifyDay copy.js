@@ -10,7 +10,7 @@ import UserContext from '../Firebase';
 import AlertContext from '../Layout';
 import { DayTextField, DayRatingField, DayNumberField, DayDateField, DaySubmit, DayDone, DayNoMetrics } from './AddDayCard';
 
-function AddDayList() {
+function QuantifyDay() {
   let user = useContext(UserContext);
   let showAlert = useContext(AlertContext);
   let refs = useRef(user.getMetrics().map(() => React.createRef()));
@@ -176,4 +176,4 @@ let useStyles = makeStyles(theme => ({
   },
 }));
 
-export default AddDayList;
+export default QuantifyDay;

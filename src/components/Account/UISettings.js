@@ -7,27 +7,28 @@ import Switch from '@material-ui/core/Switch';
 import UserContext from '../Firebase';
 import AlertContext from '../Layout';
 
-function UserSettings() {
+function UserSettings({changeTheme}) {
   let user = useContext(UserContext);
   let showAlert = useContext(AlertContext);
-  let [isDark, setIsDark] = useState(user.info.theme === 'dark');
+  let [isDark, setIsDark] = useState(user.getTheme() === 'dark');
   let [isLoading, setIsLoading] = useState(false);
 
   function handleChangeTheme(newIsDark) {
     let theme = newIsDark ? 'dark' : 'light';
     setIsDark(newIsDark);
-    user.changeTheme(theme);
+    changeTheme(theme);
+    user.setTheme(theme, handleThemeChangeSuccess, handleThemeChangeError)
     setIsLoading(true);
+  }
 
-    user.getDb().update({ theme: theme })
-      .then(() => {
-        setIsLoading(false);
-        showAlert('Settings saved', 'success');
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        showAlert(e, 'error');
-      });
+  function handleThemeChangeSuccess() {
+    setIsLoading(false);
+    showAlert('Settings saved', 'success');
+  }
+
+  function handleThemeChangeError(e) {
+    setIsLoading(false);
+    showAlert(e, 'error');
   }
 
   let classes = useStyles();

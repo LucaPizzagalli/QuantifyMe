@@ -9,25 +9,26 @@ import SignInPage from '../pages/sign-in';
 import ResetPasswordPage from '../pages/reset-password';
 import SettingsPage from '../pages/settings';
 import MetricsPage from '../pages/metrics';
+import EditMetricsPage from '../pages/edit-metrics';
 import QuantifyDayPage from '../pages/quantify-day';
 import DiaryPage from '../pages/diary';
 import Stats from '../pages/stats';
 import Stimulator from '../pages/stimulator';
 import LifeCalendar from '../pages/life-calendar';
 import UserContext from './Firebase';
-import ProcrastinationPage from '../pages/procrastination';
 import { Layout } from './Layout';
 
-function UrlNavigation() {
+function UrlNavigation({changeTheme}) {
   let user = useContext(UserContext);
-  console.log(process.env.PUBLIC_URL)
+
   if (user.isLogged())
     return (
       <Router basename={process.env.PUBLIC_URL}>
         <Layout>
           <Switch>
-            <Route path='/settings'> <SettingsPage /> </Route>
+            <Route path='/settings'> <SettingsPage changeTheme={changeTheme}/> </Route>
             <Route path='/metrics'> <MetricsPage /> </Route>
+            <Route path='/edit-metrics'> <EditMetricsPage /> </Route>
             <Route path='/quantify-day'> <QuantifyDayPage /> </Route>
             <Route path='/diary'> <DiaryPage /> </Route>
             <Route path='/stats'> <Stats /> </Route>
@@ -37,7 +38,6 @@ function UrlNavigation() {
             <Route path='/sign-in'> <DashboardPage /> </Route>
             <Route path='/reset-password'> <DashboardPage /> </Route>
             <Route path='/dashboard'> <DashboardPage /> </Route>
-            <Route path='/procrastination'> <ProcrastinationPage /> </Route>
             <Route exact path='/'> <DashboardPage /> </Route>
             <Route path=''> <NotFound /> </Route>
           </Switch>

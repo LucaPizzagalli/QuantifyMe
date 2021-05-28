@@ -20,7 +20,7 @@ To analyze bundle size
 
     yarn analyze
 
-upload
+To upload
 
     cd upload
     export GOOGLE_APPLICATION_CREDENTIALS="QuantifyMe-01b128cb6517.json"
@@ -86,7 +86,7 @@ I should also remember to limit the choice block, for example the reddit fit wik
 
 When you just want to procrastinate you press this button. It lets you procrastinate very fast, bat thing starts to get ugly pretty fast. The viewport shrink, the page slows, timers go up, popup, sounds, whatever you want
 
-- How?
+- How? viewport are blocked by many many websites
 
 ### Stats
 
@@ -96,10 +96,10 @@ When you just want to procrastinate you press this button. It lets you procrasti
 - Packed bubbles are cool, can I use it somehow?
 - Maybe I can do something with the chart synchronization offered by highchart
 - Oh my god, play the chart as music, that's cool
-- Maybe save the plots, like metrics and clocks
 - maybe add something like the commit frequency plot from github?
 - treat the logging history (did you log or not) as a metric
 - show a map for the places
+- integrate a python interpreter, running locally in webassembly. The user can write in a basic editor the code that produces a custom plot
 
 ### Dashboard
 
@@ -133,6 +133,7 @@ Gamification is splitted in two: one is more explicit and it's about some avatar
 In a page there are two guys, one good and one bad. The bad one is a monster/ghost. The monster grows as you don't log and the character grows as you reach your goals. One represents the logging commit the other the other life goals commit.
 
 - maybe I can change the whole app colors if something is getting low
+- character could be a tree
 
 #### Implicit
 
@@ -150,7 +151,7 @@ Levels:
 ### Registration / Authentication
 
 - keep an eye on the the lighter release of firebase
-- from the landing page it lets you start using the app with an anonymous account, there is a bar up 
+- from the landing page it lets you start using the app with an anonymous account, there is a bar up
 
 ### Landing Page
 
@@ -166,9 +167,11 @@ Levels:
 ### Others
 
 - Study more service worker
-- can I use highchart without the link?
-- should I put a cookie banner?
-- should it be open source? client-side encrypted?
+- can I legally use highchart without the link? probably yes
+- should I put a cookie banner? probably not
+- should it be open source?
+- client-side encrypted? probably yes
+- put a cache between firestore and teh user object, and read stuff from the db only the first time (or use a existing solution from firebase)
 
 ### Competitors / Inspirations
 

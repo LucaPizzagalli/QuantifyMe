@@ -30,7 +30,8 @@ let startInfo = {
   email: null,
   personal: {},
   level: 1,
-  metrics: [],
+  groups: [],
+  metrics: {},
   clocks: [],
   theme: 'light',
 };
@@ -44,7 +45,6 @@ class User {
     this.db = app.firestore();
     this.authListener = null;
     this.info = { theme: 'light' };
-    this.handleThemeChange = null;
   }
 
   // Authentication
@@ -56,21 +56,30 @@ class User {
     this.authListener = this.configAuth.onAuthStateChanged(authUser => {
       this.auth = authUser;
       if (authUser) {
+        let newUser = true;
         this.getDb().get()
           .then((doc) => {
             if (doc.exists) {
               this.info = doc.data();
-            }
-            else {
-              this.info = startInfo;
-              this.info.email = authUser.email;
-              this.db.doc('users/' + authUser.uid).set(
-                { ...this.info, level: 2 },
-                { merge: true })
+              newUser = false;
             }
           })
-          .then(() => HandleUserAuthChange(true))
+          .then(() => {
+            if (newUser) {
+              this.info = { ...startInfo, email: authUser.email, level: 2 };
+              let promises = [
+                this.getDb().set(this.info, { merge: true }),
+                this.getDb().collection('extra').doc('plots').set({ plots: [] })
+              ];
+              Promise.all(promises)
+                .then(() => HandleUserAuthChange(true))
+                .catch((e) => handleError(e))
+            }
+            else
+              HandleUserAuthChange(true)
+          })
           .catch((e) => handleError(e))
+
       }
       else
         HandleUserAuthChange(false);
@@ -94,11 +103,17 @@ class User {
 
   exportData(handleSuccess, handleError) {
     let backup = { info: this.info, days: [] };
-    this.getDb().collection('days').get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
+    let promises = [
+      this.getDb().collection('days').get(),
+      this.getDb().collection('extra').doc('plots').get(),
+    ];
+
+    Promise.all(promises)
+      .then(docs => {
+        docs[0].forEach((doc) => {
           backup['days'].push(doc.data());
         });
+        backup['plots'] = docs[1].data().plots;
         backup = new Blob([JSON.stringify(backup)], { type: 'application/json' })
         handleSuccess(backup);
       })
@@ -106,13 +121,12 @@ class User {
   }
 
   importData(backup, options, handleSuccess, handleError) {
-    console.log(backup)
     let promises = [];
     if (options.days) {
       let stats = {};
       this.getDb().collection('stats').get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
+        .then(docs => {
+          docs.forEach(doc => {
             stats[doc.id] = doc.data();
           })
         })
@@ -120,9 +134,9 @@ class User {
           for (let day of backup.days) {
             promises.push(this.getDb().collection('days').doc(day.date.toString()).set(day));
             for (let metricId of Object.keys(day)) {
-              if (metricId !== 'date' && !(metricId in stats))
-                stats[metricId] = { times: [], values: [] }
               if (metricId !== 'date') {
+                if (!(metricId in stats))
+                  stats[metricId] = { times: [], values: [] };
                 stats[metricId].times.push(day.date);
                 stats[metricId].values.push(day[metricId]);
               }
@@ -137,10 +151,18 @@ class User {
               this.getDb().collection('stats').doc(metricId).set({ times: times, values: values })
             );
           }
+          this._importDataBis(backup, options, handleSuccess, handleError, promises);
         });
     }
+    else
+      this._importDataBis(backup, options, handleSuccess, handleError, promises);
+
+  }
+  _importDataBis(backup, options, handleSuccess, handleError, promises) {
+    if (options.plots)
+      promises.push(this.getDb().collection('extra').doc('plots').set({ plots: backup.plots }));
     if (options.metrics)
-      promises.push(this.getDb().update({ metrics: backup.info.metrics }));
+      promises.push(this.getDb().update({ metrics: backup.info.metrics, groups: backup.info.groups }));
     if (options.clocks)
       promises.push(this.getDb().update({ clocks: backup.info.clocks }));
     if (options.extra) {
@@ -168,18 +190,27 @@ class User {
           querySnapshot.forEach(doc => {
             promises.push(this.getDb().collection('days').doc(doc.id).delete());
           })
-        });
-      this.getDb().collection('stats').get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            promises.push(this.getDb().collection('stats').doc(doc.id).delete());
-          })
-        });
+          this.getDb().collection('stats').get()
+            .then(querySnapshot => {
+              querySnapshot.forEach(doc => {
+                promises.push(this.getDb().collection('stats').doc(doc.id).delete());
+              })
+              this._eraseDataBis(options, handleSuccess, handleError, promises);
+            })
+            .catch((e) => handleError(e));
+        })
+        .catch((e) => handleError(e));
     }
+    else
+      this._eraseDataBis(options, handleSuccess, handleError, promises);
+  }
+  _eraseDataBis(options, handleSuccess, handleError, promises) {
     if (options.metrics)
-      promises.push(this.getDb().update({ metrics: [] }));
+      promises.push(this.getDb().update({ metrics: {}, groups: [] }));
     if (options.clocks)
       promises.push(this.getDb().update({ clocks: [] }));
+    if (options.plots)
+      promises.push(this.getDb().collection('extra').doc('plots').set({ plots: [] }));
     if (options.extra) {
       promises.push(this.getDb().update({
         email: null,
@@ -198,8 +229,59 @@ class User {
   }
 
   // Metrics operations
+  getGroup(id) {
+    for (let group of this.info.groups)
+      if (group.id === id)
+        return group;
+    return null;
+  }
+
+  getGroups() {
+    return this.info.groups;
+  }
+
+  getMetric(id) {
+    return this.info.metrics[id];
+  }
+
   getMetrics() {
     return this.info.metrics;
+  }
+
+  updateGroup(newGroup, newMetrics, handleSuccess, handleError) {
+    let newGroups = this.info.groups;
+    let isNew = true;
+    for (let i = 0; i < newGroups.length; i++)
+      if (newGroups[i].id === newGroup.id) {
+        if (newGroup.metrics.length === 0)
+          newGroups.splice(i, 1);
+        else
+          newGroups[i] = newGroup;
+        isNew = false;
+        break;
+      }
+    if (isNew && newGroup.metrics.length > 0)
+      newGroups.push(newGroup);
+
+    let promises = [this.getDb().update({ metrics: newMetrics, groups: newGroups })];
+    for (let id of Object.keys(newMetrics))
+      if (!(id in this.info.metrics))
+        promises.push(
+          this.getDb().collection('stats').doc(id).set({ times: [], values: [] })
+        );
+    for (let id of Object.keys(this.info.metrics))
+      if (!(id in newMetrics))
+        promises.push(
+          this.getDb().collection('stats').doc(id).delete()
+        );
+
+    Promise.all(promises)
+      .then(() => {
+        this.info.metrics = newMetrics;
+        this.info.groups = newGroups;
+        handleSuccess();
+      })
+      .catch((e) => handleError(e));
   }
 
   updateMetrics(newMetrics, addedMetric, deletedMetric, handleSuccess, handleError) {
@@ -288,7 +370,7 @@ class User {
     });
 
     Promise.all(promises)
-      .then(docs => {
+      .then((docs) => {
         let timeSeries = docs.map((doc, index) => {
           let times = doc.data().times;
           let values = doc.data().values;
@@ -299,6 +381,19 @@ class User {
         });
         handleSuccess(timeSeries);
       })
+      .catch((e) => handleError(e));
+  }
+
+  // Plots operations
+  updatePlots(plots, handleSuccess, handleError) {
+    this.getDb().collection('extra').doc('plots').set({ plots: plots })
+      .then(() => handleSuccess())
+      .catch((e) => handleError(e));
+  }
+
+  getPlots(handleSuccess, handleError) {
+    this.getDb().collection('extra').doc('plots').get()
+      .then((doc) => handleSuccess(doc.data().plots))
       .catch((e) => handleError(e));
   }
 
@@ -318,7 +413,6 @@ class User {
     console.log('DOPO')
   }
 
-
   // Account Operations
   getLifespan() {
     return [this.info.personal.birthday, this.info.personal.deathAge];
@@ -334,19 +428,19 @@ class User {
       .catch((e) => handleError(e));
   }
 
-  changeTheme(type) {
-    this.handleThemeChange(type);
-  }
-
   getTheme() {
     return this.info.theme;
   }
 
+  setTheme(theme, handleSuccess, handleError) {
+    this.getDb().update({ theme: theme })
+      .then(() => handleSuccess())
+      .catch((e) => handleError(e));
+  }
+
   updatePassword(newPassword, handleSuccess, handleError) {
     this.auth.updatePassword(newPassword)
-      .then(() => {
-        handleSuccess('Password Updated');
-      })
+      .then(() => handleSuccess('Password Updated'))
       .catch((e) => handleError(e));
   }
 

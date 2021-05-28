@@ -15,6 +15,7 @@ function ImportData() {
   let [importDays, setImportDays] = useState(true);
   let [importMetrics, setImportMetrics] = useState(true);
   let [importClocks, setImportClocks] = useState(true);
+  let [importPlots, setImportPlots] = useState(true);
   let [importExtra, setImportExtra] = useState(false);
 
   function handleUpload(e) {
@@ -27,7 +28,7 @@ function ImportData() {
 
   function handleFileParsed(e) {
     let backup = JSON.parse(e.target.result);
-    let options = { days: importDays, metrics: importMetrics, clocks: importClocks, extra: importExtra };
+    let options = { days: importDays, metrics: importMetrics, clocks: importClocks, plots: importPlots, extra: importExtra };
     user.importData(backup, options, handleBackupSuccess, handleBackupError);
   }
 
@@ -58,7 +59,11 @@ function ImportData() {
           label="Timers, Alarms, Stopwatches"
         />
         <FormControlLabel
-          control={<Checkbox checked={importExtra} onChange={() => setImportExtra(!importExtra)} name="clocks" color="primary" />}
+          control={<Checkbox checked={importPlots} onChange={() => setImportPlots(!importPlots)} name="plots" color="primary" />}
+          label="Charts"
+        />
+        <FormControlLabel
+          control={<Checkbox checked={importExtra} onChange={() => setImportExtra(!importExtra)} name="extra" color="primary" />}
           label="Others"
         />
       </FormGroup>
@@ -66,7 +71,7 @@ function ImportData() {
         <input type="file" accept=".json,.JSON,application/JSON" id="upload-report" style={{ display: 'none' }}
           onChange={handleUpload} />
         <label htmlFor="upload-report">
-          <Button variant="contained" color="primary" component="span">
+          <Button variant="contained" color="primary" component="span" disabled={isLoading}>
             Upload JSON Backup
           </Button>
         </label>
