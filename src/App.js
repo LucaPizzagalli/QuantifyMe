@@ -49,7 +49,7 @@ function App() {
   return (
     <ThemeProvider theme={responsiveFontSizes(createMuiTheme(
       {
-        palette: { ...basePalette, type: themeType },
+        palette: { ...basePalette, type: themeType},
         spacing: themeSpacing,
       }
     ))}>
